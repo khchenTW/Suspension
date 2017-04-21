@@ -25,20 +25,22 @@ def partition(taskset):
     for tid, task in enumerate(taskset):
         tskset[tid] = task
 
-    periods = [1, 2, 5, 10, 20, 50, 100, 200, 1000]
     m = Model("Partition Algorithm ILP")
     y = m.addVars(len(taskset), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(taskset), len(taskset), vtype=GRB.BINARY, name="resourcej")
-    m.setObjective((quicksum(x[i,j] for j in range(len(taskset))) == 1 for i in range(len(taskset))), GRB.MINIMIZE)
+    #minimization
+    m.setObjective((quicksum(y[j] for j in range(len(taskset)))), GRB.MINIMIZE)
 
     #condition 9b
     m.addConstrs((quicksum(x[i,j] for j in range(len(taskset))) == 1 for i in range(len(taskset))), "9b")
 
     #condition 9c
-    m.addConstrs((quicksum(x[i,j] for i in range(len(taskset))) <= y[i, j] for j in range(len(taskset))), "9c")
+    m.addConstrs((quicksum(x[i,j] for i in range(len(taskset))) <= y[j] for j in range(len(taskset))), "9c")
 
     #condition Eq 10
-    m.addConstrs(quicksum(x[i,j]*utili(tskset.items()) <= (1-x[k,j])+x[k,j]*np.log(3/(utiliAddE(task[1])+2)) for j in range(periods)),"eq10")
+    #for task in tskset.items():
+        #print utili(task[1])
+    m.addConstrs( quicksum( x[i,j] * utili( task[1] ) for task in tskset.items() ) <= ( 1 - x[k,j] ) + x[k,j] * np.log(3/(utiliAddE( task[1] ) + 2 )) for j in range( periods ) ),"eq10")
     '''
     for k in range(len(periods)):
         kset = filter(lambda task : task[1]['period'] == periods[k], tskset.items())
@@ -50,6 +52,7 @@ def partition(taskset):
     m.optimize()
 
     # prepare readable solution
+    '''
     mapped = [var for var in m.getVars() if var.varName.find('allocation') != -1 and var.x != 0]
     procs = [[] for amount in range(processors)]
     for task_map in mapped:
@@ -57,11 +60,12 @@ def partition(taskset):
         taskID = int(parsed[0])
         procID = int(parsed[1])
         procs[procID].append(tskset[taskID])
-
     '''
+
     #validate results to be sure nothing went wrong
+    '''
     for i, proc in enumerate(procs):
         if analysis.schedulable(proc) is False:
             print 'Partition on processor '+str(i)+' is infeasible.'
     '''
-    return procs
+    return 1

@@ -6,7 +6,7 @@ import math
 import analysis
 
 class task (dict):
-    def __init__(self, execution, period, deadline):
+    def __init__(self, execution, period, deadline, suspension):
         dict.__setitem__(self, "execution", float (execution))
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
@@ -298,7 +298,9 @@ def generate_util_fixed(util, period_pdf = [0.18, 0.02, 0.02, 0.25, 0.25, 0.03, 
             runnables = 1
             num_runnables += runnables
             execution = sum(sample_runnable_acet(period, runnables, scalingFlag))
-            taskset.append(task(execution, period, period))
+            #temporary use execution generator as suspension
+            suspension = sum(sample_runnable_acet(period, runnables, scalingFlag))
+            taskset.append(task(execution, period, period, suspension))
             util_current += float(execution/period)
             last_util = float(execution/period)
         #print round(util_current,3)
