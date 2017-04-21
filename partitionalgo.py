@@ -1,14 +1,13 @@
 from gurobipy import *
 import numpy as np
 import re
-import analysis
 
 class task (dict):
     def __init__(self, execution, period, deadline):
         dict.__setitem__(self, "execution", float (execution))
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
-        dict.__setitem__(self, "suspention", float (suspention))
+        dict.__setitem__(self, "suspension", float (suspension))
 
 def partition(taskset):
     '''
@@ -30,10 +29,10 @@ def partition(taskset):
     m = Model("Partition Algorithm ILP")
     y = m.addVars(len(taskset), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(taskset), len(taskset), vtype=GRB.BINARY, name="resourcej")
-    m.setObjective((quicksum(x[i,j] for j in range(len(taskset))) == 1 for i in range(len(taskset)))), GRB.MINIMIZE)
+    m.setObjective((quicksum(x[i,j] for j in range(len(taskset))) == 1 for i in range(len(taskset))), GRB.MINIMIZE)
 
     #condition 9b
-    m.addConstrs((quicksum(x[i,j] for j in range(len(taskset))) == 1 for i in range(len(taskset)))), "9b")
+    m.addConstrs((quicksum(x[i,j] for j in range(len(taskset))) == 1 for i in range(len(taskset))), "9b")
 
     #condition 9c
     m.addConstrs((quicksum(x[i,j] for i in range(len(taskset))) <= y[i, j] for j in range(len(taskset))), "9c")
