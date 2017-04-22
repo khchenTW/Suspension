@@ -12,7 +12,7 @@ class task (dict):
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "suspension", float (suspension))
 
-def partition(taskset):
+def partition(taskset, algoopt=13):
     '''
     if analysis.cumulative_utilisation(taskset) > processors:
         raise ValueError("utilisation is too large")
@@ -22,6 +22,12 @@ def partition(taskset):
 
     def utiliAddE(task):
         return float(task['execution']+task['suspension']/task['period'])
+
+    def vfunc(task):
+        return float(2*task['suspension']-task['suspension']*task['suspension']/task['period'])
+
+    def qfunc(task):
+        return float(min(task['execution'],task['suspension'])/task['period'])
 
     # index the tasks once to keep track of task ids during paritioning into subsets of equal periods
     tskset = {}
@@ -40,16 +46,24 @@ def partition(taskset):
     #condition 9c
     m.addConstrs((quicksum(x[i,j] for i in range(len(taskset))) <= y[j] for j in range(len(taskset))), "9c")
 
-    #condition Eq 10
+    #Schedulability Test Eq 10
     c = 0
     #here need RM sorting
     tmpTasks=RMsort(taskset, 'period')
     for kid, taskk in enumerate(tmpTasks): #i is the k task
         hpTasks = tmpTasks[:c]
-        m.addConstrs((
-        quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(taskset))) , "eq10")
+        #ILP Eq10
+        if algoopt == 10:
+            m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(taskset))) , "eq10")
+        #ILP Eq11
+        elif algoopt == 11:
+            F = quicksum(1+i['suspension']+min(i['execution'], i['suspension'])/i['period'] for i in taskset)
+            m.addConstrs((quicksum(utiliAddE( taskk )*x[kid, j]+ (utili(i) + qfunc(i))*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(taskset))), "eq11")
+            m.addConstr((quicksum((taskk['suspension']+x[kid, j]*taskk['execution']+x[tid, j]*min(i['execution'], i['suspension'])/taskk['period']) for tid, i in enumerate(hpTasks) for j in range(len(taskset)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
+        #ILP Eq13
+        elif algoopt == 13:
+            m.addConstr(( quicksum(utiliAddE( taskk )*x[kid, j]+utili(i) + vfunc(i)/taskk['period']*x[tid, j] for tid, i in enumerate(hpTasks) for j in range (len(taskset)))<=1) , "eq13")
         c+=1
-
 
     m.update()
     m.optimize()
