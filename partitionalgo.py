@@ -2,6 +2,9 @@ from gurobipy import *
 import numpy as np
 import re
 
+def RMsort(tasks, criteria):
+    return sorted(tasks, key=lambda item:item[criteria])
+
 class task (dict):
     def __init__(self, execution, period, deadline):
         dict.__setitem__(self, "execution", float (execution))
@@ -18,7 +21,7 @@ def partition(taskset):
         return float(task['execution']/task['period'])
 
     def utiliAddE(task):
-        return float(task['execution']+task['suspention']/task['period'])
+        return float(task['execution']+task['suspension']/task['period'])
 
     # index the tasks once to keep track of task ids during paritioning into subsets of equal periods
     tskset = {}
@@ -38,15 +41,15 @@ def partition(taskset):
     m.addConstrs((quicksum(x[i,j] for i in range(len(taskset))) <= y[j] for j in range(len(taskset))), "9c")
 
     #condition Eq 10
-    #for task in tskset.items():
-        #print utili(task[1])
-    m.addConstrs( quicksum( x[i,j] * utili( task[1] ) for task in tskset.items() ) <= ( 1 - x[k,j] ) + x[k,j] * np.log(3/(utiliAddE( task[1] ) + 2 )) for j in range( periods ) ),"eq10")
-    '''
-    for k in range(len(periods)):
-        kset = filter(lambda task : task[1]['period'] == periods[k], tskset.items())
-        m.addConstrs(
-            (quicksum(x[int(task[0]),j] * utili(task[1]) for task in kset) <= (1-x[k,j])+x[k,j]*np.log(3/(utiliAddE(task[1])+2)) for j in range(periods)), "Eq10")
-    '''
+    c = 0
+    #here need RM sorting
+    tmpTasks=RMsort(taskset, 'period')
+    for kid, taskk in enumerate(tmpTasks): #i is the k task
+        hpTasks = tmpTasks[:c]
+        m.addConstrs((
+        quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(taskset))) , "eq10")
+        c+=1
+
 
     m.update()
     m.optimize()
