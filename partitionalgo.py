@@ -23,7 +23,7 @@ def partition(taskset, algoopt=13):
         else:
             return False
     def test6c(k, rest):
-        if (k['suspension']+k['execution']+quicksum(min(i['execution'], i['suspension']) for i in rest))/k['period']+quicksum(utili(i) for i in rest)<=(len(rest)+1)(2**(1/len(rest)+1)-1):
+        if (k['suspension']+k['execution']+quicksum(min(i['execution'], i['suspension']) for i in rest))/k['period']+quicksum(utili(i) for i in rest)<=(len(rest)+1)*(2**(1/(len(rest)+1))-1):
             return True
         else:
             return False
@@ -51,6 +51,7 @@ def partition(taskset, algoopt=13):
         tskset[tid] = task
 
     m = Model("Partition Algorithm ILP")
+    m.setParam('OutputFlag', False)
     y = m.addVars(len(taskset), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(taskset), len(taskset), vtype=GRB.BINARY, name="resourcej")
     #minimization
@@ -75,7 +76,7 @@ def partition(taskset, algoopt=13):
         elif algoopt == 11:
             F = quicksum(1+i['suspension']+min(i['execution'], i['suspension'])/i['period'] for i in taskset)
             m.addConstrs((quicksum(utiliAddE( taskk )*x[kid, j]+ (utili(i) + qfunc(i))*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(taskset))), "eq11")
-            m.addConstr((quicksum((taskk['suspension']+x[kid, j]*taskk['execution']+x[tid, j]*min(i['execution'], i['suspension'])/taskk['period']) for tid, i in enumerate(hpTasks) for j in range(len(taskset)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
+            #m.addConstr((quicksum((taskk['suspension']+x[kid, j]*taskk['execution']+x[tid, j]*min(i['execution'], i['suspension'])/taskk['period']) for tid, i in enumerate(hpTasks) for j in range(len(taskset)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
         #ILP Eq13
         elif algoopt == 13:
             m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+utili(i) + vfunc(i)/taskk['period']*x[tid, j] for tid, i in enumerate(hpTasks) ) <= 1 for j in range (len(taskset))) , "eq13")
@@ -84,13 +85,15 @@ def partition(taskset, algoopt=13):
     m.update()
     m.optimize()
 
+    '''
     if m.status == GRB.Status.INF_OR_UNBD:
     # Turn presolve off to determine whether model is infeasible
     # or unbounded
         m.setParam(GRB.Param.Presolve, 0)
         m.optimize()
-
+    '''
     if m.status == GRB.Status.OPTIMAL:
+        print('ILP + Eq.'+str(algoopt)+'is feasible')
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
@@ -100,7 +103,6 @@ def partition(taskset, algoopt=13):
         tmpTasks=RMsort(taskset, 'period')
         for kid, taskk in enumerate(tmpTasks): #i is the k task
             hpTasks = tmpTasks[:c]
-
             if algoopt == 10:
                 #Eq.5b
                 if test5b(taskk, hpTasks) is False:
