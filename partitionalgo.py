@@ -76,24 +76,24 @@ def partition(taskset, algoopt=13):
         elif algoopt == 11:
             F = quicksum(1+i['suspension']+min(i['execution'], i['suspension'])/i['period'] for i in taskset)
             m.addConstrs((quicksum(utiliAddE( taskk )*x[kid, j]+ (utili(i) + qfunc(i))*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(taskset))), "eq11")
-            #m.addConstr((quicksum((taskk['suspension']+x[kid, j]*taskk['execution']+x[tid, j]*min(i['execution'], i['suspension'])/taskk['period']) for tid, i in enumerate(hpTasks) for j in range(len(taskset)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
+            m.addConstr((quicksum((taskk['suspension']+x[kid, j]*taskk['execution']+x[tid, j]*min(i['execution'], i['suspension'])/taskk['period']) for tid, i in enumerate(hpTasks) for j in range(len(taskset)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
         #ILP Eq13
         elif algoopt == 13:
-            m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+utili(i) + vfunc(i)/taskk['period']*x[tid, j] for tid, i in enumerate(hpTasks) ) <= 1 for j in range (len(taskset))) , "eq13")
+            m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+(utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= 1 for j in range (len(taskset))) , "eq13")
         c+=1
 
     m.update()
     m.optimize()
 
-    '''
+
     if m.status == GRB.Status.INF_OR_UNBD:
     # Turn presolve off to determine whether model is infeasible
     # or unbounded
         m.setParam(GRB.Param.Presolve, 0)
         m.optimize()
-    '''
+
     if m.status == GRB.Status.OPTIMAL:
-        print('ILP + Eq.'+str(algoopt)+'is feasible')
+        print('ILP + Eq.'+str(algoopt)+' is feasible')
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
@@ -118,7 +118,7 @@ def partition(taskset, algoopt=13):
             c+=1
 
         m.write('model.sol')
-    elif m.status != GRB.Status.INFEASIBLE:
+    elif m.status == GRB.Status.INFEASIBLE:
         print('Optimization was stopped with status %d' % m.status)
     # Model is infeasible - compute an Irreducible Inconsistent Subsystem (IIS)
         print('')
@@ -137,14 +137,5 @@ def partition(taskset, algoopt=13):
         procID = int(parsed[1])
         procs[procID].append(tskset[taskID])
     '''
-    #validate results to be sure nothing went wrong
-    '''
-    for i, proc in enumerate(procs):
-        if analysis.schedulable(proc) is False:
-            print 'Partition on processor '+str(i)+' is infeasible.'
-    '''
 
-
-
-
-    return 1
+    return m.objVal
