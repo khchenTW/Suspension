@@ -30,13 +30,18 @@ def UniDist(n,U_min,U_max):
 		uBkt=random.uniform(U_min, U_max)
 		USet.append(uBkt)
 
-def CSet_generate(Pmin,numLog):
+def CSet_generate(Pmin,numLog, sstype=0):
 	global USet,PSet
 	j=0
 	for i in USet:
 	    thN=j%numLog
 	    p=random.uniform(Pmin*math.pow(10, thN), Pmin*math.pow(10, thN+1))
-            suspension = random.uniform(0.01*(p-i*p), 0.1*(p-i*p))
+            if sstype == 0:
+                suspension = random.uniform(0.01*(p-i*p), 0.1*(p-i*p))
+            elif sstype == 1:
+                suspension = random.uniform(0.1*(p-i*p), 0.6*(p-i*p))
+            else:
+                suspension = random.uniform(0.6*(p-i*p), (p-i*p))
             PSet.append(task(i*p, p, p, suspension))
 	    j=j+1;
 
@@ -45,11 +50,11 @@ def init():
 	USet=[]
 	PSet=[]
 
-def taskGeneration(numTasks,uTotal):
+def taskGeneration(numTasks,uTotal, sstype):
     random.seed()
     init()
     UUniFast(numTasks,uTotal/100)
-    CSet_generate(1,2)
+    CSet_generate(1,2, sstype)
     fo = open(ofile, "ab")
     print >>fo, json.dumps(PSet)
     return PSet
