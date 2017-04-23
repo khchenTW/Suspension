@@ -56,11 +56,10 @@ def partition(taskset, algoopt=13):
     m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "9b")
 
     #condition 9c
-    m.addConstrs((x[i,j]  <= y[j] for i in range(len(taskset)) for j in range(len(taskset))), "9c")
+    m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "9c")
 
     #Schedulability conditions
     c = 0
-    #here need RM sorting
     for kid, taskk in enumerate(tmpTasks): #i is the k task
         hpTasks = tmpTasks[:c]
         #ILP Eq10
