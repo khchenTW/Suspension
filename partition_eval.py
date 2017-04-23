@@ -1,4 +1,4 @@
-import partitionalgo as multi
+import partition_ILP as multi
 import analysis
 import generator
 
@@ -8,9 +8,9 @@ def main():
     taskset = generator.taskGeneration(10, 20, 0, 0.2)
     # taskset, num of procs
 
-    obj = multi.partition(taskset, 10)
-    obj = multi.partition(taskset, 11)
-    obj = multi.partition(taskset, 13)
+    obj = multi.partition(taskset, 'carryin')
+    obj = multi.partition(taskset, 'blocking')
+    obj = multi.partition(taskset, 'k2q')
 
 if __name__ == "__main__":
     main()

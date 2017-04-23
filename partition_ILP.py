@@ -12,19 +12,19 @@ class task (dict):
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (exclusiveR))
 
-def partition(taskset, algoopt=13):
+def partition(taskset, algoopt='carryin'):
     #following Tests are prepared for double checking
-    def test5b(k, rest):
+    def k2uFirstCarryinUbound(k, rest):
         if quicksum(utili(i) for i in rest) <= np.log(3/(utiliAddE(k)+2)):
             return True
         else:
             return False
-    def test6c(k, rest):
+    def k2uSecondBlockingUbound(k, rest):
         if (k['shared-R']+k['exclusive-R']+quicksum(min(i['shared-R'], i['exclusive-R']) for i in rest))/k['period']+quicksum(utili(i) for i in rest)<=(len(rest)+1)*(2**(1/(len(rest)+1))-1):
             return True
         else:
             return False
-    def test7(k, rest):
+    def k2qJitterBound(k, rest):
         if (k['shared-R']+k['exclusive-R']+quicksum(vfunc(i) for i in rest))/1-quicksum(utili(i) for i in rest) <= k['period']:
             return True
         else:
@@ -52,27 +52,27 @@ def partition(taskset, algoopt=13):
     #minimization
     m.setObjective((quicksum(y[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
 
-    #condition 9b
-    m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "9b")
+    #condition ilp-resource-single-b
+    m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ilp-resource-single-b")
 
-    #condition 9c
-    m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "9c")
+    #condition ilp-resource-single-c
+    m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
 
     #Schedulability conditions
     c = 0
     for kid, taskk in enumerate(tmpTasks): #i is the k task
         hpTasks = tmpTasks[:c]
-        #ILP Eq10
-        if algoopt == 10:
-            m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "Eq10")
-        #ILP Eq11
-        elif algoopt == 11:
+        #ILP ilp-carryin-ubound
+        if algoopt == 'carryin':
+            m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "ilp-carryin-ubound")
+        #ILP ilp-blocking-ubound
+        elif algoopt == 'blocking':
             F = 1+quicksum((i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period'] for i in tmpTasks)
-            m.addConstrs((quicksum(utiliAddE( taskk )*x[kid, j]+ (utili(i) + qfunc(i))*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(tmpTasks))), "eq11")
+            m.addConstrs((quicksum(utiliAddE( taskk )*x[kid, j]+ (utili(i) + qfunc(i))*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
             m.addConstr((quicksum((taskk['shared-R']+x[kid, j]*taskk['exclusive-R']+x[tid, j]*min(i['exclusive-R'], i['shared-R']))/taskk['period'] for tid, i in enumerate(hpTasks) for j in range(len(tmpTasks)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
-        #ILP Eq13
-        elif algoopt == 13:
-            m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+(utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= 1 for j in range (len(tmpTasks))) , "eq13")
+        #ILP ilp-k2q
+        elif algoopt == 'k2q':
+            m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+(utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= 1 for j in range (len(tmpTasks))) , "ilp-k2q")
         c+=1
 
     m.update()
@@ -86,7 +86,7 @@ def partition(taskset, algoopt=13):
         m.optimize()
 
     if m.status == GRB.Status.OPTIMAL:
-        print('ILP + Eq.'+str(algoopt)+' is feasible')
+        print('ILP + '+algoopt+' is feasible')
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
@@ -94,26 +94,25 @@ def partition(taskset, algoopt=13):
         c = 0
         for kid, taskk in enumerate(tmpTasks): #i is the k task
             hpTasks = tmpTasks[:c]
-            if algoopt == 10:
-                #Eq.5b
-                if test5b(taskk, hpTasks) is False:
-                    print 'Task '+str(kid)+' is infesible with Eq5b.'
-            elif algoopt == 11:
-                #Eq.6c
-                if test6c(taskk, hpTasks) is False:
-                    print 'Task '+str(kid)+' is infesible with Eq6c.'
-            elif algoopt == 13:
-                #Eq.7
-                if test7(taskk, hpTasks) is False:
-                    print 'Task '+str(kid)+' is infesible with Eq7.'
+            if algoopt == 'carryin':
+                #k2u-first-carryin-ubound
+                if k2uFirstCarryinUbound(taskk, hpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with k2u-first-carryin-ubound.'
+            elif algoopt == 'blocking':
+                #k2u-second-blocking-ubound2
+                if k2uSecondBlockingUbound(taskk, hpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with k2u-second-blocking-ubound2.'
+            elif algoopt == 'k2q':
+                #k2q-jitter-bound
+                if k2qJitterBound(taskk, hpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with k2q-jitter-bound.'
             c+=1
 
         m.write('model.sol')
     elif m.status == GRB.Status.INFEASIBLE:
-        print('Optimization was stopped with status %d' % m.status)
+        #print('Optimization was stopped with status %d' % m.status)
     # Model is infeasible - compute an Irreducible Inconsistent Subsystem (IIS)
-        print('')
-        print('Model is infeasible')
+        print('ILP + '+algoopt+' is infeasible')
         m.computeIIS()
         m.write("model.ilp")
         print("IIS written to file 'model.ilp'")
