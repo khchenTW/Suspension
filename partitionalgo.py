@@ -37,7 +37,7 @@ def partition(taskset, algoopt=13):
         return float(task['execution']/task['period'])
 
     def utiliAddE(task):
-        return float(task['execution']+task['suspension']/task['period'])
+        return float((task['execution']+task['suspension'])/task['period'])
 
     def vfunc(task):
         return float(2*task['suspension']-task['suspension']*task['suspension']/task['period'])
@@ -45,41 +45,37 @@ def partition(taskset, algoopt=13):
     def qfunc(task):
         return float(min(task['execution'],task['suspension'])/task['period'])
 
-    # index the tasks once to keep track of task ids during paritioning into subsets of equal periods
-    tskset = {}
-    for tid, task in enumerate(taskset):
-        tskset[tid] = task
-
+    #this sorted task set will be used
+    tmpTasks=RMsort(taskset, 'period')
     m = Model("Partition Algorithm ILP")
     m.setParam('OutputFlag', False)
-    y = m.addVars(len(taskset), vtype=GRB.BINARY, name="allocation")
-    x = m.addVars(len(taskset), len(taskset), vtype=GRB.BINARY, name="resourcej")
+    y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
+    x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
     #minimization
-    m.setObjective((quicksum(y[j] for j in range(len(taskset)))), GRB.MINIMIZE)
+    m.setObjective((quicksum(y[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
 
     #condition 9b
-    m.addConstrs((quicksum(x[i,j] for j in range(len(taskset))) == 1 for i in range(len(taskset))), "9b")
+    m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "9b")
 
     #condition 9c
-    m.addConstrs((quicksum(x[i,j] for i in range(len(taskset))) <= y[j] for j in range(len(taskset))), "9c")
+    m.addConstrs((x[i,j]  <= y[j] for i in range(len(taskset)) for j in range(len(taskset))), "9c")
 
     #Schedulability conditions
     c = 0
     #here need RM sorting
-    tmpTasks=RMsort(taskset, 'period')
     for kid, taskk in enumerate(tmpTasks): #i is the k task
         hpTasks = tmpTasks[:c]
         #ILP Eq10
         if algoopt == 10:
-            m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(taskset))) , "eq10")
+            m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "eq10")
         #ILP Eq11
         elif algoopt == 11:
-            F = quicksum(1+i['suspension']+min(i['execution'], i['suspension'])/i['period'] for i in taskset)
-            m.addConstrs((quicksum(utiliAddE( taskk )*x[kid, j]+ (utili(i) + qfunc(i))*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(taskset))), "eq11")
-            m.addConstr((quicksum((taskk['suspension']+x[kid, j]*taskk['execution']+x[tid, j]*min(i['execution'], i['suspension'])/taskk['period']) for tid, i in enumerate(hpTasks) for j in range(len(taskset)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
+            F = quicksum(1+i['suspension']+min(i['execution'], i['suspension'])/i['period'] for i in tmpTasks)
+            m.addConstrs((quicksum(utiliAddE( taskk )*x[kid, j]+ (utili(i) + qfunc(i))*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(tmpTasks))), "eq11")
+            m.addConstr((quicksum((taskk['suspension']+x[kid, j]*taskk['execution']+x[tid, j]*min(i['execution'], i['suspension'])/taskk['period']) for tid, i in enumerate(hpTasks) for j in range(len(tmpTasks)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
         #ILP Eq13
         elif algoopt == 13:
-            m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+(utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= 1 for j in range (len(taskset))) , "eq13")
+            m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+(utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= 1 for j in range (len(tmpTasks))) , "eq13")
         c+=1
 
     m.update()
@@ -99,8 +95,6 @@ def partition(taskset, algoopt=13):
         print('Obj: %g' % m.objVal)
         #validate results for all tasks respectively
         c = 0
-        #here we need RM sorting
-        tmpTasks=RMsort(taskset, 'period')
         for kid, taskk in enumerate(tmpTasks): #i is the k task
             hpTasks = tmpTasks[:c]
             if algoopt == 10:
