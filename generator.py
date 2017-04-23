@@ -11,11 +11,11 @@ import json
 ofile = "taskset-p.txt"
 USet=[]
 class task (dict):
-    def __init__(self, execution, period, deadline, suspension):
-        dict.__setitem__(self, "execution", float (execution))
+    def __init__(self, sharedR, period, deadline, execlusiveR):
+        dict.__setitem__(self, "shared-R", float (sharedR))
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
-        dict.__setitem__(self, "suspension", float (suspension))
+        dict.__setitem__(self, "exclusive-R", float (execlusiveR))
 
 def UUniFast(n,U_avg):
     global USet
