@@ -11,6 +11,7 @@ def main():
     obj = multi.partition(taskset, 'carryin')
     obj = multi.partition(taskset, 'blocking')
     obj = multi.partition(taskset, 'k2q')
+    obj = multi.partition(taskset, 'inflation')
 
 if __name__ == "__main__":
     main()

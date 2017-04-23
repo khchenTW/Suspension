@@ -45,6 +45,13 @@ def partition(taskset, algoopt='carryin'):
 
     #this sorted task set will be used
     tmpTasks=RMsort(taskset, 'period')
+    assignCount = 0
+    for i in tmpTasks:
+        if (i['exclusive-R']+i['shared-R']) >= np.log(2):
+            tmpTasks.pop(0)
+            assignCount +=1
+
+
     m = Model("Partition Algorithm ILP")
     m.setParam('OutputFlag', False)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
@@ -72,8 +79,24 @@ def partition(taskset, algoopt='carryin'):
             m.addConstr((quicksum((taskk['shared-R']+x[kid, j]*taskk['exclusive-R']+x[tid, j]*min(i['exclusive-R'], i['shared-R']))/taskk['period'] for tid, i in enumerate(hpTasks) for j in range(len(tmpTasks)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
         #ILP ilp-k2q
         elif algoopt == 'k2q':
-            m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+(utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= 1 for j in range (len(tmpTasks))) , "ilp-k2q")
-        c+=1
+            m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+(utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-x[kid, j])+x[kid,j] for j in range (len(tmpTasks))) , "ilp-k2q")
+    c+=1
+    #ILP Inflation
+    if algoopt == 'inflation':
+        sortedTaskset = sorted(tmpTasks, key=utiliAddE, reverse=True)
+        UB = 1.0
+        for kid in range(len(sortedTaskset)):
+            if (utiliAddE(sortedTaskset[kid]) > np.log(3/(2+utiliAddE(sortedTaskset[kid])))):
+                m.addConstr(x[kid,kid] >= 1, "eq14-1")
+                m.addConstr(y[kid] >= 1, "eq14-2")
+                for otherId in range(len(sortedTaskset)):
+                    if (otherId != kid):
+                        m.addConstr(x[otherId,kid] <= 0, "eq14-2" + str(otherId))
+                    else:
+                        if np.log(3/(2+utiliAddE(sortedTaskset[kid]))) < UB:
+                            UB = np.log(3/(2+utiliAddE(sortedTaskset[kid])))
+                        print "UB="+ str(UB)
+                        m.addConstr(( quicksum(utili(sortedTaskset[i])*x[i, kid] for i in range(len(sortedTaskset)) ) <= UB), "eq14-3" + str(kid))
 
     m.update()
     m.optimize()
@@ -90,6 +113,7 @@ def partition(taskset, algoopt='carryin'):
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
+        print m.objVal+assignCount
         #validate results for all tasks respectively
         c = 0
         for kid, taskk in enumerate(tmpTasks): #i is the k task
