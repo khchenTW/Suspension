@@ -17,6 +17,22 @@ def partition(taskset, algoopt=13):
     if analysis.cumulative_utilisation(taskset) > processors:
         raise ValueError("utilisation is too large")
     '''
+    def test5b(k, rest):
+        if quicksum(utili(i) for i in rest) <= np.log(3/(utiliAddE(k)+2)):
+            return True
+        else:
+            return False
+    def test6c(k, rest):
+        if (k['suspension']+k['execution']+quicksum(min(i['execution'], i['suspension']) for i in rest))/k['period']+quicksum(utili(i) for i in rest)<=(len(rest)+1)(2**(1/len(rest)+1)-1):
+            return True
+        else:
+            return False
+    def test7(k, rest):
+        if (k['execution']+k['suspension']+quicksum(vfunc(i) for i in rest))/1-quicksum(utili(i) for i in rest) <= k['period']:
+            return True
+        else:
+            return False
+
     def utili(task):
         return float(task['execution']/task['period'])
 
@@ -46,7 +62,7 @@ def partition(taskset, algoopt=13):
     #condition 9c
     m.addConstrs((quicksum(x[i,j] for i in range(len(taskset))) <= y[j] for j in range(len(taskset))), "9c")
 
-    #Schedulability Test Eq 10
+    #Schedulability conditions
     c = 0
     #here need RM sorting
     tmpTasks=RMsort(taskset, 'period')
@@ -78,6 +94,26 @@ def partition(taskset, algoopt=13):
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
+        #validate results for all tasks respectively
+        c = 0
+        #here we need RM sorting
+        tmpTasks=RMsort(taskset, 'period')
+        for kid, taskk in enumerate(tmpTasks): #i is the k task
+            hpTasks = tmpTasks[:c]
+
+            if algoopt == 10:
+                #Eq.5b
+                if test5b(taskk, hpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with Eq5b.'
+            elif algoopt == 11:
+                #Eq.6c
+                if test6c(taskk, hpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with Eq6c.'
+            elif algoopt == 13:
+                #Eq.7
+                if test7(taskk, hpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with Eq7.'
+            c+=1
 
         m.write('model.sol')
     elif m.status != GRB.Status.INFEASIBLE:
@@ -90,20 +126,23 @@ def partition(taskset, algoopt=13):
         print("IIS written to file 'model.ilp'")
         return -1
     # prepare readable solution
-    #mapped = [var for var in m.getVars() if var.varName.find('allocation') != -1 and var.x != 0]
     '''
-    procs = [[] for amount in range()]
+    mapped = [var for var in m.getVars() if var.varName.find('allocation') != -1 and var.x != 0]
+    procs = [[] for amount in range(taskset)]
     for task_map in mapped:
         parsed = re.findall("[0-9]+,[0-9]+", task_map.varName)[0].split(',')
         taskID = int(parsed[0])
         procID = int(parsed[1])
         procs[procID].append(tskset[taskID])
     '''
-
     #validate results to be sure nothing went wrong
     '''
     for i, proc in enumerate(procs):
         if analysis.schedulable(proc) is False:
             print 'Partition on processor '+str(i)+' is infeasible.'
     '''
+
+
+
+
     return 1
