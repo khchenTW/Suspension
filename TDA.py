@@ -1,5 +1,4 @@
 import math
-from gurobipy import *
 from ctTests import *
 from miscs import *
 class task (dict):
@@ -33,7 +32,9 @@ def Workload_Blocking(T, C, t):
 
 def TDAblock(task,HPTasks):
     C=task['shared-R']
-    B=task['exclusive-R']+quicksum(min(i['exclusive-R'], i['shared-R']) for i in HPTasks)
+    B=task['exclusive-R']
+    for i in HPTasks:
+        B+=min(i['exclusive-R'], i['shared-R'])
     R=C
     D=task['deadline']
 
