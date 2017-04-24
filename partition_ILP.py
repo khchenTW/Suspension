@@ -29,7 +29,7 @@ def partition(taskset, algoopt='carryin'):
 
     if algoopt == 'blocking':
         for i in tmpTasks:
-            if (i['exclusive-R']+i['shared-R']) >= np.log(2):
+            if ((i['exclusive-R']+i['shared-R'])/i['period']) >= np.log(2):
                 tmpTasks.pop(0)
                 assignCount +=1
 
@@ -81,22 +81,16 @@ def partition(taskset, algoopt='carryin'):
         elif algoopt == 'blocking':
             F = 1+quicksum((i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period'] for i in tmpTasks)
             m.addConstrs((utiliAddE( taskk )*x[kid, j]+quicksum((utili(i) + qfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
-            m.addConstrs((utiliAddE( taskk )*x[kid, j] <= x[kid,j]*np.log(2) for j in range(len(tmpTasks))), "Cond") #(sk+ek)/pk leq ln2
-            #m.addConstrs((taskk['shared-R']+x[kid, j]*taskk['exclusive-R']+quicksum(x[tid, j]*qfunc(i) for tid, i in enumerate(hpTasks) )/taskk['period'] <=np.log(2) for j in range(len(tmpTasks))), "Cond") #(Sk+Bk)/Pk leq ln2
+            m.addConstrs((utiliAddE( taskk )*x[kid, j] <= np.log(2) for j in range(len(tmpTasks))), "Cond") #(sk+ek)/pk leq ln2
         #ILP ilp-k2q
         elif algoopt == 'k2q':
             m.addConstrs(( utiliAddE( taskk )*x[kid, j]+quicksum((utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-x[kid, j])+x[kid,j] for j in range (len(tmpTasks))) , "ilp-k2q")
 
         c+=1
     #ILP Inflation
+    UB = 1.0
     if algoopt == 'inflation':
         UB = np.log(3/(2+max(utiliAddE(i) for i in tmpTasks)))
-        '''
-        UB = 1.0
-        if np.log(3/(2+utiliAddE(taskk))) < UB:
-            UB = np.log(3/(2+utiliAddE(taskk)))
-        print "UB="+ str(UB)
-        '''
         m.addConstrs((quicksum(utili(i)*x[tid, j] for tid, i in enumerate(tmpTasks) ) <= UB for j in range (len(tmpTasks))), "inflation")
 
     m.update()
