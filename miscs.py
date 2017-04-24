@@ -9,5 +9,5 @@ def vfunc(task):
     return float(2*task['shared-R']-task['shared-R']*task['shared-R']/task['period'])
 
 def qfunc(task):
-    return float(min(task['shared-R'],task['exclusive-R'])/task['period'])
+    return float(min(task['shared-R'],task['exclusive-R']))
 
