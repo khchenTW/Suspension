@@ -26,12 +26,25 @@ def UUniFast(n,U_avg):
         sumU=nextSumU
     USet.append(sumU)
 
+def UUniFast_Discard(n,U_avg):
+    while 1:
+        sumU=U_avg
+        for i in range(n-1):
+            nextSumU=sumU*math.pow(random.random(), 1/(n-i))
+            USet.append(sumU-nextSumU)
+            sumU=nextSumU
+        USet.append(sumU)
+
+        if max(USet) < 1:
+            break
+        del USet[:]
+
 def UniDist(n,U_min,U_max):
 	for i in range(n-1):
 	    uBkt=random.uniform(U_min, U_max)
 	    USet.append(uBkt)
 
-def CSet_generate(Pmin,numLog, p, sstype=0):
+def CSet_generate_sss(Pmin,numLog, p, sstype=0):
 	global USet,PSet
 	j=0
         # the number of SSS
@@ -49,8 +62,11 @@ def CSet_generate(Pmin,numLog, p, sstype=0):
                 x-=1
             else:
                 suspension = 0
+            if (i*p+suspension)>p:
+                return -1
             PSet.append(task(i*p, p, p, suspension))
 	    j=j+1;
+        return 0
 
 def init():
 	global USet,PSet
@@ -61,7 +77,10 @@ def taskGeneration(numTasks, uTotal, sstype, propotion):
     random.seed()
     init()
     UUniFast(numTasks,uTotal/100)
-    CSet_generate(1,2, propotion, sstype)
+    while 1:
+        res = CSet_generate_sss(1,2, propotion, sstype)
+        if res == 0:
+            break
     fo = open(ofile, "wb")
     print >>fo, json.dumps(PSet)
     return PSet
