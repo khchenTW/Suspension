@@ -3,8 +3,6 @@ import numpy as np
 from ctTests import *
 from miscs import *
 
-def RMsort(tasks, criteria):
-    return sorted(tasks, key=lambda item:item[criteria])
 
 class task (dict):
     def __init__(self, sharedR, period, deadline, exclusiveR):

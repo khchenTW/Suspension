@@ -11,3 +11,5 @@ def vfunc(task):
 def qfunc(task):
     return float(min(task['shared-R'],task['exclusive-R']))
 
+def RMsort(tasks, criteria):
+    return sorted(tasks, key=lambda item:item[criteria])

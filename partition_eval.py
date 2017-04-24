@@ -1,4 +1,5 @@
 import partition_ILP as multi
+import STPartition as STP
 import generator
 
 def main():
@@ -11,6 +12,7 @@ def main():
     obj = multi.partition(taskset, 'blocking')
     obj = multi.partition(taskset, 'k2q')
     obj = multi.partition(taskset, 'inflation')
+    obj = STP.STPartition(taskset)
 
 if __name__ == "__main__":
     main()
