@@ -1,6 +1,7 @@
 from gurobipy import *
 import numpy as np
-import re
+from ctTests import *
+from miscs import *
 
 def RMsort(tasks, criteria):
     return sorted(tasks, key=lambda item:item[criteria])
@@ -13,40 +14,6 @@ class task (dict):
         dict.__setitem__(self, "exclusive-R", float (exclusiveR))
 
 def partition(taskset, algoopt='carryin'):
-    #following Tests are prepared for double checking
-    def k2uFirstCarryinUbound(k, rest):
-        if quicksum(utili(i) for i in rest) <= np.log(3/(utiliAddE(k)+2)):
-            return True
-        else:
-            return False
-    def k2uSecondBlockingUbound(k, rest):
-        if (k['shared-R']+k['exclusive-R']+quicksum(min(i['shared-R'], i['exclusive-R']) for i in rest))/k['period']+quicksum(utili(i) for i in rest)<=(len(rest)+1)*(2**(1/(len(rest)+1))-1):
-            return True
-        else:
-            return False
-    def k2qJitterBound(k, rest):
-        if (k['shared-R']+k['exclusive-R']+quicksum(vfunc(i) for i in rest))/1-quicksum(utili(i) for i in rest) <= k['period']:
-            return True
-        else:
-            return False
-    def inflation(k, rest, alltasks):
-        if utili(k)+quicksum(utili(i) for i in rest) <= np.log(3/(2+max(utiliAddE(j) for j in alltasks))):
-            return True
-        else:
-            return False
-
-    #mapping function for a quick use
-    def utili(task):
-        return float(task['shared-R']/task['period'])
-
-    def utiliAddE(task):
-        return float((task['shared-R']+task['exclusive-R'])/task['period'])
-
-    def vfunc(task):
-        return float(2*task['shared-R']-task['shared-R']*task['shared-R']/task['period'])
-
-    def qfunc(task):
-        return float(min(task['shared-R'],task['exclusive-R'])/task['period'])
 
     #this sorted task set will be used
     tmpTasks=RMsort(taskset, 'period')
@@ -93,7 +60,7 @@ def partition(taskset, algoopt='carryin'):
             m.addConstr((quicksum((taskk['shared-R']+x[kid, j]*taskk['exclusive-R']+x[tid, j]*min(i['exclusive-R'], i['shared-R']))/taskk['period'] for tid, i in enumerate(hpTasks) for j in range(len(tmpTasks)))<=np.log(2)), "Cond") #(Sk+Bk)/Pk leq ln2
         #ILP ilp-k2q
         elif algoopt == 'k2q':
-            m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+(utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-x[kid, j])+x[kid,j] for j in range (len(tmpTasks))) , "ilp-k2q")
+            m.addConstrs(( utiliAddE( taskk )*x[kid, j]+quicksum((utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-x[kid, j])+x[kid,j] for j in range (len(tmpTasks))) , "ilp-k2q")
 
         c+=1
     #ILP Inflation

@@ -43,24 +43,19 @@ def UniDist(n,U_min,U_max):
 	    uBkt=random.uniform(U_min, U_max)
 	    USet.append(uBkt)
 
-def CSet_generate_sss(Pmin,numLog, p, sstype=0):
+def CSet_generate_sss(Pmin,numLog, sstype=0):
 	global USet,PSet
 	j=0
         # the number of SSS
-        x = len(USet) * p
 	for i in USet:
 	    thN=j%numLog
 	    p=random.uniform(Pmin*math.pow(10, thN), Pmin*math.pow(10, thN+1))
-            if x != 0:
-                if sstype == 0: #S
-                    suspension = random.uniform(0.01*(p-i*p), 0.1*(p-i*p))
-                elif sstype == 1: #M
-                    suspension = random.uniform(0.1*(p-i*p), 0.6*(p-i*p))
-                else: #L
-                    suspension = random.uniform(0.6*(p-i*p), (p-i*p))
-                x-=1
-            else:
-                suspension = 0
+            if sstype == 0: #S
+                suspension = random.uniform(0.01*(p-i*p), 0.1*(p-i*p))
+            elif sstype == 1: #M
+                suspension = random.uniform(0.1*(p-i*p), 0.3*(p-i*p))
+            else: #L
+                suspension = random.uniform(0.3*(p-i*p), 0.6*(p-i*p))
             if (i*p+suspension)>p:
                 return -1
             PSet.append(task(i*p, p, p, suspension))
@@ -72,12 +67,12 @@ def init():
 	USet=[]
 	PSet=[]
 
-def taskGeneration(numTasks, uTotal, sstype, propotion):
+def taskGeneration(numTasks, uTotal, sstype):
     random.seed()
     init()
     UUniFast(numTasks,uTotal/100)
     while 1:
-        res = CSet_generate_sss(1,2, propotion, sstype)
+        res = CSet_generate_sss(1,2,sstype)
         if res == 0:
             break
     fo = open(ofile, "wb")
