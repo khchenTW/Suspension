@@ -29,6 +29,11 @@ def partition(taskset, algoopt='carryin'):
             return True
         else:
             return False
+    def inflation(k, rest, alltasks):
+        if utili(k)+quicksum(utili(i) for i in rest) <= np.log(3/(2+max(utiliAddE(j) for j in alltasks))):
+            return True
+        else:
+            return False
 
     #mapping function for a quick use
     def utili(task):
@@ -45,12 +50,21 @@ def partition(taskset, algoopt='carryin'):
 
     #this sorted task set will be used
     tmpTasks=RMsort(taskset, 'period')
-    assignCount = 0
-    for i in tmpTasks:
-        if (i['exclusive-R']+i['shared-R']) >= np.log(2):
-            tmpTasks.pop(0)
-            assignCount +=1
 
+    assignCount = 0
+    if algoopt == 'blocking' or algoopt == 'inflation':
+        #preprocessiing are required
+            if algoopt == 'blocking':
+                for i in tmpTasks:
+                    if (i['exclusive-R']+i['shared-R']) >= np.log(2):
+                        tmpTasks.pop(0)
+                        assignCount +=1
+            else:
+                tmpTasks = sorted(tmpTasks, key=utiliAddE, reverse=True)
+                for i in tmpTasks:
+                    if utiliAddE(i) > np.log(3/(2+utiliAddE(i))):
+                        tmpTasks.pop(0)
+                        assignCount +=1
 
     m = Model("Partition Algorithm ILP")
     m.setParam('OutputFlag', False)
@@ -80,23 +94,15 @@ def partition(taskset, algoopt='carryin'):
         #ILP ilp-k2q
         elif algoopt == 'k2q':
             m.addConstrs(( quicksum(utiliAddE( taskk )*x[kid, j]+(utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-x[kid, j])+x[kid,j] for j in range (len(tmpTasks))) , "ilp-k2q")
-    c+=1
+
+        c+=1
     #ILP Inflation
     if algoopt == 'inflation':
-        sortedTaskset = sorted(tmpTasks, key=utiliAddE, reverse=True)
         UB = 1.0
-        for kid in range(len(sortedTaskset)):
-            if (utiliAddE(sortedTaskset[kid]) > np.log(3/(2+utiliAddE(sortedTaskset[kid])))):
-                m.addConstr(x[kid,kid] >= 1, "eq14-1")
-                m.addConstr(y[kid] >= 1, "eq14-2")
-                for otherId in range(len(sortedTaskset)):
-                    if (otherId != kid):
-                        m.addConstr(x[otherId,kid] <= 0, "eq14-2" + str(otherId))
-                    else:
-                        if np.log(3/(2+utiliAddE(sortedTaskset[kid]))) < UB:
-                            UB = np.log(3/(2+utiliAddE(sortedTaskset[kid])))
-                        print "UB="+ str(UB)
-                        m.addConstr(( quicksum(utili(sortedTaskset[i])*x[i, kid] for i in range(len(sortedTaskset)) ) <= UB), "eq14-3" + str(kid))
+        if np.log(3/(2+utiliAddE(tmpTasks[kid]))) < UB:
+            UB = np.log(3/(2+utiliAddE(tmpTasks[kid])))
+        print "UB="+ str(UB)
+        m.addConstrs((quicksum(utili(i)*x[tid, j] for tid, i in enumerate(tmpTasks)) <= UB for j in range (len(tmpTasks))), "inflation")
 
     m.update()
     m.optimize()
@@ -110,8 +116,10 @@ def partition(taskset, algoopt='carryin'):
 
     if m.status == GRB.Status.OPTIMAL:
         print('ILP + '+algoopt+' is feasible')
+        '''
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
+        '''
         print('Obj: %g' % m.objVal)
         print m.objVal+assignCount
         #validate results for all tasks respectively
@@ -130,6 +138,11 @@ def partition(taskset, algoopt='carryin'):
                 #k2q-jitter-bound
                 if k2qJitterBound(taskk, hpTasks) is False:
                     print 'Task '+str(kid)+' is infesible with k2q-jitter-bound.'
+            elif algoopt == 'inflation':
+            #TODO
+                if inflation(taskk, hpTasks, tmpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with inflation.'
+                pass
             c+=1
 
         m.write('model.sol')
