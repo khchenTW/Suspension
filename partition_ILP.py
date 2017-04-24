@@ -99,8 +99,8 @@ def partition(taskset, algoopt='carryin'):
     #ILP Inflation
     if algoopt == 'inflation':
         UB = 1.0
-        if np.log(3/(2+utiliAddE(tmpTasks[kid]))) < UB:
-            UB = np.log(3/(2+utiliAddE(tmpTasks[kid])))
+        if np.log(3/(2+utiliAddE(taskk))) < UB:
+            UB = np.log(3/(2+utiliAddE(taskk)))
         print "UB="+ str(UB)
         m.addConstrs((quicksum(utili(i)*x[tid, j] for tid, i in enumerate(tmpTasks)) <= UB for j in range (len(tmpTasks))), "inflation")
 
@@ -139,7 +139,7 @@ def partition(taskset, algoopt='carryin'):
                 if k2qJitterBound(taskk, hpTasks) is False:
                     print 'Task '+str(kid)+' is infesible with k2q-jitter-bound.'
             elif algoopt == 'inflation':
-            #TODO
+                #inflation
                 if inflation(taskk, hpTasks, tmpTasks) is False:
                     print 'Task '+str(kid)+' is infesible with inflation.'
                 pass
