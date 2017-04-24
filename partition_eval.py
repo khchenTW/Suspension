@@ -1,5 +1,4 @@
 import partition_ILP as multi
-import analysis
 import generator
 
 def main():

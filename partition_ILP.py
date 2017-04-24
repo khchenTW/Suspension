@@ -119,9 +119,9 @@ def partition(taskset, algoopt='carryin'):
         '''
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
-        '''
         print('Obj: %g' % m.objVal)
-        print m.objVal+assignCount
+        '''
+        print ('Obj+pop: '+str(m.objVal+assignCount))
         #validate results for all tasks respectively
         c = 0
         for kid, taskk in enumerate(tmpTasks): #i is the k task
