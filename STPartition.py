@@ -51,6 +51,21 @@ def STPartition(tasks, opt, fit = 'first'):
                     feasible[kid+1][j] = 1
                 else:
                     feasible[kid+1][j] = 0
+            elif opt == 'CTcarry':
+                if k2uFirstCarryinUbound(taskk, pi[j]):
+                    feasible[kid+1][j] = 1
+                else:
+                    feasible[kid+1][j] = 0
+            elif opt == 'CTblock':
+                if k2uSecondBlockingUbound(taskk, pi[j]):
+                    feasible[kid+1][j] = 1
+                else:
+                    feasible[kid+1][j] = 0
+            elif opt == 'CTjit':
+                if k2qJitterBound(taskk, pi[j]):
+                    feasible[kid+1][j] = 1
+                else:
+                    feasible[kid+1][j] = 0
 
         #print feasible[kid+1]
         feasibleNum = sum( feasible[kid+1] )
