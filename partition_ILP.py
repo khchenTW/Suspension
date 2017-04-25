@@ -2,6 +2,7 @@ from gurobipy import *
 import numpy as np
 from ctTests import *
 from miscs import *
+import re
 
 
 class task (dict):
@@ -88,12 +89,13 @@ def partition(taskset, algoopt='carryin'):
 
     if m.status == GRB.Status.OPTIMAL:
         #print('ILP + '+algoopt+' is feasible')
-        '''
+
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
-        '''
-        #print (algoopt+' Obj+pop: '+str(m.objVal+assignCount))
+
+        print (algoopt+' Obj+pop: '+str(m.objVal+assignCount))
+
         #validate results for all tasks respectively
 
 
@@ -106,37 +108,42 @@ def partition(taskset, algoopt='carryin'):
         m.write("model.ilp")
         print("IIS written to file 'model.ilp'")
         return -1
-    '''
-    mapped = [var for var in m.getVars() if var.varName.find('allocation') != -1 and var.x != 0]
-    procs = [[] for amount in range(taskset)]
+
+    mapped = [var for var in m.getVars() if var.varName.find('resourcej') != -1 and var.x != 0]
+    res = [[] for amount in range(len(taskset))]
+
     for task_map in mapped:
+        #print task_map.varName
         parsed = re.findall("[0-9]+,[0-9]+", task_map.varName)[0].split(',')
         taskID = int(parsed[0])
         procID = int(parsed[1])
-        procs[procID].append(tskset[taskID])
-    '''
-    # TODO per resource
-    # pre-checking
-    '''
-    c = 0
-    for kid, taskk in enumerate(tmpTasks): #i is the k task
-        hpTasks = tmpTasks[:c]
-        if algoopt == 'carryin':
-            #k2u-first-carryin-ubound
-            if k2uFirstCarryinUbound(taskk, hpTasks) is False:
-                print 'Task '+str(kid)+' is infesible with k2u-first-carryin-ubound.'
-        elif algoopt == 'blocking':
-            #k2u-second-blocking-ubound2
-            if k2uSecondBlockingUbound(taskk, hpTasks) is False:
-                print 'Task '+str(kid)+' is infesible with k2u-second-blocking-ubound2.'
-        elif algoopt == 'k2q':
-            #k2q-jitter-bound
-            if k2qJitterBound(taskk, hpTasks) is False:
-                print 'Task '+str(kid)+' is infesible with k2q-jitter-bound.'
-        elif algoopt == 'inflation':
-            #inflation
-            if inflation(taskk, hpTasks, tmpTasks) is False:
-                print 'Task '+str(kid)+' is infesible with inflation.'
-        c+=1
-    '''
+        res[procID].append(tmpTasks[taskID])
+    #now each resource has the assigned tasks in the corresponding list
+    #print res
+    for i, setOnRes in enumerate(res):
+    # verify with ctTests
+        print 's:'+str(setOnRes)
+        c = 0
+        if len(setOnRes) == 0:
+            continue
+        for kid, taskk in enumerate(setOnRes):
+            hpTasks = tmpTasks[:c]
+            if algoopt == 'carryin':
+                #k2u-first-carryin-ubound
+                if k2uFirstCarryinUbound(taskk, hpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with k2u-first-carryin-ubound.'
+            elif algoopt == 'blocking':
+                #k2u-second-blocking-ubound2
+                if k2uSecondBlockingUbound(taskk, hpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with k2u-second-blocking-ubound2.'
+            elif algoopt == 'k2q':
+                #k2q-jitter-bound
+                if k2qJitterBound(taskk, hpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with k2q-jitter-bound.'
+            elif algoopt == 'inflation':
+                #inflation
+                if inflation(taskk, hpTasks, tmpTasks) is False:
+                    print 'Task '+str(kid)+' is infesible with inflation.'
+            c+=1
+
     return int(m.objVal+assignCount)

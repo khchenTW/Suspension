@@ -10,20 +10,21 @@ def main():
     obj = []
     # ILP Tests
     obj.append(multi.partition(taskset, 'carryin'))
-    obj.append(multi.partition(taskset, 'blocking'))
-    obj.append(multi.partition(taskset, 'k2q'))
-    obj.append(multi.partition(taskset, 'inflation'))
+    #obj.append(multi.partition(taskset, 'blocking'))
+    #obj.append(multi.partition(taskset, 'k2q'))
+    #obj.append(multi.partition(taskset, 'inflation'))
     # Heuristic + TDA Tests
-    obj.append(STP.STPartition(taskset, 'carry'))
-    obj.append(STP.STPartition(taskset, 'block'))
-    obj.append(STP.STPartition(taskset, 'jit'))
+    #obj.append(STP.STPartition(taskset, 'carry'))
+    #obj.append(STP.STPartition(taskset, 'block'))
+    #obj.append(STP.STPartition(taskset, 'jit'))
 
     # Heuristic + Constant Time Tests
-    obj.append(STP.STPartition(taskset, 'CTcarry'))
-    obj.append(STP.STPartition(taskset, 'CTblock'))
-    obj.append(STP.STPartition(taskset, 'CTjit'))
+    #obj.append(STP.STPartition(taskset, 'CTcarry'))
+    #obj.append(STP.STPartition(taskset, 'CTblock'))
+    #obj.append(STP.STPartition(taskset, 'CTjit'))
 
     # Show the results
+    print ''
     print '[ILPcarry, ILPblock, ILPjit, inflation, Hcarry, Hblock, Hjit, CTcarry, CTblock, CTjit]'
     print obj
 if __name__ == "__main__":

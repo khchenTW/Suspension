@@ -8,9 +8,9 @@ def k2uFirstCarryinUbound(k, rest):
     tmpSum = 0.0
     for i in rest:
         tmpSum += utili(i)
-    #print tmpSum
-    #print np.log(3/(utiliAddE(k)+2))
-    #print ""
+    print tmpSum
+    print np.log(3/(utiliAddE(k)+2))
+    print ""
     if tmpSum <= np.log(3/(utiliAddE(k)+2)):
         return True
     else:
