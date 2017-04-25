@@ -31,8 +31,9 @@ def k2uSecondBlockinghypo(k, rest):
     for i in rest:
         tmpSum += min(i['shared-R'], i['exclusive-R'])
         tmpSumP *= utili(i)+1
-
-    if ((k['shared-R']+tmpSum)/k['period']+1) * tmpSumP <= 2:
+    res = ((k['shared-R']+tmpSum+k['exclusive-R'])/k['period']+1)
+    print tmpSumP
+    if res * tmpSumP <= 2:
         return True
     else:
         return False
