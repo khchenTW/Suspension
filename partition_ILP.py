@@ -31,28 +31,6 @@ def partition(taskset, algoopt='carryin'):
                 tmpTasks.pop(0)
                 assignCount +=1
 
-    # pre-checking
-    c = 0
-    for kid, taskk in enumerate(tmpTasks): #i is the k task
-        hpTasks = tmpTasks[:c]
-        if algoopt == 'carryin':
-            #k2u-first-carryin-ubound
-            if k2uFirstCarryinUbound(taskk, hpTasks) is False:
-                print 'Task '+str(kid)+' is infesible with k2u-first-carryin-ubound.'
-        elif algoopt == 'blocking':
-            #k2u-second-blocking-ubound2
-            if k2uSecondBlockingUbound(taskk, hpTasks) is False:
-                print 'Task '+str(kid)+' is infesible with k2u-second-blocking-ubound2.'
-        elif algoopt == 'k2q':
-            #k2q-jitter-bound
-            if k2qJitterBound(taskk, hpTasks) is False:
-                print 'Task '+str(kid)+' is infesible with k2q-jitter-bound.'
-        elif algoopt == 'inflation':
-            #inflation
-            if inflation(taskk, hpTasks, tmpTasks) is False:
-                print 'Task '+str(kid)+' is infesible with inflation.'
-            pass
-        c+=1
 
 
     m = Model("Partition Algorithm ILP")
@@ -130,5 +108,26 @@ def partition(taskset, algoopt='carryin'):
         procID = int(parsed[1])
         procs[procID].append(tskset[taskID])
     '''
+    # pre-checking
+    c = 0
+    for kid, taskk in enumerate(tmpTasks): #i is the k task
+        hpTasks = tmpTasks[:c]
+        if algoopt == 'carryin':
+            #k2u-first-carryin-ubound
+            if k2uFirstCarryinUbound(taskk, hpTasks) is False:
+                print 'Task '+str(kid)+' is infesible with k2u-first-carryin-ubound.'
+        elif algoopt == 'blocking':
+            #k2u-second-blocking-ubound2
+            if k2uSecondBlockingUbound(taskk, hpTasks) is False:
+                print 'Task '+str(kid)+' is infesible with k2u-second-blocking-ubound2.'
+        elif algoopt == 'k2q':
+            #k2q-jitter-bound
+            if k2qJitterBound(taskk, hpTasks) is False:
+                print 'Task '+str(kid)+' is infesible with k2q-jitter-bound.'
+        elif algoopt == 'inflation':
+            #inflation
+            if inflation(taskk, hpTasks, tmpTasks) is False:
+                print 'Task '+str(kid)+' is infesible with inflation.'
+        c+=1
 
     return m.objVal
