@@ -92,26 +92,37 @@ def STPartition(tasks, opt, fit = 'first'):
                         break
             #Worst-fit
             elif fit == 'worst':
-                print 'TODO: not yet'
-                pass
-                '''
-                for ind, j in enumerate(feasible[kid+1]):
-                    if j != 0:
+                ulist = []
+                for ind, i in enumerate(feasible[kid+1]):
+                    if i == 1:
+                        sumU = 0.0
+                        for u in pi[ind]:
+                            sumU += utili(u)
+                        ulist.append(sumU)
+                    else:
+                        ulist.append(100)
+                for ind, j in enumerate(ulist):
+                    if j == min(ulist):
                         pi[ind].append(taskk)
                         readPi[ind].append(kid+1)
                         break
-                '''
             #Best-Fit
             elif fit == 'best':
-                print 'TODO: not yet'
-                pass
-                '''
-                for ind, j in enumerate(feasible[kid+1]):
-                    if j != 0:
+                ulist = []
+                for ind, i in enumerate(feasible[kid+1]):
+                    if i == 1:
+                        sumU = 0.0
+                        for u in pi[ind]:
+                            sumU += utili(u)
+                        ulist.append(sumU)
+                    else:
+                        ulist.append(-1)
+                print ulist
+                for ind, j in enumerate(ulist):
+                    if j == max(ulist):
                         pi[ind].append(taskk)
                         readPi[ind].append(kid+1)
                         break
-                '''
         else:
             r += 1
             tmplist = []

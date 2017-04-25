@@ -48,7 +48,7 @@ def main():
     obj.append(multi.partition(taskset, 'k2q'))
     obj.append(multi.partition(taskset, 'inflation'))
 
-    binpack = 'last'
+    binpack = 'best'
     # Heuristic + TDA Tests
     obj.append(STP.STPartition(taskset, 'carry', binpack))
     obj.append(STP.STPartition(taskset, 'block', binpack))
