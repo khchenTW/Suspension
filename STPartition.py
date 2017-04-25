@@ -51,13 +51,18 @@ def STPartition(tasks, opt, fit = 'first'):
                     feasible[kid+1][j] = 1
                 else:
                     feasible[kid+1][j] = 0
+            elif opt == 'jitblock':
+                if TDAjitblock(taskk, pi[j]) <= taskk['period']:
+                    feasible[kid+1][j] = 1
+                else:
+                    feasible[kid+1][j] = 0
             elif opt == 'CTcarry':
-                if k2uFirstCarryinUbound(taskk, pi[j]):
+                if k2uFirstCarryinhypo(taskk, pi[j]):
                     feasible[kid+1][j] = 1
                 else:
                     feasible[kid+1][j] = 0
             elif opt == 'CTblock':
-                if k2uSecondBlockingUbound(taskk, pi[j]):
+                if k2uSecondBlockinghypo(taskk, pi[j]):
                     feasible[kid+1][j] = 1
                 else:
                     feasible[kid+1][j] = 0
@@ -87,19 +92,26 @@ def STPartition(tasks, opt, fit = 'first'):
                         break
             #Worst-fit
             elif fit == 'worst':
+                print 'TODO: not yet'
+                pass
+                '''
                 for ind, j in enumerate(feasible[kid+1]):
                     if j != 0:
                         pi[ind].append(taskk)
                         readPi[ind].append(kid+1)
                         break
-
+                '''
             #Best-Fit
             elif fit == 'best':
+                print 'TODO: not yet'
+                pass
+                '''
                 for ind, j in enumerate(feasible[kid+1]):
                     if j != 0:
                         pi[ind].append(taskk)
                         readPi[ind].append(kid+1)
                         break
+                '''
         else:
             r += 1
             tmplist = []

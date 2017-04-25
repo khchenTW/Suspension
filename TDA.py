@@ -8,6 +8,9 @@ class task (dict):
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (exclusiveR))
 
+def Workload_Contrained(T,C,t):
+    return C*math.ceil((t)/T)
+
 def Workload_Jitter(T,D,C,t):
     return max(0,C*math.ceil((t+(T-C))/T))
 
@@ -67,4 +70,40 @@ def TDAcarry(task,HPTasks):
             R=I+C
         else:
             return R
+
+def Workload_JitBlock(T, C, t, Q, y):
+    # y is y_i and Q is calcualed beforehand
+    return max(0,C*math.ceil((t+Q+(1-y)*(T-C))/T))
+
+#def Workload_Jitter(T,D,C,t):
+#    return max(0,C*math.ceil((t+(T-C))/T))
+
+def TDAjitblock(task,HPTasks):
+    vecY = [0 for i in range(len(HPTasks)+1)]
+    C=task['shared-R']+task['exclusive-R']
+    R=C
+    D=task['deadline']
+    #decide the vector vec(y)
+    Q = 0.0
+    yk = 0
+    for itask, y in zip(HPTasks, vecY):
+        if itask['exclusive-R'] < itask['shared-R']:
+            y = 1
+        else:
+            y = 0
+        Q+=itask['exclusive-R']*y
+    if task['exclusive-R'] < task['shared-R']:
+        yk = 0
+    while True:
+        I=0
+        for itask in HPTasks:
+            I=I+Workload_JitBlock(itask['period'],itask['shared-R'],R, Q, yk)
+        if R>D:
+            return R
+        if R < I+C:
+            R=I+C
+        else:
+            return R
+
+
 #check if returned value is larger than D
