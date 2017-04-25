@@ -5,10 +5,11 @@ import numpy as np
 
 #following Tests are prepared for double checking
 def k2uFirstCarryinhypo(k, rest):
-    tmpSum = 0.0
+    tmpSum = 1.0
     for i in rest:
         tmpSum*=(utili(i)+1)
     tmpSum = (utiliAddE(k)+2)*tmpSum
+    #print tmpSum
     if tmpSum <= 3:
         return True
     else:
@@ -26,13 +27,12 @@ def k2uFirstCarryinUbound(k, rest):
         return False
 def k2uSecondBlockinghypo(k, rest):
     tmpSum = 0.0
-    tmpSumP = 0.0
+    tmpSumP = 1.0
     for i in rest:
         tmpSum += min(i['shared-R'], i['exclusive-R'])
         tmpSumP *= utili(i)+1
 
-    tmpSumP = ((k['shared-R']+tmpSum)/k['period']+1) * tmpSumP
-    if tmpSumP <= 2:
+    if ((k['shared-R']+tmpSum)/k['period']+1) * tmpSumP <= 2:
         return True
     else:
         return False

@@ -78,7 +78,7 @@ def STPartition(tasks, opt, fit = 'first'):
                 else:
                     feasible[kid+1][j] = 0
             elif opt == 'CTmix':
-                if k2uFirstCarryinhypo(taskk, pi[j]) or k2uSecondBlockinghypo(task, pi[j]) or k2qJitterBound(taskk, pi[j]):
+                if k2uFirstCarryinhypo(taskk, pi[j]) or k2uSecondBlockinghypo(taskk, pi[j]) or k2qJitterBound(taskk, pi[j]):
                     feasible[kid+1][j] = 1
                 else:
                     feasible[kid+1][j] = 0
@@ -142,5 +142,5 @@ def STPartition(tasks, opt, fit = 'first'):
             readPi.append([kid+1])
         c+=1
     #print opt+'-res: '+str(r)
-    #print readPi
+    print readPi
     return r

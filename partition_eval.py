@@ -43,27 +43,29 @@ def main():
     # taskset, num of procs
     obj = []
     # ILP Tests
-    #obj.append(multi.partition(taskset, 'carryin'))
-    #obj.append(multi.partition(taskset, 'blocking'))
-    #obj.append(multi.partition(taskset, 'k2q'))
-    #obj.append(multi.partition(taskset, 'inflation'))
+    obj.append(multi.partition(taskset, 'carryin'))
+    obj.append(multi.partition(taskset, 'blocking'))
+    obj.append(multi.partition(taskset, 'k2q'))
+    obj.append(multi.partition(taskset, 'inflation'))
 
     binpack = 'first'
     # Heuristic + TDA Tests
-    #obj.append(STP.STPartition(taskset, 'carry', binpack))
-    #obj.append(STP.STPartition(taskset, 'block', binpack))
-    #obj.append(STP.STPartition(taskset, 'jit', binpack))
+    obj.append(STP.STPartition(taskset, 'carry', binpack))
+    obj.append(STP.STPartition(taskset, 'block', binpack))
+    obj.append(STP.STPartition(taskset, 'jit', binpack))
     obj.append(STP.STPartition(taskset, 'jitblock', binpack))
+    obj.append(STP.STPartition(taskset, 'tdamix', binpack))
 
     # Heuristic + Constant Time Tests
-    #obj.append(STP.STPartition(taskset, 'CTcarry', binpack))
-    #obj.append(STP.STPartition(taskset, 'CTblock', binpack))
-    #obj.append(STP.STPartition(taskset, 'CTjit', binpack))
+    obj.append(STP.STPartition(taskset, 'CTcarry', binpack))
+    obj.append(STP.STPartition(taskset, 'CTblock', binpack))
+    obj.append(STP.STPartition(taskset, 'CTjit', binpack))
+    obj.append(STP.STPartition(taskset, 'CTmix', binpack))
 
     # Show the results
 
     print ''
-    print '[ILPcarry, ILPblock, ILPjit, inflation, Hcarry, Hblock, Hjit, CTcarry, CTblock, CTjit]'
+    print '[ILPcarry, ILPblock, ILPjit, inflation, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]'
     print obj
 if __name__ == "__main__":
     main()

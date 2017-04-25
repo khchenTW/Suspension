@@ -40,6 +40,8 @@ def partition(taskset, algoopt='carryin'):
 
     m = Model("Partition Algorithm ILP")
     m.setParam('OutputFlag', False)
+    m.setParam('TimeLimit', 5*60)
+    m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
     #minimization
