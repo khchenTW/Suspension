@@ -96,7 +96,6 @@ def partition(taskset, algoopt='carryin'):
 
         print (algoopt+' Obj+pop: '+str(m.objVal+assignCount))
 
-        #validate results for all tasks respectively
 
 
         m.write('model.sol')
@@ -119,15 +118,14 @@ def partition(taskset, algoopt='carryin'):
         procID = int(parsed[1])
         res[procID].append(tmpTasks[taskID])
     #now each resource has the assigned tasks in the corresponding list
-    #print res
     for i, setOnRes in enumerate(res):
-    # verify with ctTests
-        print 's:'+str(setOnRes)
+    # verify with ctTests per resource
         c = 0
         if len(setOnRes) == 0:
             continue
+        print 's:'+str(setOnRes)
         for kid, taskk in enumerate(setOnRes):
-            hpTasks = tmpTasks[:c]
+            hpTasks = setOnRes[:c]
             if algoopt == 'carryin':
                 #k2u-first-carryin-ubound
                 if k2uFirstCarryinUbound(taskk, hpTasks) is False:

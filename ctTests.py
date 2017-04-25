@@ -8,9 +8,9 @@ def k2uFirstCarryinUbound(k, rest):
     tmpSum = 0.0
     for i in rest:
         tmpSum += utili(i)
-    print tmpSum
-    print np.log(3/(utiliAddE(k)+2))
-    print ""
+    #print tmpSum
+    #print np.log(3/(utiliAddE(k)+2))
+    #print ""
     if tmpSum <= np.log(3/(utiliAddE(k)+2)):
         return True
     else:
@@ -33,7 +33,7 @@ def k2qJitterBound(k, rest):
         tmpSum += vfunc(i)
         tmpSumP += utili(i)
     #if (k['shared-R']+k['exclusive-R']+tmpSum)/1-tmpSumP <= k['period']:
-    if utiliAddE(k)+tmpSum/k['period']+tmpSumP<=1 and tmpSumP <1:
+    if utiliAddE(k)+tmpSum/k['period']+tmpSumP<=1 and tmpSumP <=1:
         return True
     else:
         return False

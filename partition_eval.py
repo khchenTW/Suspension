@@ -9,8 +9,8 @@ def main():
     # taskset, num of procs
     obj = []
     # ILP Tests
-    obj.append(multi.partition(taskset, 'carryin'))
-    #obj.append(multi.partition(taskset, 'blocking'))
+    #obj.append(multi.partition(taskset, 'carryin'))
+    obj.append(multi.partition(taskset, 'blocking'))
     #obj.append(multi.partition(taskset, 'k2q'))
     #obj.append(multi.partition(taskset, 'inflation'))
     # Heuristic + TDA Tests
