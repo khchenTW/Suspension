@@ -18,19 +18,23 @@ def partition(taskset, algoopt='carryin'):
 
     assignCount = 0
     #preprocessiing are required for some cases
+    filTasks = []
     if algoopt == 'inflation':
         tmpTasks = sorted(tmpTasks, key=utiliAddE, reverse=True)
         for i in tmpTasks:
             if utiliAddE(i) > np.log(3/(2+utiliAddE(i))):
-                tmpTasks.pop(0)
                 assignCount +=1
+            else:
+                filTasks.append(i)
+        tmpTasks = filTasks
 
     if algoopt == 'blocking':
         for i in tmpTasks:
             if ((i['exclusive-R']+i['shared-R'])/i['period']) >= np.log(2):
-                tmpTasks.pop(0)
                 assignCount +=1
-
+            else:
+                filTasks.append(i)
+        tmpTasks = filTasks
 
 
     m = Model("Partition Algorithm ILP")
@@ -59,7 +63,6 @@ def partition(taskset, algoopt='carryin'):
             for i in tmpTasks:
                 F+=(i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period']
             m.addConstrs((utiliAddE( taskk )*x[kid, j]+quicksum((utili(i) + qfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
-            m.addConstrs((utiliAddE( taskk )*x[kid, j] <= np.log(2) for j in range(len(tmpTasks))), "Cond") #(sk+ek)/pk leq ln2
         #ILP ilp-k2q
         elif algoopt == 'k2q':
             m.addConstrs(( utiliAddE( taskk )*x[kid, j]+quicksum((utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-x[kid, j])+x[kid,j] for j in range (len(tmpTasks))) , "ilp-k2q")
@@ -68,10 +71,12 @@ def partition(taskset, algoopt='carryin'):
     #ILP Inflation
     UB = 1.0
     if algoopt == 'inflation':
-        UB = np.log(3/(2+max(utiliAddE(i) for i in tmpTasks)))
+        if len(tmpTasks) != 0:
+            UB = np.log(3/(2+max(utiliAddE(i) for i in tmpTasks)))
         m.addConstrs((quicksum(utili(i)*x[tid, j] for tid, i in enumerate(tmpTasks) ) <= UB for j in range (len(tmpTasks))), "inflation")
 
     m.update()
+    m.write("model.lp")
     m.optimize()
 
 
@@ -82,13 +87,13 @@ def partition(taskset, algoopt='carryin'):
         m.optimize()
 
     if m.status == GRB.Status.OPTIMAL:
-        print('ILP + '+algoopt+' is feasible')
+        #print('ILP + '+algoopt+' is feasible')
         '''
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
         '''
-        print ('Obj+pop: '+str(m.objVal+assignCount))
+        print (algoopt+' Obj+pop: '+str(m.objVal+assignCount))
         #validate results for all tasks respectively
 
 

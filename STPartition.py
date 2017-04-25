@@ -89,5 +89,5 @@ def STPartition(tasks, opt, fit = 'first'):
             pi.append(tmplist)
             readPi.append([kid+1])
         c+=1
-    print 'Required res: '+str(r)
+    print opt+'-res: '+str(r)
     print readPi
