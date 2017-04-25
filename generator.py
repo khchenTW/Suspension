@@ -69,9 +69,9 @@ def init():
 
 def taskGeneration(numTasks, uTotal, sstype):
     random.seed()
-    init()
-    UUniFast(numTasks,uTotal/100)
     while 1:
+        init()
+        UUniFast(numTasks,uTotal/100)
         res = CSet_generate_sss(1,2,sstype)
         if res == 0:
             break

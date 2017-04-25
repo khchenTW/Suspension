@@ -5,7 +5,7 @@ import generator
 def main():
     # some taskset, third argument is for sstype setting as PASS {S, M, L}
     # Forth argument is the propotion of SSS in the task set.
-    taskset = generator.taskGeneration(10, 200, 'S')
+    taskset = generator.taskGeneration(10, 300, 'S')
     # taskset, num of procs
 
     # ILP Tests

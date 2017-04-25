@@ -55,7 +55,9 @@ def partition(taskset, algoopt='carryin'):
             m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "ilp-carryin-ubound")
         #ILP ilp-blocking-ubound
         elif algoopt == 'blocking':
-            F = 1+quicksum((i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period'] for i in tmpTasks)
+            F = 1
+            for i in tmpTasks:
+                F+=(i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period']
             m.addConstrs((utiliAddE( taskk )*x[kid, j]+quicksum((utili(i) + qfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
             m.addConstrs((utiliAddE( taskk )*x[kid, j] <= np.log(2) for j in range(len(tmpTasks))), "Cond") #(sk+ek)/pk leq ln2
         #ILP ilp-k2q
@@ -108,7 +110,9 @@ def partition(taskset, algoopt='carryin'):
         procID = int(parsed[1])
         procs[procID].append(tskset[taskID])
     '''
+    # TODO per resource
     # pre-checking
+    '''
     c = 0
     for kid, taskk in enumerate(tmpTasks): #i is the k task
         hpTasks = tmpTasks[:c]
@@ -129,5 +133,5 @@ def partition(taskset, algoopt='carryin'):
             if inflation(taskk, hpTasks, tmpTasks) is False:
                 print 'Task '+str(kid)+' is infesible with inflation.'
         c+=1
-
+    '''
     return m.objVal
