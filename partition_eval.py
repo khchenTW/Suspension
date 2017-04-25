@@ -1,5 +1,6 @@
 from __future__ import division
 import partition_ILP as multi
+import trinity_ILP as tri
 import STPartition as STP
 import generator
 import sys
@@ -47,6 +48,7 @@ def main():
     obj.append(multi.partition(taskset, 'blocking'))
     obj.append(multi.partition(taskset, 'k2q'))
     obj.append(multi.partition(taskset, 'inflation'))
+    obj.append(tri.partition(taskset))
 
     binpack = 'first'
     # Heuristic + TDA Tests
@@ -65,7 +67,7 @@ def main():
     # Show the results
 
     print ''
-    print '[ILPcarry, ILPblock, ILPjit, inflation, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]'
+    print '[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]'
     print obj
 if __name__ == "__main__":
     main()

@@ -142,5 +142,5 @@ def STPartition(tasks, opt, fit = 'first'):
             readPi.append([kid+1])
         c+=1
     #print opt+'-res: '+str(r)
-    print readPi
+    #print readPi
     return r
