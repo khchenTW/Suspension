@@ -13,15 +13,17 @@ def main():
     obj.append(multi.partition(taskset, 'blocking'))
     obj.append(multi.partition(taskset, 'k2q'))
     obj.append(multi.partition(taskset, 'inflation'))
+
+    binpack = 'last'
     # Heuristic + TDA Tests
-    obj.append(STP.STPartition(taskset, 'carry'))
-    obj.append(STP.STPartition(taskset, 'block'))
-    obj.append(STP.STPartition(taskset, 'jit'))
+    obj.append(STP.STPartition(taskset, 'carry', binpack))
+    obj.append(STP.STPartition(taskset, 'block', binpack))
+    obj.append(STP.STPartition(taskset, 'jit', binpack))
 
     # Heuristic + Constant Time Tests
-    obj.append(STP.STPartition(taskset, 'CTcarry'))
-    obj.append(STP.STPartition(taskset, 'CTblock'))
-    obj.append(STP.STPartition(taskset, 'CTjit'))
+    obj.append(STP.STPartition(taskset, 'CTcarry', binpack))
+    obj.append(STP.STPartition(taskset, 'CTblock', binpack))
+    obj.append(STP.STPartition(taskset, 'CTjit', binpack))
 
     # Show the results
     print ''

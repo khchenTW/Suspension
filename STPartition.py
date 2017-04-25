@@ -71,17 +71,35 @@ def STPartition(tasks, opt, fit = 'first'):
         feasibleNum = sum( feasible[kid+1] )
         #print feasibleNum
         if feasibleNum != 0:
-            #first fit
-            for ind, j in enumerate(feasible[kid+1]):
-                #print j
-                if j != 0:
-                    pi[ind].append(taskk)
-                    readPi[ind].append(kid+1)
-                    break
-            #Last fit
-            #for j in range(feasibleNum):
+            #First-fit
+            if fit == 'first':
+                for ind, j in enumerate(feasible[kid+1]):
+                    if j != 0:
+                        pi[ind].append(taskk)
+                        readPi[ind].append(kid+1)
+                        break
+            #Last-fit
+            elif fit == 'last':
+                for ind, j in reversed(list(enumerate(feasible[kid+1]))):
+                    if j != 0:
+                        pi[ind].append(taskk)
+                        readPi[ind].append(kid+1)
+                        break
+            #Worst-fit
+            elif fit == 'worst':
+                for ind, j in enumerate(feasible[kid+1]):
+                    if j != 0:
+                        pi[ind].append(taskk)
+                        readPi[ind].append(kid+1)
+                        break
 
-            #Worst fit
+            #Best-Fit
+            elif fit == 'best':
+                for ind, j in enumerate(feasible[kid+1]):
+                    if j != 0:
+                        pi[ind].append(taskk)
+                        readPi[ind].append(kid+1)
+                        break
         else:
             r += 1
             tmplist = []
