@@ -37,28 +37,28 @@ def main():
         trail+=1
     '''
     # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
-    taskset = generator.taskGeneration(3, 50, 'S')
+    taskset = generator.taskGeneration(10, 100, 'S')
 
     #for taskset in :
     # taskset, num of procs
     obj = []
     # ILP Tests
-    obj.append(multi.partition(taskset, 'carryin'))
-    obj.append(multi.partition(taskset, 'blocking'))
-    obj.append(multi.partition(taskset, 'k2q'))
-    obj.append(multi.partition(taskset, 'inflation'))
+    #obj.append(multi.partition(taskset, 'carryin'))
+    #obj.append(multi.partition(taskset, 'blocking'))
+    #obj.append(multi.partition(taskset, 'k2q'))
+    #obj.append(multi.partition(taskset, 'inflation'))
 
-    binpack = 'best'
+    binpack = 'first'
     # Heuristic + TDA Tests
-    obj.append(STP.STPartition(taskset, 'carry', binpack))
-    obj.append(STP.STPartition(taskset, 'block', binpack))
-    obj.append(STP.STPartition(taskset, 'jit', binpack))
+    #obj.append(STP.STPartition(taskset, 'carry', binpack))
+    #obj.append(STP.STPartition(taskset, 'block', binpack))
+    #obj.append(STP.STPartition(taskset, 'jit', binpack))
     obj.append(STP.STPartition(taskset, 'jitblock', binpack))
 
     # Heuristic + Constant Time Tests
-    obj.append(STP.STPartition(taskset, 'CTcarry', binpack))
-    obj.append(STP.STPartition(taskset, 'CTblock', binpack))
-    obj.append(STP.STPartition(taskset, 'CTjit', binpack))
+    #obj.append(STP.STPartition(taskset, 'CTcarry', binpack))
+    #obj.append(STP.STPartition(taskset, 'CTblock', binpack))
+    #obj.append(STP.STPartition(taskset, 'CTjit', binpack))
 
     # Show the results
 

@@ -35,7 +35,7 @@ def STPartition(tasks, opt, fit = 'first'):
             #print TDAjit(taskk, pi[j])
             #print 'Deadline:'+str(taskk['period'])
 
-            #schedulability test
+            #TDA-based tests
             if opt == 'carry':
                 if TDAcarry(taskk, pi[j]) <= taskk['period']:
                     feasible[kid+1][j] = 1
@@ -56,6 +56,12 @@ def STPartition(tasks, opt, fit = 'first'):
                     feasible[kid+1][j] = 1
                 else:
                     feasible[kid+1][j] = 0
+            elif opt == 'tdamix':
+                if TDAcarry(taskk, pi[j]) <= taskk['period'] or TDAblock(taskk, pi[j]) <= taskk['period'] or  TDAjit(taskk, pi[j]) <= taskk['period'] or TDAjitblock(taskk, pi[j]) <= taskk['period']:
+                    feasible[kid+1][j] = 1
+                else:
+                    feasible[kid+1][j] = 0
+            #constant time tests
             elif opt == 'CTcarry':
                 if k2uFirstCarryinhypo(taskk, pi[j]):
                     feasible[kid+1][j] = 1
@@ -68,6 +74,11 @@ def STPartition(tasks, opt, fit = 'first'):
                     feasible[kid+1][j] = 0
             elif opt == 'CTjit':
                 if k2qJitterBound(taskk, pi[j]):
+                    feasible[kid+1][j] = 1
+                else:
+                    feasible[kid+1][j] = 0
+            elif opt == 'CTmix':
+                if k2uFirstCarryinhypo(taskk, pi[j]) or k2uSecondBlockinghypo(task, pi[j]) or k2qJitterBound(taskk, pi[j]):
                     feasible[kid+1][j] = 1
                 else:
                     feasible[kid+1][j] = 0
@@ -117,7 +128,7 @@ def STPartition(tasks, opt, fit = 'first'):
                         ulist.append(sumU)
                     else:
                         ulist.append(-1)
-                print ulist
+                #print ulist
                 for ind, j in enumerate(ulist):
                     if j == max(ulist):
                         pi[ind].append(taskk)

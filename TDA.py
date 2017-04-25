@@ -87,7 +87,7 @@ def TDAjitblock(task,HPTasks):
     Q = 0.0
     yk = 0
     for itask, y in zip(HPTasks, vecY):
-        if itask['exclusive-R'] < itask['shared-R']:
+        if itask['exclusive-R'] <= itask['shared-R']:
             y = 1
         else:
             y = 0
