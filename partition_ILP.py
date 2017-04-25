@@ -89,15 +89,12 @@ def partition(taskset, algoopt='carryin'):
 
     if m.status == GRB.Status.OPTIMAL:
         #print('ILP + '+algoopt+' is feasible')
-
+        '''
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
-
         print (algoopt+' Obj+pop: '+str(m.objVal+assignCount))
-
-
-
+        '''
         m.write('model.sol')
     elif m.status == GRB.Status.INFEASIBLE:
         #print('Optimization was stopped with status %d' % m.status)
@@ -123,7 +120,7 @@ def partition(taskset, algoopt='carryin'):
         c = 0
         if len(setOnRes) == 0:
             continue
-        print 's:'+str(setOnRes)
+        #print 's:'+str(setOnRes)
         for kid, taskk in enumerate(setOnRes):
             hpTasks = setOnRes[:c]
             if algoopt == 'carryin':
