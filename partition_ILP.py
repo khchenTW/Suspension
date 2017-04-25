@@ -93,7 +93,7 @@ def partition(taskset, algoopt='carryin'):
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
         '''
-        print (algoopt+' Obj+pop: '+str(m.objVal+assignCount))
+        #print (algoopt+' Obj+pop: '+str(m.objVal+assignCount))
         #validate results for all tasks respectively
 
 
@@ -139,4 +139,4 @@ def partition(taskset, algoopt='carryin'):
                 print 'Task '+str(kid)+' is infesible with inflation.'
         c+=1
     '''
-    return m.objVal
+    return int(m.objVal+assignCount)
