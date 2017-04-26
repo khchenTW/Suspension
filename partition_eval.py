@@ -52,6 +52,7 @@ def main():
                         tasksets = [generator.taskGeneration(amount, uti, 'L') for n in range(tasksets_amount)]
                         np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_L', tasksets)
                 else:
+                    pass
                     #TODO check if the inputs are there.
             perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+str(group)+'_'+str(stype)+'.npy')
         idx+=1
