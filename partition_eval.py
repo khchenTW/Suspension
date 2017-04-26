@@ -14,7 +14,7 @@ def main():
     debug = int (args[1])
     if debug == 0:
         if len(args) < 5:
-            print "Usage: python partition_eval.py [debug] [# of sets] [generate] [stype] [group]"
+            print "Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [group]"
             return -1 # no input
         tasksets_amount = int (args[2])
         mode = int(args[3]) # 0 = generate, 1 = directly use the inputs
@@ -55,9 +55,9 @@ def main():
         if mode == 1:
             gRes=[[] for i in range(13)] # 13 methods
             for idx, filenames  in enumerate(perAmount):
-                fileA = 'tasks'+repr((1+idx)*10)+'_stype'+repr(stype)
+                fileA = 'tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
                 file = open('output/'+fileA + '.txt', "w")
-                file.write('[ILPcarry, ILPblock, ILPjit, inflation, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
+                file.write('[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
                 for filename in filenames:
                     file.write(filename+'\n')
                     tasksets = np.load(filename)
