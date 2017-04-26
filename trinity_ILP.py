@@ -44,14 +44,14 @@ def partition(taskset):
     for kid, taskk in enumerate(tmpTasks): #i is the k task
         hpTasks = tmpTasks[:c]
         #ILP ilp-carryin-ubound
-        m.addConstrs((quicksum( z[tid, j, 0] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - z[kid,j,0] ) + z[kid,j,0] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "ilp-carryin-ubound")
+        m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - z[kid,j,0] ) + z[kid,j,0] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "ilp-carryin-ubound")
         #ILP ilp-blocking-ubound
         F = 1
         for i in tmpTasks:
             F+=(i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period']
         m.addConstrs((utiliAddE( taskk )*z[kid, j, 1]+quicksum((utili(i) + qfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= z[kid,j,1]*np.log(2)+(1-z[kid,j,1])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
         #ILP ilp-k2q
-        m.addConstrs(( utiliAddE( taskk )*z[kid,j,2]+quicksum((utili(i) + vfunc(i)/taskk['period'])*z[tid, j, 2] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-z[kid,j,2])+z[kid,j,2] for j in range (len(tmpTasks))) , "ilp-k2q")
+        m.addConstrs(( utiliAddE( taskk )*z[kid,j,2]+quicksum((utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-z[kid,j,2])+z[kid,j,2] for j in range (len(tmpTasks))) , "ilp-k2q")
 
         c+=1
     m.update()

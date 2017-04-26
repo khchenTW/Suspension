@@ -17,7 +17,7 @@ def main():
             print "Usage: python partition_eval.py [debug] [# of sets] [generate] [stype] [group]"
             return -1 # no input
         tasksets_amount = int (args[2])
-        mode = int(args[3]) # 0 = generate and use, 1 = directly use the inputs
+        mode = int(args[3]) # 0 = generate, 1 = directly use the inputs
         stype = args[4] # S, M, L
         group = args[5] # this should be less than inputfiles_amount
         inputfiles_amount = 4 # n for distribution
@@ -38,7 +38,7 @@ def main():
         idx = 0
         perAmount = [[] for i in range(len(dist_utilizations.items()))] # since 3 items in dict
         for set_name, amount in dist_utilizations.items():
-            for uti in range(int(100/10*amount), int(500/10*amount)+1, 200):
+            for uti in range(int(100/10*amount), int(600/10*amount)+1, 10*amount):
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
@@ -59,59 +59,59 @@ def main():
             idx+=1
         print perAmount
 
-
-        gRes=[[] for i in range(13)] # 13 methods
-        for idx, filenames  in enumerate(perAmount):
-            fileA = 'tasks'+repr((1+idx)*10)+'_stype'+repr(stype)
-            file = open('output/'+fileA + '.txt', "w")
-            file.write('[ILPcarry, ILPblock, ILPjit, inflation, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
-            for filename in filenames:
-                file.write(filename+'\n')
-                tasksets = np.load(filename)
-                for taskset in tasksets:
-                    res = test(taskset)
-                    for ind, j in enumerate(res):
-                        gRes[ind].append(j)
-                result = []
-                for i in gRes:
-                    result.append(gmean(i))
-                #print result
-                file.write(str(result)+'\n')
-            file.close()
+        if mode == 1:
+            gRes=[[] for i in range(13)] # 13 methods
+            for idx, filenames  in enumerate(perAmount):
+                fileA = 'tasks'+repr((1+idx)*10)+'_stype'+repr(stype)
+                file = open('output/'+fileA + '.txt', "w")
+                file.write('[ILPcarry, ILPblock, ILPjit, inflation, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
+                for filename in filenames:
+                    file.write(filename+'\n')
+                    tasksets = np.load(filename)
+                    for taskset in tasksets:
+                        res = test(taskset, debug)
+                        for ind, j in enumerate(res):
+                            gRes[ind].append(j)
+                    result = []
+                    for i in gRes:
+                        result.append(gmean(i))
+                    #print result
+                    file.write(str(result)+'\n')
+                file.close()
 
     else:
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
         taskset = generator.taskGeneration(2, 150, 'S')
-        test(taskset)
+        test(taskset, debug)
 
-def test(taskset):
+def test(taskset, debug):
     # taskset, num of procs
     obj = []
-    # ILP Tests
+    if debug == 1:
+        obj.append(tri.partition(taskset))
+    else:
+        # ILP Tests
+        obj.append(multi.partition(taskset, 'carryin'))
+        obj.append(multi.partition(taskset, 'blocking'))
+        obj.append(multi.partition(taskset, 'k2q'))
+        obj.append(multi.partition(taskset, 'inflation'))
 
-    obj.append(multi.partition(taskset, 'carryin'))
-    obj.append(multi.partition(taskset, 'blocking'))
-    obj.append(multi.partition(taskset, 'k2q'))
-    obj.append(multi.partition(taskset, 'inflation'))
+        binpack = 'first'
+        # Heuristic + TDA Tests
 
-    #obj.append(tri.partition(taskset))
+        obj.append(STP.STPartition(taskset, 'carry', binpack))
+        obj.append(STP.STPartition(taskset, 'block', binpack))
+        obj.append(STP.STPartition(taskset, 'jit', binpack))
+        obj.append(STP.STPartition(taskset, 'jitblock', binpack))
+        obj.append(STP.STPartition(taskset, 'tdamix', binpack))
 
-    binpack = 'first'
-    # Heuristic + TDA Tests
+        # Heuristic + Constant Time Tests
 
-    obj.append(STP.STPartition(taskset, 'carry', binpack))
-    obj.append(STP.STPartition(taskset, 'block', binpack))
-    obj.append(STP.STPartition(taskset, 'jit', binpack))
-    obj.append(STP.STPartition(taskset, 'jitblock', binpack))
-    obj.append(STP.STPartition(taskset, 'tdamix', binpack))
-
-    # Heuristic + Constant Time Tests
-
-    obj.append(STP.STPartition(taskset, 'CTcarry', binpack))
-    obj.append(STP.STPartition(taskset, 'CTblock', binpack))
-    obj.append(STP.STPartition(taskset, 'CTjit', binpack))
-    obj.append(STP.STPartition(taskset, 'CTmix', binpack))
+        obj.append(STP.STPartition(taskset, 'CTcarry', binpack))
+        obj.append(STP.STPartition(taskset, 'CTblock', binpack))
+        obj.append(STP.STPartition(taskset, 'CTjit', binpack))
+        obj.append(STP.STPartition(taskset, 'CTmix', binpack))
 
     # Show the results
 
