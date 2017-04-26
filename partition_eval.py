@@ -6,52 +6,86 @@ import generator
 import sys
 import math
 import numpy as np
+import operator
+def geometric_mean(iterable):
+        return (reduce(operator.mul, iterable)) ** (1.0/len(iterable))
 
 def main():
-    '''
+
     args = sys.argv
     if len(args) < 3:
         return -1 # no input
     tasksets_amount = int (args[1])
-    inputfiles_amount = int (args[2])
+    stype = args[3] # S, M, L
+    mode = int(args[2]) # 0 = generate and use, 1 = directly use the inputs
+    inputfiles_amount = 1 # n for distribution
     tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
     dist_utilizations = {
         "10Tasks" : 10,
         "20Tasks" : 20,
         "30Tasks" : 30,
+        #"40Tasks" : 40,
     }
-    trail = 0
-    uti = 1
-    for set_name, amount in dist_utilizations.items():
-        uti = amount*10
-        for u in range(1, 15):
 
-        for j in range(inputfiles_amount):
-            tasksets = [generator.taskGeneration(amount, uti, 'S') for n in range(tasksets_amount)]
-            np.save (str(set_name)+'_'+str(uti)+'_'+str(j)+'_'+'S', tasksets)
+    if mode == 0:
+        idx = 0
+        perAmount = [[] for i in range(3)] # since 4 items in dict
+        for set_name, amount in dist_utilizations.items():
+            for uti in range(int(50/10*amount), int(250/10*amount), 100):
+                for j in range(inputfiles_amount):
+                    if stype == 'S':
+                        tasksets = [generator.taskGeneration(amount, uti, 'S') for n in range(tasksets_amount)]
+                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_S', tasksets)
 
-            tasksets = [generator.taskGeneration(amount, uti, 'M') for n in range(tasksets_amount)]
-            np.save (str(set_name)+'_'+str(uti)+'_'+str(j)+'_'+'M', tasksets)
+                    elif stype == 'M':
+                        tasksets = [generator.taskGeneration(amount, uti, 'M') for n in range(tasksets_amount)]
+                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_M', tasksets)
 
-            tasksets = [generator.taskGeneration(amount, uti, 'L') for n in range(tasksets_amount)]
-            np.save (str(set_name)+'_'+str(uti)+'_'+str(j)+'_'+'L', tasksets)
-        trail+=1
-    '''
+                    elif stype == 'L':
+                        tasksets = [generator.taskGeneration(amount, uti, 'L') for n in range(tasksets_amount)]
+                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_L', tasksets)
+                    #print len(perAmount)
+                    #print idx
+                    perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_'+str(stype)+'.npy')
+
+            #print perAmount[idx]
+            idx+=1
+    filename = 'tasks_stype'+repr(stype)
+    file = open(filename + '.txt', "w")
+    gRes=[[] for i in range(13)] # 13 methods
+    for idx in perAmount:
+        for filename in idx:
+            file.write('[ILPcarry, ILPblock, ILPjit, inflation, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
+            file.write(filename+'\n')
+            tasksets = np.load(filename)
+            for taskset in tasksets:
+                res = test(taskset)
+                for ind, j in enumerate(res):
+                    gRes[ind].append(j)
+            result = []
+            for i in gRes:
+                result.append(geometric_mean(i))
+            #print result
+            file.write(str(result)+'\n')
+    file.close()
     # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
-    taskset = generator.taskGeneration(10, 100, 'S')
+    #taskset = generator.taskGeneration(10, 100, 'S')
 
-    #for taskset in :
+def test(taskset):
     # taskset, num of procs
     obj = []
     # ILP Tests
+
     obj.append(multi.partition(taskset, 'carryin'))
     obj.append(multi.partition(taskset, 'blocking'))
     obj.append(multi.partition(taskset, 'k2q'))
     obj.append(multi.partition(taskset, 'inflation'))
-    obj.append(tri.partition(taskset))
+
+    #obj.append(tri.partition(taskset))
 
     binpack = 'first'
     # Heuristic + TDA Tests
+
     obj.append(STP.STPartition(taskset, 'carry', binpack))
     obj.append(STP.STPartition(taskset, 'block', binpack))
     obj.append(STP.STPartition(taskset, 'jit', binpack))
@@ -59,6 +93,7 @@ def main():
     obj.append(STP.STPartition(taskset, 'tdamix', binpack))
 
     # Heuristic + Constant Time Tests
+
     obj.append(STP.STPartition(taskset, 'CTcarry', binpack))
     obj.append(STP.STPartition(taskset, 'CTblock', binpack))
     obj.append(STP.STPartition(taskset, 'CTjit', binpack))
@@ -66,8 +101,9 @@ def main():
 
     # Show the results
 
-    print ''
-    print '[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]'
-    print obj
+    #print ''
+    #print '[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]'
+    #print obj
+    return obj
 if __name__ == "__main__":
     main()

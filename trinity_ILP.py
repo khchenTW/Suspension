@@ -30,11 +30,14 @@ def partition(taskset):
     #condition trinity
     m.addConstrs((quicksum(z[i,j,l] for l in range(3)) >= x[i,j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))),"trinitylimit")
 
+
     #condition ilp-resource-single-b
     m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ilp-resource-single-b")
 
+
     #condition ilp-resource-single-c
     m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
+
 
     #Schedulability conditions
     c = 0
