@@ -72,6 +72,7 @@ def partition(taskset):
             #print('%s %g' % (v.varName, v.x))
         #print('Obj: %g' % m.objVal)
         #print (' Obj+pop: '+str(m.objVal))
+            pass
         m.write('model.sol')
     elif m.status == GRB.Status.INFEASIBLE:
         #print('Optimization was stopped with status %d' % m.status)
