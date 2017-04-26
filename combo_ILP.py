@@ -33,11 +33,11 @@ def partition(taskset):
 
 
     #condition ilp-resource-single-b
-    m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ilp-resource-single-b")
+    #m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ilp-resource-single-b")
 
 
     #condition ilp-resource-single-c
-    m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
+    #m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
 
 
     #Schedulability conditions
@@ -50,7 +50,7 @@ def partition(taskset):
         F = 1
         for i in tmpTasks:
             F+=(i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period']
-        m.addConstrs((utiliAddE( taskk )*eta[kid, j, 1]+quicksum((utili(i) + qfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= eta[kid,j,1]*np.log(2)+(1-eta[kid,j,1])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
+        m.addConstrs(((utiliAddE( taskk )-np.log(2))*eta[kid, j, 1]+quicksum((utili(i) + qfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= (1-eta[kid,j,1])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
         #ILP ilp-k2q
         m.addConstrs(( utiliAddE( taskk )*eta[kid,j,2]+quicksum((utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-eta[kid,j,2])+eta[kid,j,2] for j in range (len(tmpTasks))) , "ilp-k2q")
 
