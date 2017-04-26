@@ -19,7 +19,8 @@ def partition(taskset):
 
     m = Model("Partition Algorithm Trinity-ILP")
     m.setParam('OutputFlag', False)
-    m.setParam('TimeLimit', 1*60)
+    #m.setParam('TimeLimit', 1*60)
+    m.setParam('TimeLimit', 1)
     m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
@@ -58,20 +59,19 @@ def partition(taskset):
     m.write("model.lp")
     m.optimize()
 
-
+    infeasible = 0
     if m.status == GRB.Status.INF_OR_UNBD:
     # Turn presolve off to determine whether model is infeasible
     # or unbounded
         m.setParam(GRB.Param.Presolve, 0)
         m.optimize()
-
-    if m.status == GRB.Status.OPTIMAL:
+    elif m.status == GRB.Status.OPTIMAL:
         #print('ILP is feasible')
 
         for v in m.getVars():
-            print('%s %g' % (v.varName, v.x))
-        print('Obj: %g' % m.objVal)
-        print (' Obj+pop: '+str(m.objVal))
+            #print('%s %g' % (v.varName, v.x))
+        #print('Obj: %g' % m.objVal)
+        #print (' Obj+pop: '+str(m.objVal))
         m.write('model.sol')
     elif m.status == GRB.Status.INFEASIBLE:
         #print('Optimization was stopped with status %d' % m.status)
@@ -81,6 +81,16 @@ def partition(taskset):
         m.write("model.ilp")
         print("IIS written to file 'model.ilp'")
         return -1
+    elif m.status == GRB.Status.TIME_LIMIT:
+        if m.objVal < len(taskset):
+            pass #do nothing but use the intermediate results
+        else:
+            timeout = 1 #infeasible flag
+    else:
+        #exception case, dump out this input
+        print ("BUG: fatal exception in ILP"+algoopt)
+        return -2
+
 
     mapped = [var for var in m.getVars() if var.varName.find('resourcej') != -1 and var.x != 0]
     res = [[] for amount in range(len(taskset))]
@@ -104,6 +114,9 @@ def partition(taskset):
                 pass
             else:
                 print 'Task '+str(kid)+' is totally infeasible among three tests.'
+                return -3
             c+=1
-
-    return int(m.objVal)
+    if infeasible == 0:
+        return int(m.objVal)
+    else:
+        return len(taskset)
