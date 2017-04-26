@@ -71,11 +71,15 @@ def main():
                         for ind, j in enumerate(res):
                             if j == -1:
                                 file_B.write('Infeasible in ILP \n')
+                                gRes[ind].append(len(taskset))
                             elif j == -2:
                                 file_B.write('ILP pops out an uncatched status \n')
+                                gRes[ind].append(len(taskset))
                             elif j == -3:
                                 file_B.write('Infeasible in the double checking \n')
-                            gRes[ind].append(j)
+                                gRes[ind].append(len(taskset))
+                            else:
+                                gRes[ind].append(j)
                     result = []
                     for i in gRes:
                         result.append(gmean(i))

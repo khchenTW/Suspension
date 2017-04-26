@@ -19,8 +19,8 @@ def partition(taskset):
 
     m = Model("Partition Algorithm Combo-ILP")
     m.setParam('OutputFlag', False)
-    #m.setParam('TimeLimit', 1*60)
-    m.setParam('TimeLimit', 1)
+    m.setParam('TimeLimit', 1*60)
+    #m.setParam('TimeLimit', 1)
     m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
@@ -33,11 +33,11 @@ def partition(taskset):
 
 
     #condition ilp-resource-single-b
-    #m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ilp-resource-single-b")
+    m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ilp-resource-single-b")
 
 
     #condition ilp-resource-single-c
-    #m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
+    m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
 
 
     #Schedulability conditions
