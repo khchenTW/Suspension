@@ -1,12 +1,14 @@
 import math
 from ctTests import *
 from miscs import *
+
 class task (dict):
-    def __init__(self, sharedR, period, deadline, exclusiveR):
+    def __init__(self, sharedR, period, deadline, execlusiveR, resource):
         dict.__setitem__(self, "shared-R", float (sharedR))
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
-        dict.__setitem__(self, "exclusive-R", float (exclusiveR))
+        dict.__setitem__(self, "exclusive-R", float (execlusiveR))
+        dict.__setitem__(self, "resource", float (resource))
 
 def Workload_Contrained(T,C,t):
     return C*math.ceil((t)/T)

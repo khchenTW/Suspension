@@ -10,11 +10,12 @@ import json
 ofile = "taskset-p.txt"
 USet=[]
 class task (dict):
-    def __init__(self, sharedR, period, deadline, execlusiveR):
+    def __init__(self, sharedR, period, deadline, execlusiveR, resource):
         dict.__setitem__(self, "shared-R", float (sharedR))
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (execlusiveR))
+        dict.__setitem__(self, "resource", float (resource))
 
 def UUniFast(n,U_avg):
     global USet
@@ -51,6 +52,27 @@ def UniDist(n,U_min,U_max):
 	    uBkt=random.uniform(U_min, U_max)
 	    USet.append(uBkt)
 
+def CSet_generate_sss_z(Pmin,numLog, sstype=0):
+	global USet,PSet
+	j=0
+        # the number of SSS
+        res = []
+	for i in USet:
+	    thN=j%numLog
+	    p=random.uniform(Pmin*math.pow(10, thN), Pmin*math.pow(10, thN+1))
+            if sstype == 0: #S
+                suspension = random.uniform(0.01*(p-i*p), 0.1*(p-i*p))
+            elif sstype == 1: #M
+                suspension = random.uniform(0.1*(p-i*p), 0.3*(p-i*p))
+            else: #L
+                suspension = random.uniform(0.3*(p-i*p), 0.45*(p-i*p))
+            #generated the number of required resources
+            requiredres = random.uniform(1, 10)
+            PSet.append(task(i*p, p, p, suspension, requiredres))
+            res.append((i*p+suspension)/p)
+	    j=j+1;
+        return res
+
 def CSet_generate_sss(Pmin,numLog, sstype=0):
 	global USet,PSet
 	j=0
@@ -76,12 +98,15 @@ def init():
 	USet=[]
 	PSet=[]
 
-def taskGeneration(numTasks, uTotal, sstype):
+def taskGeneration(numTasks, uTotal, sstype, resource):
     random.seed()
     while 1:
         init()
         UUniFast_Discard(numTasks,uTotal/100, sstype)
-        res = CSet_generate_sss(1,2,sstype)
+        if resource == 0:
+            res = CSet_generate_sss(1,2,sstype)
+        else:
+            res = CSet_generate_sss_z(1,2,sstype)
         if max(res) <1:
             #print numTasks, uTotal
             break

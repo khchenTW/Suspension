@@ -38,20 +38,23 @@ def partition(taskset, algoopt='carryin'):
                 filTasks.append(i)
         tmpTasks = filTasks
 
-    m = Model("Partition Algorithm ILP")
+    m = Model("Partition Algorithm Hete-ILP")
     m.setParam('OutputFlag', False)
     m.setParam('TimeLimit', 1*60)
     m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
+    z = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="resourcez")
     #minimization
-    m.setObjective((quicksum(y[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
+    m.setObjective((quicksum(y[j]*z[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
 
     #condition ilp-resource-single-b
     m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ilp-resource-single-b")
 
     #condition ilp-resource-single-c
-    m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
+    m.addConstrs((x[i,j]*z[j]  <= y[j]*z[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
+
+    m.addConstrs((x[j,j] == y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-d")
 
     #Schedulability conditions
     c = 0
@@ -157,4 +160,7 @@ def partition(taskset, algoopt='carryin'):
     if infeasible == 0:
         return int(m.objVal+assignCount)
     else:
-        return len(taskset)
+        sumZ = 0
+        for i in taskset:
+            sumZ += i['resource']
+        return sumZ

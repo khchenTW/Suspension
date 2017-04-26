@@ -38,15 +38,15 @@ def main():
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
-                            tasksets = [generator.taskGeneration(amount, uti, 'S') for n in range(tasksets_amount)]
+                            tasksets = [generator.taskGeneration(amount, uti, 'S', 0) for n in range(tasksets_amount)]
                             np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_S', tasksets)
 
                         elif stype == 'M':
-                            tasksets = [generator.taskGeneration(amount, uti, 'M') for n in range(tasksets_amount)]
+                            tasksets = [generator.taskGeneration(amount, uti, 'M', 0) for n in range(tasksets_amount)]
                             np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_M', tasksets)
 
                         elif stype == 'L':
-                            tasksets = [generator.taskGeneration(amount, uti, 'L') for n in range(tasksets_amount)]
+                            tasksets = [generator.taskGeneration(amount, uti, 'L', 0) for n in range(tasksets_amount)]
                             np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_L', tasksets)
                     else:
                         pass
@@ -110,7 +110,7 @@ def main():
     else:
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
-        taskset = generator.taskGeneration(4, 300, 'S')
+        taskset = generator.taskGeneration(4, 300, 'S', 0)
         test(taskset, debug)
 
 def test(taskset, debug):

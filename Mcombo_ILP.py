@@ -27,7 +27,7 @@ def partition(taskset):
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
     eta = m.addVars(len(tmpTasks), len(tmpTasks), 3, vtype=GRB.BINARY, name="combo")
     #minimization
-    m.setObjective((quicksum(y[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
+    m.setObjective((quicksum(y[j]*z[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
 
     #condition combo
     m.addConstrs((quicksum(eta[i,j,l] for l in range(3)) >= x[i,j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))),"combolimit")
@@ -38,8 +38,8 @@ def partition(taskset):
 
 
     #condition ilp-resource-single-c
-    m.addConstrs((x[i,j]  <= y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
-
+    m.addConstrs((x[i,j]*z[j]  <= y[j]*z[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
+    m.addConstrs((x[j,j] == y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-d")
 
     #Schedulability conditions
     c = 0
@@ -90,7 +90,7 @@ def partition(taskset):
             timeout = 1 #infeasible flag
     else:
         #exception case, dump out this input
-        print ("BUG: fatal exception in ILP")
+        print ("BUG: fatal exception in ILP"+algoopt)
         return -2
 
 
