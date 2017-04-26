@@ -17,19 +17,19 @@ def partition(taskset):
     #this sorted task set will be used
     tmpTasks=RMsort(taskset, 'period')
 
-    m = Model("Partition Algorithm Trinity-ILP")
+    m = Model("Partition Algorithm Combo-ILP")
     m.setParam('OutputFlag', False)
     #m.setParam('TimeLimit', 1*60)
     m.setParam('TimeLimit', 1)
     m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
-    z = m.addVars(len(tmpTasks), len(tmpTasks), 3, vtype=GRB.BINARY, name="trinity")
+    eta = m.addVars(len(tmpTasks), len(tmpTasks), 3, vtype=GRB.BINARY, name="combo")
     #minimization
     m.setObjective((quicksum(y[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
 
-    #condition trinity
-    m.addConstrs((quicksum(z[i,j,l] for l in range(3)) >= x[i,j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))),"trinitylimit")
+    #condition combo
+    m.addConstrs((quicksum(eta[i,j,l] for l in range(3)) >= x[i,j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))),"combolimit")
 
 
     #condition ilp-resource-single-b
@@ -45,14 +45,14 @@ def partition(taskset):
     for kid, taskk in enumerate(tmpTasks): #i is the k task
         hpTasks = tmpTasks[:c]
         #ILP ilp-carryin-ubound
-        m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - z[kid,j,0] ) + z[kid,j,0] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "ilp-carryin-ubound")
+        m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - eta[kid,j,0] ) + eta[kid,j,0] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "ilp-carryin-ubound")
         #ILP ilp-blocking-ubound
         F = 1
         for i in tmpTasks:
             F+=(i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period']
-        m.addConstrs((utiliAddE( taskk )*z[kid, j, 1]+quicksum((utili(i) + qfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= z[kid,j,1]*np.log(2)+(1-z[kid,j,1])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
+        m.addConstrs((utiliAddE( taskk )*eta[kid, j, 1]+quicksum((utili(i) + qfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= eta[kid,j,1]*np.log(2)+(1-eta[kid,j,1])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
         #ILP ilp-k2q
-        m.addConstrs(( utiliAddE( taskk )*z[kid,j,2]+quicksum((utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-z[kid,j,2])+z[kid,j,2] for j in range (len(tmpTasks))) , "ilp-k2q")
+        m.addConstrs(( utiliAddE( taskk )*eta[kid,j,2]+quicksum((utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-eta[kid,j,2])+eta[kid,j,2] for j in range (len(tmpTasks))) , "ilp-k2q")
 
         c+=1
     m.update()
