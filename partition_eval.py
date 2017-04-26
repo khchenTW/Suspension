@@ -115,9 +115,9 @@ def test(taskset):
 
     # Show the results
 
-    print ''
-    print '[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]'
-    print obj
+    #print ''
+    #print '[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]'
+    #print obj
     return obj
 if __name__ == "__main__":
     main()
