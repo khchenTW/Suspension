@@ -1,0 +1,2 @@
+[ILPcarry, ILPblock, ILPjit, inflation, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]
+input/10Tasks_100_0_S.npy

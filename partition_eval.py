@@ -22,14 +22,7 @@ def main():
         group = args[5] # this should be less than inputfiles_amount
         inputfiles_amount = 4 # n for distribution
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
-        '''
-        dist_utilizations = {
-            "10Tasks" : 10,
-            "20Tasks" : 20,
-            "30Tasks" : 30,
-            #"40Tasks" : 40,
-        }
-        '''
+
         dist_utilizations = OrderedDict()
         dist_utilizations['10Tasks'] = 10
         dist_utilizations['20Tasks'] = 20
@@ -38,7 +31,7 @@ def main():
         idx = 0
         perAmount = [[] for i in range(len(dist_utilizations.items()))] # since 3 items in dict
         for set_name, amount in dist_utilizations.items():
-            for uti in range(int(100/10*amount), int(500/10*amount)+1, 10*amount):
+            for uti in range(int(100/10*amount), int(550/10*amount)+1, 5*amount):
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
@@ -82,13 +75,14 @@ def main():
     else:
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
-        taskset = generator.taskGeneration(2, 150, 'S')
+        taskset = generator.taskGeneration(4, 300, 'S')
         test(taskset, debug)
 
 def test(taskset, debug):
     # taskset, num of procs
     obj = []
     if debug == 1:
+        print "DEBUG MODE:"
         obj.append(tri.partition(taskset))
     else:
         # ILP Tests

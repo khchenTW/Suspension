@@ -19,7 +19,7 @@ def partition(taskset):
 
     m = Model("Partition Algorithm Trinity-ILP")
     m.setParam('OutputFlag', False)
-    m.setParam('TimeLimit', 5*60)
+    m.setParam('TimeLimit', 1*60)
     m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
@@ -71,8 +71,7 @@ def partition(taskset):
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
-        print (' Obj+pop: '+str(m.objVal+assignCount))
-
+        print (' Obj+pop: '+str(m.objVal))
         m.write('model.sol')
     elif m.status == GRB.Status.INFEASIBLE:
         #print('Optimization was stopped with status %d' % m.status)
