@@ -59,7 +59,7 @@ def main():
             idx+=1
         print perAmount
 
-        '''
+
         gRes=[[] for i in range(13)] # 13 methods
         for idx, filenames  in enumerate(perAmount):
             fileA = 'tasks'+repr((1+idx)*10)+'_stype'+repr(stype)
@@ -78,7 +78,7 @@ def main():
                 #print result
                 file.write(str(result)+'\n')
             file.close()
-            '''
+
     else:
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
