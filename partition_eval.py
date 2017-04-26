@@ -56,7 +56,7 @@ def main():
         print perAmount
 
         if mode == 1:
-            gRes=[[] for i in range(13)] # 13 methods
+            gRes=[[] for i in range(14)] # 14 methods
             for idx, filenames  in enumerate(perAmount):
                 #fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
                 fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
