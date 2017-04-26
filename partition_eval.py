@@ -58,15 +58,10 @@ def main():
         if mode == 1:
             gRes=[[] for i in range(13)] # 13 methods
             for idx, filenames  in enumerate(perAmount):
-                #fileA = 'tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
-                fileA = 'tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
                 #fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
                 fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
-                file_A = open('output/'+fileA + '.txt', "w")
                 file_B = open('output/'+fileB + '.txt', "w")
-                file_A.write('[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
                 for filename in filenames:
-                    file_A.write(filename+'\n')
                     file_B.write(filename+'\n')
                     tasksets = np.load(filename)
                     for taskset in tasksets:
@@ -74,13 +69,18 @@ def main():
                         file_B.write('[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
                         file_B.write(str(res)+'\n')
                         for ind, j in enumerate(res):
+                            if j == -1:
+                                file_B.write('Infeasible in ILP \n')
+                            elif j == -2:
+                                file_B.write('ILP pops out an uncatched status \n')
+                            elif j == -3:
+                                file_B.write('Infeasible in the double checking \n')
                             gRes[ind].append(j)
                     result = []
                     for i in gRes:
                         result.append(gmean(i))
-                    file_A.write('Gmean:\n')
-                    file_A.write(str(result)+'\n')
-                file_A.close()
+                    file_B.write('Gmean: \n')
+                    file_B.write(str(result)+'\n')
                 file_B.close()
         if mode == 2:
             gRes=[[] for i in range(13)] # 13 methods

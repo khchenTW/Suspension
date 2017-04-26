@@ -154,7 +154,7 @@ def partition(taskset, algoopt='carryin'):
                     print 'Task '+str(kid)+' is infesible with inflation.'
                     return -3
             c+=1
-    if infesible == 0:
+    if infeasible == 0:
         return int(m.objVal+assignCount)
-    else
+    else:
         return len(taskset)
