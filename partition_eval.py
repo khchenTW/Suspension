@@ -1,4 +1,5 @@
 from __future__ import division
+from collections import OrderedDict
 import partition_ILP as multi
 import trinity_ILP as tri
 import STPartition as STP
@@ -6,9 +7,7 @@ import generator
 import sys
 import math
 import numpy as np
-import operator
-def geometric_mean(iterable):
-        return (reduce(operator.mul, iterable)) ** (1.0/len(iterable))
+from scipy.stats.mstats import gmean
 
 def main():
 
@@ -29,9 +28,9 @@ def main():
 
     if mode == 0:
         idx = 0
-        perAmount = [[] for i in range(3)] # since 4 items in dict
+        perAmount = [[] for i in range(len(dist_utilizations.items()))] # since 3 items in dict
         for set_name, amount in dist_utilizations.items():
-            for uti in range(int(50/10*amount), int(250/10*amount), 100):
+            for uti in range(int(100/10*amount), int(500/10*amount)+1, 200):
                 for j in range(inputfiles_amount):
                     if stype == 'S':
                         tasksets = [generator.taskGeneration(amount, uti, 'S') for n in range(tasksets_amount)]
@@ -44,18 +43,15 @@ def main():
                     elif stype == 'L':
                         tasksets = [generator.taskGeneration(amount, uti, 'L') for n in range(tasksets_amount)]
                         np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_L', tasksets)
-                    #print len(perAmount)
-                    #print idx
                     perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_'+str(stype)+'.npy')
-
-            #print perAmount[idx]
             idx+=1
-    filename = 'tasks_stype'+repr(stype)
-    file = open(filename + '.txt', "w")
+
     gRes=[[] for i in range(13)] # 13 methods
-    for idx in perAmount:
-        for filename in idx:
-            file.write('[ILPcarry, ILPblock, ILPjit, inflation, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
+    for idx, filenames  in enumerate(perAmount):
+        fileA = 'tasks'+repr((1+idx)*10)+'_stype'+repr(stype)
+        file = open(fileA + '.txt', "w")
+        file.write('[ILPcarry, ILPblock, ILPjit, inflation, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
+        for filename in filenames:
             file.write(filename+'\n')
             tasksets = np.load(filename)
             for taskset in tasksets:
@@ -64,10 +60,10 @@ def main():
                     gRes[ind].append(j)
             result = []
             for i in gRes:
-                result.append(geometric_mean(i))
+                result.append(gmean(i))
             #print result
             file.write(str(result)+'\n')
-    file.close()
+        file.close()
     # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
     #taskset = generator.taskGeneration(10, 100, 'S')
 

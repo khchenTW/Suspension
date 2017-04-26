@@ -50,7 +50,6 @@ def partition(taskset):
         for i in tmpTasks:
             F+=(i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period']
         m.addConstrs((utiliAddE( taskk )*z[kid, j, 1]+quicksum((utili(i) + qfunc(i)/taskk['period'])*z[tid, j, 1] for tid, i in enumerate(hpTasks) ) <= z[kid,j,1]*np.log(2)+(1-z[kid,j,1])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
-        m.addConstrs((utiliAddE( taskk )*z[kid,j,1] <= np.log(2) for j in range(len(tmpTasks))), "Cond") #(sk+ek)/pk leq ln2
         #ILP ilp-k2q
         m.addConstrs(( utiliAddE( taskk )*z[kid,j,2]+quicksum((utili(i) + vfunc(i)/taskk['period'])*z[tid, j, 2] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-z[kid,j,2])+z[kid,j,2] for j in range (len(tmpTasks))) , "ilp-k2q")
 
