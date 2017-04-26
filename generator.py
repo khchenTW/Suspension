@@ -80,7 +80,7 @@ def taskGeneration(numTasks, uTotal, sstype):
     random.seed()
     while 1:
         init()
-        UUniFast_Discard(numTasks,uTotal/100)
+        UUniFast_Discard(numTasks,uTotal/100, sstype)
         res = CSet_generate_sss(1,2,sstype)
         if max(res) <1:
             #print numTasks, uTotal
