@@ -37,10 +37,10 @@ def partition(taskset, algoopt='carryin'):
                 filTasks.append(i)
         tmpTasks = filTasks
 
-
     m = Model("Partition Algorithm ILP")
     m.setParam('OutputFlag', False)
-    m.setParam('TimeLimit', 1*60)
+    #m.setParam('TimeLimit', 1*60)
+    m.setParam('TimeLimit', 1)
     m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
@@ -82,14 +82,13 @@ def partition(taskset, algoopt='carryin'):
     m.write("model.lp")
     m.optimize()
 
-
+    infeasible=0
     if m.status == GRB.Status.INF_OR_UNBD:
     # Turn presolve off to determine whether model is infeasible
     # or unbounded
         m.setParam(GRB.Param.Presolve, 0)
         m.optimize()
-
-    if m.status == GRB.Status.OPTIMAL:
+    elif m.status == GRB.Status.OPTIMAL:
         #print('ILP + '+algoopt+' is feasible')
         '''
         for v in m.getVars():
@@ -101,11 +100,20 @@ def partition(taskset, algoopt='carryin'):
     elif m.status == GRB.Status.INFEASIBLE:
         #print('Optimization was stopped with status %d' % m.status)
     # Model is infeasible - compute an Irreducible Inconsistent Subsystem (IIS)
-        print('ILP + '+algoopt+' is infeasible')
+        print('BUG:ILP + '+algoopt+' is infeasible')
         m.computeIIS()
         m.write("model.ilp")
         print("IIS written to file 'model.ilp'")
         return -1
+    elif m.status == GRB.Status.TIME_LIMIT:
+        if m.objVal < len(taskset):
+            pass #do nothing but use the intermediate results
+        else:
+            timeout = 1 #infeasible flag
+    else:
+        #exception case, dump out this input
+        print ("BUG: fatal exception in ILP"+algoopt)
+        return -2
 
     mapped = [var for var in m.getVars() if var.varName.find('resourcej') != -1 and var.x != 0]
     res = [[] for amount in range(len(taskset))]
@@ -129,18 +137,24 @@ def partition(taskset, algoopt='carryin'):
                 #k2u-first-carryin-ubound
                 if k2uFirstCarryinUbound(taskk, hpTasks) is False:
                     print 'Task '+str(kid)+' is infesible with k2u-first-carryin-ubound.'
+                    return -3
             elif algoopt == 'blocking':
                 #k2u-second-blocking-ubound2
                 if k2uSecondBlockingUbound(taskk, hpTasks) is False:
                     print 'Task '+str(kid)+' is infesible with k2u-second-blocking-ubound2.'
+                    return -3
             elif algoopt == 'k2q':
                 #k2q-jitter-bound
                 if k2qJitterBound(taskk, hpTasks) is False:
                     print 'Task '+str(kid)+' is infesible with k2q-jitter-bound.'
+                    return -3
             elif algoopt == 'inflation':
                 #inflation
                 if inflation(taskk, hpTasks, tmpTasks) is False:
                     print 'Task '+str(kid)+' is infesible with inflation.'
+                    return -3
             c+=1
-
-    return int(m.objVal+assignCount)
+    if infesible == 0:
+        return int(m.objVal+assignCount)
+    else
+        return len(taskset)

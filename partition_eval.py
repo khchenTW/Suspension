@@ -8,30 +8,33 @@ import sys
 import math
 import numpy as np
 from scipy.stats.mstats import gmean
+from miscs import *
 
 def main():
     args = sys.argv
-    debug = int (args[1])
-    if debug == 0:
-        if len(args) < 5:
+    if len(args) < 5:
             print "Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [group]"
             return -1 # no input
+
+    debug = int (args[1])
+    if debug == 0:
         tasksets_amount = int (args[2])
         mode = int(args[3]) # 0 = generate, 1 = directly use the inputs
         stype = args[4] # S, M, L
         group = args[5] # this should be less than inputfiles_amount
-        inputfiles_amount = 4 # n for distribution
+        inputfiles_amount = 1 # n for distribution
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
         dist_utilizations = OrderedDict()
-        dist_utilizations['10Tasks'] = 10
-        dist_utilizations['20Tasks'] = 20
+        #dist_utilizations['10Tasks'] = 10
+        #dist_utilizations['20Tasks'] = 20
         dist_utilizations['30Tasks'] = 30
 
         idx = 0
-        perAmount = [[] for i in range(len(dist_utilizations.items()))] # since 3 items in dict
+        perAmount = [[] for i in range(len(dist_utilizations.items()))]
         for set_name, amount in dist_utilizations.items():
-            for uti in range(int(100/10*amount), int(550/10*amount)+1, 5*amount):
+            #for uti in range(int(100/10*amount), int(550/10*amount)+1, 5*amount):
+            for uti in range(int(400/10*amount), int(550/10*amount)+1, 5*amount):
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
@@ -55,22 +58,50 @@ def main():
         if mode == 1:
             gRes=[[] for i in range(13)] # 13 methods
             for idx, filenames  in enumerate(perAmount):
-                fileA = 'tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
-                file = open('output/'+fileA + '.txt', "w")
-                file.write('[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
+                #fileA = 'tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileA = 'tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
+                #fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
+                file_A = open('output/'+fileA + '.txt', "w")
+                file_B = open('output/'+fileB + '.txt', "w")
+                file_A.write('[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
                 for filename in filenames:
-                    file.write(filename+'\n')
+                    file_A.write(filename+'\n')
+                    file_B.write(filename+'\n')
                     tasksets = np.load(filename)
                     for taskset in tasksets:
                         res = test(taskset, debug)
+                        file_B.write('[ILPcarry, ILPblock, ILPjit, inflation, Trinity, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
+                        file_B.write(str(res)+'\n')
                         for ind, j in enumerate(res):
                             gRes[ind].append(j)
                     result = []
                     for i in gRes:
                         result.append(gmean(i))
-                    #print result
-                    file.write(str(result)+'\n')
-                file.close()
+                    file_A.write('Gmean:\n')
+                    file_A.write(str(result)+'\n')
+                file_A.close()
+                file_B.close()
+        if mode == 2:
+            gRes=[[] for i in range(13)] # 13 methods
+            for idx, filenames  in enumerate(perAmount):
+                if idx == 2: #print for 30 tasks
+                    fileA = 'DEtasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                    file = open('output/'+fileA + '.txt', "w")
+                    for filename in filenames:
+                        file.write(filename+'\n')
+                        tasksets = np.load(filename)
+                        for taskset in tasksets:
+                            file.write(str(taskset)+'\n')
+                            sumUt = 0.0
+                            sumUs = 0.0
+                            for i in taskset:
+                                sumUt += utili(i)
+                                sumUs += utiliAddE(i)
+                            file.write('total utili:'+str(sumUt)+'\n')
+                            file.write('total utili+exclusive:'+str(sumUs)+'\n')
+                        file.write('\n')
+                    file.close()
 
     else:
         # DEBUG
@@ -83,14 +114,13 @@ def test(taskset, debug):
     obj = []
     if debug == 1:
         print "DEBUG MODE:"
-        obj.append(tri.partition(taskset))
     else:
         # ILP Tests
         obj.append(multi.partition(taskset, 'carryin'))
         obj.append(multi.partition(taskset, 'blocking'))
         obj.append(multi.partition(taskset, 'k2q'))
         obj.append(multi.partition(taskset, 'inflation'))
-
+        obj.append(tri.partition(taskset))
         binpack = 'first'
         # Heuristic + TDA Tests
 
