@@ -25,10 +25,9 @@ def partition(taskset):
     #m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
-    z = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="resourcez")
     eta = m.addVars(len(tmpTasks), len(tmpTasks), 3, vtype=GRB.BINARY, name="combo")
     #minimization
-    m.setObjective((quicksum(y[j]*z[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
+    m.setObjective((quicksum(y[j]*taskj['resource'] for j, taskj in enumerate(tmpTasks))), GRB.MINIMIZE)
 
     #condition combo
     m.addConstrs((quicksum(eta[i,j,l] for l in range(3)) >= x[i,j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))),"combolimit")
@@ -37,7 +36,7 @@ def partition(taskset):
     m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ILP-M-one-resource-per-task")
 
     #condition ILP-M-task-allocated-to-resources
-    m.addConstrs((x[i,j]*z[j]  <= y[j]*z[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILP-M-task-allocated-to-resources")
+    m.addConstrs((x[i,j]*tmpTasks[i]['resource'] <= y[j]*tmpTasks[j]['resource'] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILPM")
     #condition ILP-M-one-to-one
     m.addConstrs((x[j,j] == y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILP-M-one-to-one")
 

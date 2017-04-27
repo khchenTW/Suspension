@@ -72,7 +72,7 @@ def main():
                     tasksets = np.load(filename)
                     for taskset in tasksets:
                         res = test(taskset, debug)
-                        file_B.write('[ILPcarry, ILPblock, ILPjit, Inflation, Combo, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTcarry, CTblock, CTjit, CTmix]\n')
+                        file_B.write('[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]\n')
                         file_B.write(str(res)+'\n')
                         for ind, j in enumerate(res):
                             if j == -1:
@@ -127,15 +127,48 @@ def main():
     else:
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
-        taskset = generator.taskGeneration(4, 300, 'S', 0)
-        test(taskset, debug)
+        taskset = generator.taskGeneration(4, 300, 'S', 1)
+        print test(taskset, debug)
 
 def test(taskset, debug):
     # taskset, num of procs
     obj = []
     if debug == 1:
-        obj.append(multi.partition(taskset, 'carryin'))
         print "DEBUG MODE:"
+        # ILP Tests
+        obj.append(multi.partition(taskset, 'carryin'))
+        obj.append(multi.partition(taskset, 'blocking'))
+        obj.append(multi.partition(taskset, 'k2q'))
+        obj.append(multi.partition(taskset, 'inflation'))
+        obj.append(multi.partition(taskset, 'ilpbaseline'))
+        obj.append(combo.partition(taskset))
+        binpack = 'first'
+        # Heuristic + TDA Tests
+        objMap = STP.STPartition(taskset, 'tda', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'carry', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'block', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'jit', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'jitblock', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'tdamix', binpack)
+        obj.append(objMap[0])
+
+        # Heuristic + Constant Time Tests
+        objMap = STP.STPartition(taskset, 'CTbaseline', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'CTcarry', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'CTblock', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'CTjit', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'CTmix', binpack)
+        obj.append(objMap[0])
+
     else:
         # ILP Tests
         obj.append(multi.partition(taskset, 'carryin'))

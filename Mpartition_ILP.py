@@ -14,7 +14,7 @@ class task (dict):
         dict.__setitem__(self, "resource", float (resource))
 
 def partition(taskset, algoopt='carryin'):
-
+    print taskset
     #this sorted task set will be used
     tmpTasks=RMsort(taskset, 'period')
 
@@ -25,7 +25,7 @@ def partition(taskset, algoopt='carryin'):
         tmpTasks = sorted(tmpTasks, key=utiliAddE, reverse=True)
         for i in tmpTasks:
             if utiliAddE(i) > np.log(3/(2+utiliAddE(i))):
-                assignCount +=1
+                assignCount +=1 *i['resource']
             else:
                 filTasks.append(i)
         tmpTasks = filTasks
@@ -33,26 +33,26 @@ def partition(taskset, algoopt='carryin'):
     if algoopt == 'blocking' or algoopt == 'ilpbaseline':
         for i in tmpTasks:
             if (utiliAddE(i)) > np.log(2):
-                assignCount +=1
+                assignCount += 1 * i['resource']
             else:
                 filTasks.append(i)
         tmpTasks = filTasks
+    print "AssignCount:"+str(assignCount)
 
     m = Model("Partition Algorithm Hete-ILP")
     m.setParam('OutputFlag', False)
-    m.setParam('TimeLimit', 1*30)
+    m.setParam('TimeLimit', 1*60)
     #m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
-    z = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="resourcez")
     #minimization
-    m.setObjective((quicksum(y[j]*z[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
+    m.setObjective((quicksum(y[j]*taskj['resource'] for j, taskj in enumerate(tmpTasks))), GRB.MINIMIZE)
 
     #condition ILP-M-one-resource-per-task
     m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ILP-M-one-resource-per-task")
 
     #condition ILP-M-task-allocated-to-resources
-    m.addConstrs((x[i,j]*z[j]  <= y[j]*z[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILP-M-task-allocated-to-resources")
+    m.addConstrs((x[i,j]*tmpTasks[i]['resource'] <= y[j]*tmpTasks[j]['resource'] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILP-M-task-allocated-to-resources")
 
     #condition ILP-M-one-to-one
     m.addConstrs((x[j,j] == y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILP-M-one-to-one")
@@ -81,6 +81,7 @@ def partition(taskset, algoopt='carryin'):
         if len(tmpTasks) != 0:
             UB = np.log(3/(2+max(utiliAddE(i) for i in tmpTasks)))
         m.addConstrs((quicksum(utili(i)*x[tid, j] for tid, i in enumerate(tmpTasks) ) <= UB for j in range (len(tmpTasks))), "inflation")
+    #ILP baseline
     if algoopt == 'ilpbaseline':
         m.addConstrs((quicksum(utiliAddE(i)*x[tid, j] for tid, i in enumerate(tmpTasks) ) <= np.log(2) for j in range (len(tmpTasks))), "inflation")
 
@@ -96,12 +97,12 @@ def partition(taskset, algoopt='carryin'):
         m.optimize()
     elif m.status == GRB.Status.OPTIMAL:
         #print('ILP + '+algoopt+' is feasible')
-        '''
+
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
         print (algoopt+' Obj+pop: '+str(m.objVal+assignCount))
-        '''
+
         m.write('model.sol')
     elif m.status == GRB.Status.INFEASIBLE:
         #print('Optimization was stopped with status %d' % m.status)
@@ -122,6 +123,7 @@ def partition(taskset, algoopt='carryin'):
     else:
         #exception case, dump out this input
         print ("BUG: fatal exception in ILP"+algoopt)
+        print m.status
         return -2
 
     mapped = [var for var in m.getVars() if var.varName.find('resourcej') != -1 and var.x != 0]
