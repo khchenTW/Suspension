@@ -41,7 +41,7 @@ def UUniFast_Discard(n,U_avg, sstype):
         elif sstype == 'M':
             if max(USet) < 0.9:
                 break
-        elif sstyep == 'L':
+        elif sstype == 'L':
             if max(USet) < 0.7:
                 break
 
