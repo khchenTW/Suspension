@@ -81,6 +81,8 @@ def partition(taskset, algoopt='carryin'):
         if len(tmpTasks) != 0:
             UB = np.log(3/(2+max(utiliAddE(i) for i in tmpTasks)))
         m.addConstrs((quicksum(utili(i)*x[tid, j] for tid, i in enumerate(tmpTasks) ) <= UB for j in range (len(tmpTasks))), "inflation")
+    if algoopt == 'baselineCT':
+        m.addConstrs((quicksum(utiliAddE(i)*x[tid, j] for tid, i in enumerate(tmpTasks) ) <= np.log(2) for j in range (len(tmpTasks))), "inflation")
 
     m.update()
     m.write("model.lp")

@@ -21,7 +21,7 @@ def TDA(task,HPTasks):
     while True:
         I=0
         for itask in HPTasks:
-            I=I+Workload_Contrained(itask['period'],itask['deadline'],itask['shared-R']+itask['exclusive-R'],R)
+            I=I+Workload_Contrained(itask['period'],itask['shared-R']+itask['exclusive-R'],R)
         if R>D:
             return R
         if R < I+C:
