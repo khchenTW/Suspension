@@ -21,7 +21,7 @@ def partition(taskset, algoopt='carryin'):
     assignCount = 0
     #preprocessiing are required for some cases
     filTasks = []
-    if algoopt == 'inflation':
+    if algoopt == 'inflation' or algoopt == 'CTbaseline':
         tmpTasks = sorted(tmpTasks, key=utiliAddE, reverse=True)
         for i in tmpTasks:
             if utiliAddE(i) > np.log(3/(2+utiliAddE(i))):

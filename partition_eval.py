@@ -140,7 +140,7 @@ def test(taskset, debug):
         obj.append(multi.partition(taskset, 'blocking'))
         obj.append(multi.partition(taskset, 'k2q'))
         obj.append(multi.partition(taskset, 'inflation'))
-        obj.append(multi.partition(taskset, 'baselineCT'))
+        obj.append(multi.partition(taskset, 'CTbaseline'))
         obj.append(combo.partition(taskset))
         binpack = 'first'
         # Heuristic + TDA Tests
