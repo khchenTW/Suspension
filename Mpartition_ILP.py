@@ -21,7 +21,7 @@ def partition(taskset, algoopt='carryin'):
     assignCount = 0
     #preprocessiing are required for some cases
     filTasks = []
-    if algoopt == 'inflation' or algoopt == 'CTbaseline':
+    if algoopt == 'inflation' :
         tmpTasks = sorted(tmpTasks, key=utiliAddE, reverse=True)
         for i in tmpTasks:
             if utiliAddE(i) > np.log(3/(2+utiliAddE(i))):
@@ -30,9 +30,9 @@ def partition(taskset, algoopt='carryin'):
                 filTasks.append(i)
         tmpTasks = filTasks
 
-    if algoopt == 'blocking':
+    if algoopt == 'blocking' or algoopt == 'ilpbaseline':
         for i in tmpTasks:
-            if ((i['exclusive-R']+i['shared-R'])/i['period']) >= np.log(2):
+            if ((i['exclusive-R']+i['shared-R'])/i['period']) > np.log(2):
                 assignCount +=1
             else:
                 filTasks.append(i)
