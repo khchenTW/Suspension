@@ -81,7 +81,6 @@ def main():
                         else:
                             res = test(taskset, debug, 0)
 
-                        res = test(taskset, debug)
                         file_B.write('[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]\n')
                         file_B.write(str(res)+'\n')
                         for ind, j in enumerate(res):
@@ -138,7 +137,7 @@ def main():
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
         taskset = generator.taskGeneration(4, 300, 'S', 0)
-        test(taskset, debug)
+        test(taskset, debug, 1)
 
 def test(taskset, debug, flag):
     # taskset, num of procs
