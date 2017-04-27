@@ -30,9 +30,9 @@ def partition(taskset, algoopt='carryin'):
                 filTasks.append(i)
         tmpTasks = filTasks
 
-    if algoopt == 'blocking' or algoopt == 'CTbaseline':
+    if algoopt == 'blocking' or  algoopt == 'ilpbaseline':
         for i in tmpTasks:
-            if ((i['exclusive-R']+i['shared-R'])/i['period']) >= np.log(2):
+            if (utiliAddE(i)) > np.log(2):
                 assignCount +=1
             else:
                 filTasks.append(i)

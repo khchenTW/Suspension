@@ -26,15 +26,15 @@ def main():
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
         dist_utilizations = OrderedDict()
-        #dist_utilizations['10Tasks'] = 10
-        #dist_utilizations['20Tasks'] = 20
+        dist_utilizations['10Tasks'] = 10
+        dist_utilizations['20Tasks'] = 20
         dist_utilizations['30Tasks'] = 30
 
         idx = 0
         perAmount = [[] for i in range(len(dist_utilizations.items()))]
         for set_name, amount in dist_utilizations.items():
-            #for uti in range(int(100/10*amount), int(450/10*amount)+1, 5*amount):
-            for uti in range(int(450/10*amount), int(450/10*amount)+1, 5*amount):
+            for uti in range(int(100/10*amount), int(450/10*amount)+1, 5*amount):
+            #for uti in range(int(450/10*amount), int(450/10*amount)+1, 5*amount):
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
@@ -133,6 +133,7 @@ def test(taskset, debug):
     # taskset, num of procs
     obj = []
     if debug == 1:
+        obj.append(multi.partition(taskset, 'ilpbaseline'))
         print "DEBUG MODE:"
     else:
         # ILP Tests
