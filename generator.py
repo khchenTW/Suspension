@@ -88,7 +88,7 @@ def CSet_generate_sss(Pmin,numLog, sstype=0):
             else: #L
                 suspension = random.uniform(0.3*(p-i*p), 0.45*(p-i*p))
 
-            PSet.append(task(i*p, p, p, suspension))
+            PSet.append(task(i*p, p, p, suspension, 0))
             res.append((i*p+suspension)/p)
 	    j=j+1;
         return res

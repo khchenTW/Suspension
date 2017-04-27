@@ -22,7 +22,7 @@ def main():
         mode = int(args[3]) # 0 = generate, 1 = directly use the inputs
         stype = args[4] # S, M, L
         group = args[5] # this should be less than inputfiles_amount
-        inputfiles_amount = 1 # n for distribution
+        inputfiles_amount = 6 # n for distribution
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
         dist_utilizations = OrderedDict()
