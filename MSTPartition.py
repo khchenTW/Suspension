@@ -34,7 +34,7 @@ def STPartition(tasks, opt, fit = 'first'):
     c = 0
     for kid, taskk in enumerate(RMTasks):
         for j in range(r): #resource j
-            if taskk['resource'] <= Z[kid+1]:
+            if taskk['resource'] <= Z[j]:
                 #TDA-based tests
                 if opt == 'tda':
                     if TDA(taskk, pi[j]) <= taskk['period']:

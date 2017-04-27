@@ -134,6 +134,7 @@ def test(taskset, debug):
     # taskset, num of procs
     obj = []
     if debug == 1:
+        obj.append(multi.partition(taskset, 'carryin'))
         print "DEBUG MODE:"
     else:
         # ILP Tests
@@ -141,7 +142,7 @@ def test(taskset, debug):
         obj.append(multi.partition(taskset, 'blocking'))
         obj.append(multi.partition(taskset, 'k2q'))
         obj.append(multi.partition(taskset, 'inflation'))
-        obj.append(multi.partition(taskset, 'baselineCT'))
+        obj.append(multi.partition(taskset, 'ilpbaseline'))
         obj.append(combo.partition(taskset))
         binpack = 'first'
         # Heuristic + TDA Tests

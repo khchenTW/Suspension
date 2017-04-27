@@ -32,7 +32,7 @@ def partition(taskset, algoopt='carryin'):
 
     if algoopt == 'blocking' or algoopt == 'ilpbaseline':
         for i in tmpTasks:
-            if ((i['exclusive-R']+i['shared-R'])/i['period']) > np.log(2):
+            if (utiliAddE(i)) > np.log(2):
                 assignCount +=1
             else:
                 filTasks.append(i)
@@ -81,7 +81,7 @@ def partition(taskset, algoopt='carryin'):
         if len(tmpTasks) != 0:
             UB = np.log(3/(2+max(utiliAddE(i) for i in tmpTasks)))
         m.addConstrs((quicksum(utili(i)*x[tid, j] for tid, i in enumerate(tmpTasks) ) <= UB for j in range (len(tmpTasks))), "inflation")
-    if algoopt == 'baselineCT':
+    if algoopt == 'ilpbaseline':
         m.addConstrs((quicksum(utiliAddE(i)*x[tid, j] for tid, i in enumerate(tmpTasks) ) <= np.log(2) for j in range (len(tmpTasks))), "inflation")
 
     m.update()

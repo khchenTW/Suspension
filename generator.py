@@ -15,7 +15,7 @@ class task (dict):
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (execlusiveR))
-        dict.__setitem__(self, "resource", float (resource))
+        dict.__setitem__(self, "resource", int (resource))
 
 def UUniFast(n,U_avg):
     global USet
@@ -74,7 +74,7 @@ def CSet_generate_sss_z(Pmin,numLog, sstype=0):
                 suspension = random.uniform(0.3*(p-i*p), 0.45*(p-i*p))
             #generated the number of required resources
             requiredres = random.sample([1,2,4,6,8,10],1)
-            PSet.append(task(i*p, p, p, suspension, requiredres))
+            PSet.append(task(i*p, p, p, suspension, requiredres[0]))
             res.append((i*p+suspension)/p)
 	    j=j+1;
         return res

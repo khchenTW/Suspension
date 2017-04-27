@@ -22,9 +22,10 @@ def partition(taskset):
     m.setParam('OutputFlag', False)
     m.setParam('TimeLimit', 1*60)
     #m.setParam('TimeLimit', 1)
-    m.setParam('BestObjStop', len(tmpTasks)/2)
+    #m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
+    z = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="resourcez")
     eta = m.addVars(len(tmpTasks), len(tmpTasks), 3, vtype=GRB.BINARY, name="combo")
     #minimization
     m.setObjective((quicksum(y[j]*z[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
