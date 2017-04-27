@@ -23,19 +23,24 @@ def main():
         mode = int(args[3]) # 0 = generate, 1 = directly use the inputs
         stype = args[4] # S, M, L
         group = args[5] # this should be less than inputfiles_amount
-        inputfiles_amount = 6 # n for distribution
+        inputfiles_amount = 1 # n for distribution
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
         dist_utilizations = OrderedDict()
         dist_utilizations['10Tasks'] = 10
         dist_utilizations['20Tasks'] = 20
         dist_utilizations['30Tasks'] = 30
+        dist_utilizations['40Tasks'] = 40
 
         idx = 0
         perAmount = [[] for i in range(len(dist_utilizations.items()))]
         for set_name, amount in dist_utilizations.items():
             #for uti in range(int(100/10*amount), int(200/10*amount)+1, 5*amount):
             for uti in range(int(100/10*amount), int(450/10*amount)+1, 5*amount):
+                if idx == 2 and uti >= 1350: # 30 tasks
+                    continue
+                if idx == 3 and uti >= 1600: # 40 tasks
+                    continue
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
@@ -71,7 +76,10 @@ def main():
                     file_Ex.write(filename+'\n')
                     tasksets = np.load(filename)
                     for taskset in tasksets:
-                        res = test(taskset, debug)
+                        if idx == 2 or idx == 3:
+                            res = test(taskset, debug, 1)
+                        else:
+                            res = test(taskset, debug, 0)
                         file_B.write('[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]\n')
                         file_B.write(str(res)+'\n')
                         for ind, j in enumerate(res):
@@ -127,10 +135,10 @@ def main():
     else:
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
-        taskset = generator.taskGeneration(10, 600, 'S', 1)
+        taskset = generator.taskGeneration(10, 300, 'S', 1)
         print test(taskset, debug)
 
-def test(taskset, debug):
+def test(taskset, debug, flag):
     # taskset, num of procs
     obj = []
     if debug == 1:
@@ -171,12 +179,20 @@ def test(taskset, debug):
 
     else:
         # ILP Tests
-        obj.append(multi.partition(taskset, 'carryin'))
-        obj.append(multi.partition(taskset, 'blocking'))
-        obj.append(multi.partition(taskset, 'k2q'))
-        obj.append(multi.partition(taskset, 'inflation'))
-        obj.append(multi.partition(taskset, 'ilpbaseline'))
-        obj.append(combo.partition(taskset))
+        if flag == 0:
+            obj.append(multi.partition(taskset, 'carryin'))
+            obj.append(multi.partition(taskset, 'blocking'))
+            obj.append(multi.partition(taskset, 'k2q'))
+            obj.append(multi.partition(taskset, 'inflation'))
+            obj.append(multi.partition(taskset, 'ilpbaseline'))
+            obj.append(combo.partition(taskset))
+        else:
+            obj.append(len(taskset))
+            obj.append(len(taskset))
+            obj.append(len(taskset))
+            obj.append(len(taskset))
+            obj.append(len(taskset))
+            obj.append(len(taskset))
         binpack = 'first'
         # Heuristic + TDA Tests
         objMap = STP.STPartition(taskset, 'tda', binpack)

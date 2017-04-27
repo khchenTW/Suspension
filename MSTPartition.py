@@ -156,5 +156,5 @@ def STPartition(tasks, opt, fit = 'first'):
             Z.append(taskk['resource'])
         c+=1
     #print opt+'-res: '+str(r)
-    #print readPi
+    print(sum(i['resource'] for i in tasks))
     return (sum(Z), readPi)
