@@ -31,20 +31,26 @@ def UUniFast_Discard(n,U_avg, sstype):
         sumU=U_avg
         for i in range(n-1):
             nextSumU=sumU*math.pow(random.random(), 1/(n-i))
-            USet.append(sumU-nextSumU)
+            if sstype == 'S':
+                if sumU-nextSumU < 1:
+                    USet.append(sumU-nextSumU)
+                else:
+                    break
+            elif sstype == 'M':
+                if sumU-nextSumU < 0.9:
+                    USet.append(sumU-nextSumU)
+                else:
+                    break
+            elif sstype == 'L':
+                if sumU-nextSumU < 0.7:
+                    USet.append(sumU-nextSumU)
+                else:
+                    break
             sumU=nextSumU
         USet.append(sumU)
 
-        if sstype == 'S':
-            if max(USet) < 1:
-                break
-        elif sstype == 'M':
-            if max(USet) < 0.9:
-                break
-        elif sstype == 'L':
-            if max(USet) < 0.7:
-                break
-
+        if len(USet) == n:
+            break
         del USet[:]
 
 def UniDist(n,U_min,U_max):
