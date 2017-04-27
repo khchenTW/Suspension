@@ -1,0 +1,8 @@
+input/10Tasks_100_4_S.npy
+input/10Tasks_150_4_S.npy
+input/10Tasks_200_4_S.npy
+input/10Tasks_250_4_S.npy
+input/10Tasks_300_4_S.npy
+input/10Tasks_350_4_S.npy
+input/10Tasks_400_4_S.npy
+input/10Tasks_450_4_S.npy
