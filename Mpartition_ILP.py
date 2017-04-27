@@ -14,7 +14,6 @@ class task (dict):
         dict.__setitem__(self, "resource", float (resource))
 
 def partition(taskset, algoopt='carryin'):
-    print taskset
     #this sorted task set will be used
     tmpTasks=RMsort(taskset, 'period')
 
@@ -37,7 +36,6 @@ def partition(taskset, algoopt='carryin'):
             else:
                 filTasks.append(i)
         tmpTasks = filTasks
-    print "AssignCount:"+str(assignCount)
 
     m = Model("Partition Algorithm Hete-ILP")
     m.setParam('OutputFlag', False)
@@ -97,12 +95,12 @@ def partition(taskset, algoopt='carryin'):
         m.optimize()
     elif m.status == GRB.Status.OPTIMAL:
         #print('ILP + '+algoopt+' is feasible')
-
+        '''
         for v in m.getVars():
             print('%s %g' % (v.varName, v.x))
         print('Obj: %g' % m.objVal)
         print (algoopt+' Obj+pop: '+str(m.objVal+assignCount))
-
+        '''
         m.write('model.sol')
     elif m.status == GRB.Status.INFEASIBLE:
         #print('Optimization was stopped with status %d' % m.status)

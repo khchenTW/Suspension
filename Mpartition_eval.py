@@ -127,7 +127,7 @@ def main():
     else:
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
-        taskset = generator.taskGeneration(4, 300, 'S', 1)
+        taskset = generator.taskGeneration(10, 600, 'S', 1)
         print test(taskset, debug)
 
 def test(taskset, debug):

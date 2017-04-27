@@ -13,11 +13,11 @@ def STPartition(tasks, opt, fit = 'first'):
     r = 1 #at least required one resource
 
     tmplist = []
-    for i in range(len(RMTasks)):
+    for i in range(len(SRTasks)):
         tmplist.append(0)
     #now tmplist has n of 0 in the list
     feasible = []
-    for i in range(len(RMTasks)):
+    for i in range(len(SRTasks)):
         feasible.append(tmplist)
     #now there is a nxn array
     feasible[0][0] = 1
@@ -25,15 +25,17 @@ def STPartition(tasks, opt, fit = 'first'):
     Z = [] #index is j in the paper
     pi = [] #index is j in the paper
     readPi = [] #show the assignment
-    First = RMTasks.pop(0)
+    First = SRTasks.pop(0)
     tmplist = []
     tmplist.append(First)
     Z.append(First['resource'])
     pi.append(tmplist)
     readPi.append([0])
     c = 0
-    for kid, taskk in enumerate(RMTasks):
+    for kid, taskk in enumerate(SRTasks):
+        #print len(SRTasks)
         for j in range(r): #resource j
+            #print kid, j
             if taskk['resource'] <= Z[j]:
                 #TDA-based tests
                 if opt == 'tda':
@@ -155,4 +157,4 @@ def STPartition(tasks, opt, fit = 'first'):
         c+=1
     #print opt+'-res: '+str(r)
     #print readPi
-    return (r, readPi)
+    return (sum(Z), readPi)
