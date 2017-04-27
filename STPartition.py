@@ -31,7 +31,12 @@ def STPartition(tasks, opt, fit = 'first'):
         for j in range(r): #resource j
 
             #TDA-based tests
-            if opt == 'carry':
+            if opt == 'tda':
+                if TDA(taskk, pi[j]) <= taskk['period']:
+                    feasible[kid+1][j] = 1
+                else:
+                    feasible[kid+1][j] = 0
+            elif opt == 'carry':
                 if TDAcarry(taskk, pi[j]) <= taskk['period']:
                     feasible[kid+1][j] = 1
                 else:
@@ -57,6 +62,11 @@ def STPartition(tasks, opt, fit = 'first'):
                 else:
                     feasible[kid+1][j] = 0
             #constant time tests
+            elif opt == 'CTbaseline':
+                if CTbaseline(taskk, pi[j]):
+                    feasible[kid+1][j] = 1
+                else:
+                    feasible[kid+1][j] = 0
             elif opt == 'CTcarry':
                 if k2uFirstCarryinhypo(taskk, pi[j]):
                     feasible[kid+1][j] = 1

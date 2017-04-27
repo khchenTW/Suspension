@@ -13,6 +13,22 @@ class task (dict):
 def Workload_Contrained(T,C,t):
     return C*math.ceil((t)/T)
 
+def TDA(task,HPTasks):
+    C=task['shared-R']+task['exclusive-R']
+    R=C
+    D=task['deadline']
+
+    while True:
+        I=0
+        for itask in HPTasks:
+            I=I+Workload_Contrained(itask['period'],itask['deadline'],itask['shared-R']+itask['exclusive-R'],R)
+        if R>D:
+            return R
+        if R < I+C:
+            R=I+C
+        else:
+            return R
+
 def Workload_Jitter(T,D,C,t):
     return max(0,C*math.ceil((t+(T-C))/T))
 

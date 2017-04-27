@@ -34,7 +34,7 @@ def main():
         perAmount = [[] for i in range(len(dist_utilizations.items()))]
         for set_name, amount in dist_utilizations.items():
             #for uti in range(int(100/10*amount), int(200/10*amount)+1, 5*amount):
-            for uti in range(int(100/10*amount), int(550/10*amount)+1, 5*amount):
+            for uti in range(int(100/10*amount), int(450/10*amount)+1, 5*amount):
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
@@ -56,7 +56,7 @@ def main():
         print perAmount
 
         if mode == 1:
-            gRes=[[] for i in range(14)] # 14 methods
+            gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
                 fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
                 fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
@@ -103,7 +103,7 @@ def main():
                 file_B.close()
                 file_Ex.close()
         if mode == 2:
-            gRes=[[] for i in range(13)] # 13 methods
+            gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
                 if idx == 2: #print for 30 tasks
                     fileA = 'DEtasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
@@ -140,9 +140,12 @@ def test(taskset, debug):
         obj.append(multi.partition(taskset, 'blocking'))
         obj.append(multi.partition(taskset, 'k2q'))
         obj.append(multi.partition(taskset, 'inflation'))
+        obj.append(multi.partition(taskset, 'baselineCT'))
         obj.append(combo.partition(taskset))
         binpack = 'first'
         # Heuristic + TDA Tests
+        objMap = STP.STPartition(taskset, 'tda', binpack)
+        obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'carry', binpack)
         obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'block', binpack)
@@ -155,6 +158,8 @@ def test(taskset, debug):
         obj.append(objMap[0])
 
         # Heuristic + Constant Time Tests
+        objMap = STP.STPartition(taskset, 'CTbaseline', binpack)
+        obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'CTcarry', binpack)
         obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'CTblock', binpack)

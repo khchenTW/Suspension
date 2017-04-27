@@ -4,6 +4,17 @@ from miscs import *
 import numpy as np
 
 #following Tests are prepared for double checking
+def CTbaseline(k, rest):
+    tmpSum = 0.0
+    for i in rest:
+        tmpSum +=utiliAddE(i)
+    tmpSum = utiliAddE(k)+tmpSum
+    #print tmpSum
+    if tmpSum <= np.log(2):
+        return True
+    else:
+        return False
+
 def k2uFirstCarryinhypo(k, rest):
     tmpSum = 1.0
     for i in rest:
