@@ -1,1 +1,0 @@
-input/10Tasks_100_0_S.npy
