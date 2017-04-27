@@ -26,15 +26,15 @@ def main():
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
         dist_utilizations = OrderedDict()
-        #dist_utilizations['10Tasks'] = 10
-        #dist_utilizations['20Tasks'] = 20
+        dist_utilizations['10Tasks'] = 10
+        dist_utilizations['20Tasks'] = 20
         dist_utilizations['30Tasks'] = 30
 
         idx = 0
         perAmount = [[] for i in range(len(dist_utilizations.items()))]
         for set_name, amount in dist_utilizations.items():
-            for uti in range(int(100/10*amount), int(200/10*amount)+1, 5*amount):
-            #for uti in range(int(400/10*amount), int(550/10*amount)+1, 5*amount):
+            #for uti in range(int(100/10*amount), int(200/10*amount)+1, 5*amount):
+            for uti in range(int(100/10*amount), int(550/10*amount)+1, 5*amount):
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
@@ -58,11 +58,11 @@ def main():
         if mode == 1:
             gRes=[[] for i in range(14)] # 14 methods
             for idx, filenames  in enumerate(perAmount):
-                #fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
-                #fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
 
-                fileEx = 'Exceptions-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
-                fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
+                #fileEx = 'Exceptions-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
+                #fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
                 file_Ex = open('output/'+fileEx + '.txt', "w")
                 file_B = open('output/'+fileB + '.txt', "w")
                 for filename in filenames:
