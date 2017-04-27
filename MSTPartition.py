@@ -8,6 +8,8 @@ def STPartition(tasks, opt, fit = 'first'):
         return -1
     RMTasks = RMsort(tasks, 'period')
     #print RMTasks
+    #sort the tasks with zi
+    SRTasks = sorted(RMTasks, key=zfunc, reverse=True) #Zi >= Zi+1
     r = 1 #at least required one resource
 
     tmplist = []
@@ -20,72 +22,70 @@ def STPartition(tasks, opt, fit = 'first'):
     #now there is a nxn array
     feasible[0][0] = 1
 
+    Z = [] #index is j in the paper
     pi = [] #index is j in the paper
     readPi = [] #show the assignment
+    First = RMTasks.pop(0)
     tmplist = []
-    tmplist.append(RMTasks.pop(0))
+    tmplist.append(First)
+    Z.append(First['resource'])
     pi.append(tmplist)
     readPi.append([0])
     c = 0
     for kid, taskk in enumerate(RMTasks):
         for j in range(r): #resource j
-            #if k2qJitterBound(taskk, pi[j]):#schedulability test
-            #print TDAcarry(taskk, pi[j])
-            #print TDAblock(taskk, pi[j])
-            #print TDAjit(taskk, pi[j])
-            #print 'Deadline:'+str(taskk['period'])
+            if taskk['resource'] <= Z[kid+1]:
+                #TDA-based tests
+                if opt == 'carry':
+                    if TDAcarry(taskk, pi[j]) <= taskk['period']:
+                        feasible[kid+1][j] = 1
+                    else:
+                        feasible[kid+1][j] = 0
+                elif opt == 'block':
+                    if TDAblock(taskk, pi[j]) <= taskk['period']:
+                        feasible[kid+1][j] = 1
+                    else:
+                        feasible[kid+1][j] = 0
+                elif opt == 'jit':
+                    if TDAjit(taskk, pi[j]) <= taskk['period']:
+                        feasible[kid+1][j] = 1
+                    else:
+                        feasible[kid+1][j] = 0
+                elif opt == 'jitblock':
+                    if TDAjitblock(taskk, pi[j]) <= taskk['period']:
+                        feasible[kid+1][j] = 1
+                    else:
+                        feasible[kid+1][j] = 0
+                elif opt == 'tdamix':
+                    if TDAcarry(taskk, pi[j]) <= taskk['period'] or TDAblock(taskk, pi[j]) <= taskk['period'] or  TDAjit(taskk, pi[j]) <= taskk['period'] or TDAjitblock(taskk, pi[j]) <= taskk['period']:
+                        feasible[kid+1][j] = 1
+                    else:
+                        feasible[kid+1][j] = 0
+                #constant time tests
+                elif opt == 'CTcarry':
+                    if k2uFirstCarryinhypo(taskk, pi[j]):
+                        feasible[kid+1][j] = 1
+                    else:
+                        feasible[kid+1][j] = 0
+                elif opt == 'CTblock':
+                    if k2uSecondBlockinghypo(taskk, pi[j]):
+                        feasible[kid+1][j] = 1
+                    else:
+                        feasible[kid+1][j] = 0
+                elif opt == 'CTjit':
+                    if k2qJitterBound(taskk, pi[j]):
+                        feasible[kid+1][j] = 1
+                    else:
+                        feasible[kid+1][j] = 0
+                elif opt == 'CTmix':
+                    if k2uFirstCarryinhypo(taskk, pi[j]) or k2uSecondBlockinghypo(taskk, pi[j]) or k2qJitterBound(taskk, pi[j]):
+                        feasible[kid+1][j] = 1
+                    else:
+                        feasible[kid+1][j] = 0
 
-            #TDA-based tests
-            if opt == 'carry':
-                if TDAcarry(taskk, pi[j]) <= taskk['period']:
-                    feasible[kid+1][j] = 1
-                else:
-                    feasible[kid+1][j] = 0
-            elif opt == 'block':
-                if TDAblock(taskk, pi[j]) <= taskk['period']:
-                    feasible[kid+1][j] = 1
-                else:
-                    feasible[kid+1][j] = 0
-            elif opt == 'jit':
-                if TDAjit(taskk, pi[j]) <= taskk['period']:
-                    feasible[kid+1][j] = 1
-                else:
-                    feasible[kid+1][j] = 0
-            elif opt == 'jitblock':
-                if TDAjitblock(taskk, pi[j]) <= taskk['period']:
-                    feasible[kid+1][j] = 1
-                else:
-                    feasible[kid+1][j] = 0
-            elif opt == 'tdamix':
-                if TDAcarry(taskk, pi[j]) <= taskk['period'] or TDAblock(taskk, pi[j]) <= taskk['period'] or  TDAjit(taskk, pi[j]) <= taskk['period'] or TDAjitblock(taskk, pi[j]) <= taskk['period']:
-                    feasible[kid+1][j] = 1
-                else:
-                    feasible[kid+1][j] = 0
-            #constant time tests
-            elif opt == 'CTcarry':
-                if k2uFirstCarryinhypo(taskk, pi[j]):
-                    feasible[kid+1][j] = 1
-                else:
-                    feasible[kid+1][j] = 0
-            elif opt == 'CTblock':
-                if k2uSecondBlockinghypo(taskk, pi[j]):
-                    feasible[kid+1][j] = 1
-                else:
-                    feasible[kid+1][j] = 0
-            elif opt == 'CTjit':
-                if k2qJitterBound(taskk, pi[j]):
-                    feasible[kid+1][j] = 1
-                else:
-                    feasible[kid+1][j] = 0
-            elif opt == 'CTmix':
-                if k2uFirstCarryinhypo(taskk, pi[j]) or k2uSecondBlockinghypo(taskk, pi[j]) or k2qJitterBound(taskk, pi[j]):
-                    feasible[kid+1][j] = 1
-                else:
-                    feasible[kid+1][j] = 0
-
-        #print feasible[kid+1]
         feasibleNum = sum( feasible[kid+1] )
-        #print feasibleNum
+
+        #If the set of the feasible resource partitions for tk is not empty
         if feasibleNum != 0:
             #First-fit
             if fit == 'first':
@@ -140,7 +140,8 @@ def STPartition(tasks, opt, fit = 'first'):
             tmplist.append(taskk)
             pi.append(tmplist)
             readPi.append([kid+1])
+            Z.append(taskk['resource'])
         c+=1
     #print opt+'-res: '+str(r)
     #print readPi
-    return r
+    return (r, readPi)

@@ -29,11 +29,6 @@ def STPartition(tasks, opt, fit = 'first'):
     c = 0
     for kid, taskk in enumerate(RMTasks):
         for j in range(r): #resource j
-            #if k2qJitterBound(taskk, pi[j]):#schedulability test
-            #print TDAcarry(taskk, pi[j])
-            #print TDAblock(taskk, pi[j])
-            #print TDAjit(taskk, pi[j])
-            #print 'Deadline:'+str(taskk['period'])
 
             #TDA-based tests
             if opt == 'carry':
@@ -143,4 +138,4 @@ def STPartition(tasks, opt, fit = 'first'):
         c+=1
     #print opt+'-res: '+str(r)
     #print readPi
-    return r
+    return (r, readPi)

@@ -40,21 +40,22 @@ def partition(taskset, algoopt='carryin'):
 
     m = Model("Partition Algorithm Hete-ILP")
     m.setParam('OutputFlag', False)
-    m.setParam('TimeLimit', 1*60)
-    m.setParam('BestObjStop', len(tmpTasks)/2)
+    m.setParam('TimeLimit', 1*30)
+    #m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
     z = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="resourcez")
     #minimization
     m.setObjective((quicksum(y[j]*z[j] for j in range(len(tmpTasks)))), GRB.MINIMIZE)
 
-    #condition ilp-resource-single-b
-    m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ilp-resource-single-b")
+    #condition ILP-M-one-resource-per-task
+    m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ILP-M-one-resource-per-task")
 
-    #condition ilp-resource-single-c
-    m.addConstrs((x[i,j]*z[j]  <= y[j]*z[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
+    #condition ILP-M-task-allocated-to-resources
+    m.addConstrs((x[i,j]*z[j]  <= y[j]*z[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILP-M-task-allocated-to-resources")
 
-    m.addConstrs((x[j,j] == y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-d")
+    #condition ILP-M-one-to-one
+    m.addConstrs((x[j,j] == y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILP-M-one-to-one")
 
     #Schedulability conditions
     c = 0
@@ -113,6 +114,9 @@ def partition(taskset, algoopt='carryin'):
             pass #do nothing but use the intermediate results
         else:
             timeout = 1 #infeasible flag
+    elif m.status == GRB.Status.USER_OBJ_LIMIT:
+        print ("BUG: LIMIT feature is disable")
+        return -2
     else:
         #exception case, dump out this input
         print ("BUG: fatal exception in ILP"+algoopt)

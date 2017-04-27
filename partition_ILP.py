@@ -40,8 +40,8 @@ def partition(taskset, algoopt='carryin'):
 
     m = Model("Partition Algorithm ILP")
     m.setParam('OutputFlag', False)
-    m.setParam('TimeLimit', 1*60)
-    m.setParam('BestObjStop', len(tmpTasks)/2)
+    m.setParam('TimeLimit', 1*30)
+    #m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
     #minimization
@@ -110,9 +110,13 @@ def partition(taskset, algoopt='carryin'):
             pass #do nothing but use the intermediate results
         else:
             timeout = 1 #infeasible flag
+    elif m.status == GRB.Status.USER_OBJ_LIMIT:
+        print ("BUG: LIMIT feature is disable")
+        return -2
     else:
         #exception case, dump out this input
         print ("BUG: fatal exception in ILP"+algoopt)
+        print m.status
         return -2
 
     mapped = [var for var in m.getVars() if var.varName.find('resourcej') != -1 and var.x != 0]

@@ -32,14 +32,13 @@ def partition(taskset):
     #condition combo
     m.addConstrs((quicksum(eta[i,j,l] for l in range(3)) >= x[i,j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))),"combolimit")
 
+    #condition ILP-M-one-resource-per-task
+    m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ILP-M-one-resource-per-task")
 
-    #condition ilp-resource-single-b
-    m.addConstrs((quicksum(x[i,j] for j in range(len(tmpTasks))) == 1 for i in range(len(tmpTasks))), "ilp-resource-single-b")
-
-
-    #condition ilp-resource-single-c
-    m.addConstrs((x[i,j]*z[j]  <= y[j]*z[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-c")
-    m.addConstrs((x[j,j] == y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ilp-resource-single-d")
+    #condition ILP-M-task-allocated-to-resources
+    m.addConstrs((x[i,j]*z[j]  <= y[j]*z[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILP-M-task-allocated-to-resources")
+    #condition ILP-M-one-to-one
+    m.addConstrs((x[j,j] == y[j] for i in range(len(tmpTasks)) for j in range(len(tmpTasks))), "ILP-M-one-to-one")
 
     #Schedulability conditions
     c = 0

@@ -26,14 +26,14 @@ def main():
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
         dist_utilizations = OrderedDict()
-        dist_utilizations['10Tasks'] = 10
-        dist_utilizations['20Tasks'] = 20
+        #dist_utilizations['10Tasks'] = 10
+        #dist_utilizations['20Tasks'] = 20
         dist_utilizations['30Tasks'] = 30
 
         idx = 0
         perAmount = [[] for i in range(len(dist_utilizations.items()))]
         for set_name, amount in dist_utilizations.items():
-            for uti in range(int(100/10*amount), int(550/10*amount)+1, 5*amount):
+            for uti in range(int(100/10*amount), int(200/10*amount)+1, 5*amount):
             #for uti in range(int(400/10*amount), int(550/10*amount)+1, 5*amount):
                 for j in range(inputfiles_amount):
                     if mode == 0:
@@ -58,8 +58,11 @@ def main():
         if mode == 1:
             gRes=[[] for i in range(14)] # 14 methods
             for idx, filenames  in enumerate(perAmount):
-                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
-                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                #fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                #fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+
+                fileEx = 'Exceptions-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
                 file_Ex = open('output/'+fileEx + '.txt', "w")
                 file_B = open('output/'+fileB + '.txt', "w")
                 for filename in filenames:
@@ -140,19 +143,26 @@ def test(taskset, debug):
         obj.append(combo.partition(taskset))
         binpack = 'first'
         # Heuristic + TDA Tests
-
-        obj.append(STP.STPartition(taskset, 'carry', binpack))
-        obj.append(STP.STPartition(taskset, 'block', binpack))
-        obj.append(STP.STPartition(taskset, 'jit', binpack))
-        obj.append(STP.STPartition(taskset, 'jitblock', binpack))
-        obj.append(STP.STPartition(taskset, 'tdamix', binpack))
+        objMap = STP.STPartition(taskset, 'carry', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'block', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'jit', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'jitblock', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'tdamix', binpack)
+        obj.append(objMap[0])
 
         # Heuristic + Constant Time Tests
-
-        obj.append(STP.STPartition(taskset, 'CTcarry', binpack))
-        obj.append(STP.STPartition(taskset, 'CTblock', binpack))
-        obj.append(STP.STPartition(taskset, 'CTjit', binpack))
-        obj.append(STP.STPartition(taskset, 'CTmix', binpack))
+        objMap = STP.STPartition(taskset, 'CTcarry', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'CTblock', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'CTjit', binpack)
+        obj.append(objMap[0])
+        objMap = STP.STPartition(taskset, 'CTmix', binpack)
+        obj.append(objMap[0])
 
     # Show the results
 
