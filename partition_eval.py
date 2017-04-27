@@ -26,15 +26,15 @@ def main():
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
         dist_utilizations = OrderedDict()
-        #dist_utilizations['10Tasks'] = 10
-        #dist_utilizations['20Tasks'] = 20
+        dist_utilizations['10Tasks'] = 10
+        dist_utilizations['20Tasks'] = 20
         dist_utilizations['30Tasks'] = 30
 
         idx = 0
         perAmount = [[] for i in range(len(dist_utilizations.items()))]
         for set_name, amount in dist_utilizations.items():
-            #for uti in range(int(100/10*amount), int(550/10*amount)+1, 5*amount):
-            for uti in range(int(400/10*amount), int(550/10*amount)+1, 5*amount):
+            for uti in range(int(100/10*amount), int(550/10*amount)+1, 5*amount):
+            #for uti in range(int(400/10*amount), int(550/10*amount)+1, 5*amount):
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
@@ -58,11 +58,13 @@ def main():
         if mode == 1:
             gRes=[[] for i in range(14)] # 14 methods
             for idx, filenames  in enumerate(perAmount):
-                #fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
-                fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                file_Ex = open('output/'+fileEx + '.txt', "w")
                 file_B = open('output/'+fileB + '.txt', "w")
                 for filename in filenames:
                     file_B.write(filename+'\n')
+                    file_Ex.write(filename+'\n')
                     tasksets = np.load(filename)
                     for taskset in tasksets:
                         res = test(taskset, debug)
@@ -71,21 +73,32 @@ def main():
                         for ind, j in enumerate(res):
                             if j == -1:
                                 file_B.write('Infeasible in ILP \n')
+                                file_Ex.write('Infeasible in ILP \n')
+                                file_Ex.write(str(taskset)+'\n')
+                                file_Ex.write(str(res)+'\n')
                                 gRes[ind].append(len(taskset))
                             elif j == -2:
                                 file_B.write('ILP pops out an uncatched status \n')
+                                file_Ex.write('ILP pops out an uncatched status \n')
+                                file_Ex.write(str(taskset)+'\n')
+                                file_Ex.write(str(res)+'\n')
                                 gRes[ind].append(len(taskset))
                             elif j == -3:
                                 file_B.write('Infeasible in the double checking \n')
+                                file_Ex.write('Infeasible in the double checking \n')
+                                file_Ex.write(str(taskset)+'\n')
+                                file_Ex.write(str(res)+'\n')
                                 gRes[ind].append(len(taskset))
                             else:
                                 gRes[ind].append(j)
+                    # Way of present
                     result = []
                     for i in gRes:
                         result.append(gmean(i))
                     file_B.write('Gmean: \n')
                     file_B.write(str(result)+'\n')
                 file_B.close()
+                file_Ex.close()
         if mode == 2:
             gRes=[[] for i in range(13)] # 13 methods
             for idx, filenames  in enumerate(perAmount):
