@@ -162,13 +162,7 @@ def test(taskset, debug, flag):
             obj.append(len(taskset))
             obj.append(len(taskset))
 
-        # ILP Tests
-        obj.append(multi.partition(taskset, 'carryin'))
-        obj.append(multi.partition(taskset, 'blocking'))
-        obj.append(multi.partition(taskset, 'k2q'))
-        obj.append(multi.partition(taskset, 'inflation'))
-        obj.append(multi.partition(taskset, 'ilpbaseline'))
-        obj.append(combo.partition(taskset))
+
         binpack = 'first'
         # Heuristic + TDA Tests
         objMap = STP.STPartition(taskset, 'tda', binpack)
