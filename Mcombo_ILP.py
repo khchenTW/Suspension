@@ -89,7 +89,7 @@ def partition(taskset):
             timeout = 1 #infeasible flag
     else:
         #exception case, dump out this input
-        print ("BUG: fatal exception in ILP"+algoopt)
+        print ("BUG: fatal exception in ILP")
         return -2
 
 

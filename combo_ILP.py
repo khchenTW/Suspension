@@ -22,7 +22,7 @@ def partition(taskset):
     m.setParam('OutputFlag', False)
     m.setParam('TimeLimit', 1*60)
     #m.setParam('TimeLimit', 1)
-    m.setParam('BestObjStop', len(tmpTasks)/2)
+    #m.setParam('BestObjStop', len(tmpTasks)/2)
     y = m.addVars(len(tmpTasks), vtype=GRB.BINARY, name="allocation")
     x = m.addVars(len(tmpTasks), len(tmpTasks), vtype=GRB.BINARY, name="resourcej")
     eta = m.addVars(len(tmpTasks), len(tmpTasks), 3, vtype=GRB.BINARY, name="combo")
@@ -88,9 +88,14 @@ def partition(taskset):
             pass #do nothing but use the intermediate results
         else:
             timeout = 1 #infeasible flag
+    elif m.status == GRB.Status.USER_OBJ_LIMIT:
+        print ("BUG: LIMIT feature is disable")
+        return -2
+
     else:
         #exception case, dump out this input
         print ("BUG: fatal exception in ILP")
+        print m.status
         return -2
 
 
