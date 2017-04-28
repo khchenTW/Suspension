@@ -116,13 +116,6 @@ def init():
     resTotal16 = []
     resTotal17 = []
 
-'''
-f2 = open(var1+"'1'.txt", 'r')
-f3 = open(var1+"'2'.txt", 'r')
-f4 = open(var1+"'3'.txt", 'r')
-f5 = open(var1+"'4'.txt", 'r')
-f6 = open(var1+"'5'.txt", 'r')
-'''
 
 def fileInput(var1, group):
     fileidx = 0
@@ -154,7 +147,7 @@ def fileInput(var1, group):
             if count == -1:
                 #filename to get utilization:
                 filename = line.split('_')
-                print filename
+                #print filename
                 tmpUtil.append(int(filename[1]))
 
             #Content to get Arithmetic mean and Gmean
@@ -275,6 +268,30 @@ def getResPerUtili(res, numinSets, num): #work for tasks 10 an 20
         utililist.append(i)
     return utililist
 
+def Ameanratio(results, baseline):
+    res = []
+    for i in results:
+        if i == 0:
+            res.append(1)
+        elif baseline >= i :
+            res.append(float(i/baseline))
+        else:
+            res.append(1)
+    return np.mean(res)
+
+
+def Gmeanratio(results, baseline):
+    res = []
+    for i in results:
+        if i == 0:
+            res.append(1)
+        elif baseline >= i :
+            if i/baseline > 1:
+                res.append(float(i/baseline))
+            res.append(1)
+        else:
+            res.append(1)
+    return gmean(res)
 #wayofMean(np.mean, 10, 'Amean', 'S', 100, 0)
 def wayofMean(way, num, atitle, typ, s, MST):
     init()
@@ -307,43 +324,152 @@ def wayofMean(way, num, atitle, typ, s, MST):
     else:
         fileName = 'M'+atitle+'Results-tasks'+repr(num)+'_stype_'+repr(typ)
     print fileName
+
+    for i in getResPerUtili(resTotal4,s, num): #when g = 6 Inflation
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y4.append(way(i, num))
+            else:
+                y4.append(way(i, max(i)))
+        else:
+            y4.append(way(i))
+    tmpy4 = []
+    if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+        for i in getResPerUtili(resTotal4,s, num): #when g = 6 Inflation
+            tmpy4.append(np.mean(i))
+        Mbaseline = max(tmpy4)
+    else:
+        Mbaseline = max(y4)
+    for i in getResPerUtili(resTotal13,s, num): #when g = 6 CTbaseline
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y13.append(way(i, num))
+            else:
+                y13.append(way(i, Mbaseline ))
+        else:
+            y13.append(way(i))
+
     for i in getResPerUtili(resTotal1,s, num): #when g = 6
-        if way == 'Ameanratio' or way == 'Gmeanratio':
-            y1.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y1.append(way(i, num))
+            else:
+                y1.append(way(i, Mbaseline ))
         else:
             y1.append(way(i))
     for i in getResPerUtili(resTotal2,s, num): #when g = 6
-        y2.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y2.append(way(i, num))
+            else:
+                y2.append(way(i, Mbaseline ))
+        else:
+            y2.append(way(i))
     for i in getResPerUtili(resTotal3,s, num): #when g = 6
-        y3.append(way(i))
-    for i in getResPerUtili(resTotal4,s, num): #when g = 6
-        y4.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y3.append(way(i, num))
+            else:
+                y3.append(way(i, Mbaseline ))
+        else:
+            y3.append(way(i))
+
     for i in getResPerUtili(resTotal5,s, num): #when g = 6 ILPbaseline
-        y5.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y5.append(way(i, num))
+            else:
+                y5.append(way(i, Mbaseline ))
+        else:
+            y5.append(way(i))
     for i in getResPerUtili(resTotal6,s, num): #when g = 6
-        y6.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y6.append(way(i, num))
+            else:
+                y6.append(way(i, Mbaseline ))
+        else:
+            y6.append(way(i))
     for i in getResPerUtili(resTotal7,s, num): #when g = 6 TDAbaseline
-        y7.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y7.append(way(i, num))
+            else:
+                y7.append(way(i, Mbaseline ))
+        else:
+            y7.append(way(i))
     for i in getResPerUtili(resTotal8,s, num): #when g = 6
-        y8.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y8.append(way(i, num))
+            else:
+                y8.append(way(i, Mbaseline ))
+        else:
+            y8.append(way(i))
     for i in getResPerUtili(resTotal9,s, num): #when g = 6
-        y9.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y9.append(way(i, num))
+            else:
+                y9.append(way(i, Mbaseline ))
+        else:
+            y9.append(way(i))
     for i in getResPerUtili(resTotal10,s, num): #when g = 6
-        y10.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y10.append(way(i, num))
+            else:
+                y10.append(way(i, Mbaseline ))
+        else:
+            y10.append(way(i))
     for i in getResPerUtili(resTotal11,s, num): #when g = 6
-        y11.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y11.append(way(i, num))
+            else:
+                y11.append(way(i, Mbaseline ))
+        else:
+            y11.append(way(i))
     for i in getResPerUtili(resTotal12,s, num): #when g = 6
-        y12.append(way(i))
-    for i in getResPerUtili(resTotal13,s, num): #when g = 6 CTbaseline
-        y13.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y12.append(way(i, num))
+            else:
+                y12.append(way(i, Mbaseline ))
+        else:
+            y12.append(way(i))
     for i in getResPerUtili(resTotal14,s, num): #when g = 6
-        y14.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y14.append(way(i, num))
+            else:
+                y14.append(way(i, Mbaseline ))
+        else:
+            y14.append(way(i))
     for i in getResPerUtili(resTotal15,s, num): #when g = 6
-        y15.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y15.append(way(i, num))
+            else:
+                y15.append(way(i, Mbaseline ))
+        else:
+            y15.append(way(i))
     for i in getResPerUtili(resTotal16,s, num): #when g = 6
-        y16.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y16.append(way(i, num))
+            else:
+                y16.append(way(i, Mbaseline ))
+        else:
+            y16.append(way(i))
     for i in getResPerUtili(resTotal17,s, num): #when g = 6
-        y17.append(way(i))
+        if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
+            if MST == 0:
+                y17.append(way(i, num))
+            else:
+                y17.append(way(i, Mbaseline ))
+        else:
+            y17.append(way(i))
     # plot in pdf
     pp = PdfPages(folder + fileName + '.pdf')
     title = atitle+'-'+repr(num)+'Tasks-'+repr(typ)
@@ -359,10 +485,10 @@ def wayofMean(way, num, atitle, typ, s, MST):
         ax.set_ylabel("Arithmetic Mean", size=20)
     elif atitle == 'Gmean':
         ax.set_ylabel("Geometric Mean", size=20)
-    elif atitle == 'AmeanRatio':
-        ax.set_ylabel("Arithmetic Mean Ratio", size=18)
-    elif atitle == 'GmeanRatio':
-        ax.set_ylabel("Geometric Mean Ratio", size=18)
+    elif atitle == 'Ameanratio':
+        ax.set_ylabel("Normalized Arithmetic Mean", size=20)
+    elif atitle == 'Gmeanratio':
+        ax.set_ylabel("Normalized Geometric Mean", size=20)
     ax.set_xlabel("Utilization (%)", size=20)
 
     marker = itertools.cycle(('D', 'd', 'o', 's', 'v'))
@@ -401,24 +527,7 @@ def wayofMean(way, num, atitle, typ, s, MST):
     plt.show()
     pp.close()
 
-def Ameanratio(results, baseline):
-    res = []
-    for i in results:
-        if baseline >= i :
-            res.append(float(i/baseline))
-        else:
-            print "BUG"
-    return np.mean(res)
 
-
-def Gmeanratio(results, baseline):
-    res = []
-    for i in results:
-        if baseline >= i :
-            res.append(float(i/baseline))
-        else:
-            print "BUG"
-    return gmean(res)
 
 folder = 'plots/'
 g = 1
