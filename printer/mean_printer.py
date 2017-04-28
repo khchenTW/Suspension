@@ -308,18 +308,21 @@ def wayofMean(way, num, atitle, typ, s, MST):
         fileName = 'M'+atitle+'Results-tasks'+repr(num)+'_stype_'+repr(typ)
     print fileName
     for i in getResPerUtili(resTotal1,s, num): #when g = 6
-        y1.append(way(i))
+        if way == 'Ameanratio' or way == 'Gmeanratio':
+            y1.append(way(i))
+        else:
+            y1.append(way(i))
     for i in getResPerUtili(resTotal2,s, num): #when g = 6
         y2.append(way(i))
     for i in getResPerUtili(resTotal3,s, num): #when g = 6
         y3.append(way(i))
     for i in getResPerUtili(resTotal4,s, num): #when g = 6
         y4.append(way(i))
-    for i in getResPerUtili(resTotal5,s, num): #when g = 6
+    for i in getResPerUtili(resTotal5,s, num): #when g = 6 ILPbaseline
         y5.append(way(i))
     for i in getResPerUtili(resTotal6,s, num): #when g = 6
         y6.append(way(i))
-    for i in getResPerUtili(resTotal7,s, num): #when g = 6
+    for i in getResPerUtili(resTotal7,s, num): #when g = 6 TDAbaseline
         y7.append(way(i))
     for i in getResPerUtili(resTotal8,s, num): #when g = 6
         y8.append(way(i))
@@ -331,7 +334,7 @@ def wayofMean(way, num, atitle, typ, s, MST):
         y11.append(way(i))
     for i in getResPerUtili(resTotal12,s, num): #when g = 6
         y12.append(way(i))
-    for i in getResPerUtili(resTotal13,s, num): #when g = 6
+    for i in getResPerUtili(resTotal13,s, num): #when g = 6 CTbaseline
         y13.append(way(i))
     for i in getResPerUtili(resTotal14,s, num): #when g = 6
         y14.append(way(i))
@@ -350,32 +353,37 @@ def wayofMean(way, num, atitle, typ, s, MST):
     #plt.xlabel('Approaches($U^*$)', fontsize=20)
     ax = plt.subplot()
     ax.tick_params(axis='both', which='major',labelsize=16)
+
+    #way of means
     if atitle == 'Amean':
         ax.set_ylabel("Arithmetic Mean", size=20)
-    else:
+    elif atitle == 'Gmean':
         ax.set_ylabel("Geometric Mean", size=20)
+    elif atitle == 'AmeanRatio':
+        ax.set_ylabel("Arithmetic Mean Ratio", size=18)
+    elif atitle == 'GmeanRatio':
+        ax.set_ylabel("Geometric Mean Ratio", size=18)
     ax.set_xlabel("Utilization (%)", size=20)
 
     marker = itertools.cycle(('D', 'd', 'o', 's', 'v'))
-    print x5, y5
     try:
-        #ax.plot( x1, y1, '-', marker = marker.next(), label='ILPcarry', linewidth=2.0)
-        #ax.plot( x2, y2, '-', marker = marker.next(), label='ILPblock', linewidth=2.0)
-        #ax.plot( x3, y3, '-', marker = marker.next(), label='ILPjit', linewidth=2.0)
-        #ax.plot( x4, y4, '-', marker = marker.next(), label='Inflaction', linewidth=2.0)
-        #ax.plot( x5, y5, '-', marker = marker.next(), label='ILPbaseline', linewidth=2.0)
-        #ax.plot( x6, y6, '-', marker = marker.next(), label='ILPcombo', linewidth=2.0)
-        ax.plot( x7, y7, '-', marker = marker.next(), label='TDAbaseline', linewidth=2.0)
-        #ax.plot( x8, y8, '-', marker = marker.next(), label='TDAcarry', linewidth=2.0)
-        #ax.plot( x9, y9, '-', marker = marker.next(), label='TDAblock', linewidth=2.0)
-        #ax.plot( x10, y10, '-', marker = marker.next(), label='TDAjit', linewidth=2.0)
-        #ax.plot( x11, y11, '-', marker = marker.next(), label='TDAjitblock', linewidth=2.0)
-        ax.plot( x12, y12, '-', marker = marker.next(), label='TDAmix', linewidth=2.0)
-        ax.plot( x13, y13, '-', marker = marker.next(), label='CTbaseline', linewidth=2.0)
-        #ax.plot( x14, y14, '-', marker = marker.next(), label='CTcarry', linewidth=2.0)
-        #ax.plot( x15, y15, '-', marker = marker.next(), label='CTblock', linewidth=2.0)
-        #ax.plot( x16, y16, '-', marker = marker.next(), label='CTjit', linewidth=2.0)
-        ax.plot( x17, y17, '-', marker = marker.next(), label='CTmix', linewidth=2.0)
+        ax.plot( x1, y1, '-', marker = marker.next(), label='ILP(Carry)', linewidth=2.0)
+        ax.plot( x2, y2, '-', marker = marker.next(), label='ILP(Block)', linewidth=2.0)
+        ax.plot( x3, y3, '-', marker = marker.next(), label='ILP(Jit)', linewidth=2.0)
+        ax.plot( x4, y4, '-', marker = marker.next(), label='ILP(Inflaction)', linewidth=2.0)
+        ax.plot( x5, y5, '-', marker = marker.next(), label='ILP(Baseline)', linewidth=2.0)
+        ax.plot( x6, y6, '-', marker = marker.next(), label='ILP(Combo)', linewidth=2.0)
+        #ax.plot( x7, y7, '-', marker = marker.next(), label='ST+TDA(baseline)', linewidth=2.0)
+        #ax.plot( x8, y8, '-', marker = marker.next(), label='ST+TDA(carry)', linewidth=2.0)
+        #ax.plot( x9, y9, '-', marker = marker.next(), label='ST+TDA(block)', linewidth=2.0)
+        #ax.plot( x10, y10, '-', marker = marker.next(), label='ST+TDA(jit)', linewidth=2.0)
+        #ax.plot( x11, y11, '-', marker = marker.next(), label='ST+TDA(jitblock)', linewidth=2.0)
+        #ax.plot( x12, y12, '-', marker = marker.next(), label='ST+TDA(mix)', linewidth=2.0)
+        #ax.plot( x13, y13, '-', marker = marker.next(), label='ST+CT(baseline)', linewidth=2.0)
+        #ax.plot( x14, y14, '-', marker = marker.next(), label='ST+CT(carry)', linewidth=2.0)
+        #ax.plot( x15, y15, '-', marker = marker.next(), label='ST+CT(block)', linewidth=2.0)
+        #ax.plot( x16, y16, '-', marker = marker.next(), label='ST+CT(jit)', linewidth=2.0)
+        #ax.plot( x17, y17, '-', marker = marker.next(), label='ST+CT(mix)', linewidth=2.0)
 
     except ValueError:
         print "ValueError"
@@ -393,6 +401,24 @@ def wayofMean(way, num, atitle, typ, s, MST):
     plt.show()
     pp.close()
 
+def Ameanratio(results, baseline):
+    res = []
+    for i in results:
+        if baseline >= i :
+            res.append(float(i/baseline))
+        else:
+            print "BUG"
+    return np.mean(res)
+
+
+def Gmeanratio(results, baseline):
+    res = []
+    for i in results:
+        if baseline >= i :
+            res.append(float(i/baseline))
+        else:
+            print "BUG"
+    return gmean(res)
 
 folder = 'plots/'
 g = 1
@@ -421,7 +447,33 @@ wayofMean(np.mean, 40, 'Amean', 'M', 100, 0)
 wayofMean(gmean, 40, 'Gmean', 'M', 100, 0)
 wayofMean(np.mean, 40, 'Amean', 'L', 100, 0)
 wayofMean(gmean, 40, 'Gmean', 'L', 100, 0)
+#ratio
+wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 0)
+wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 0)
+wayofMean(Ameanratio, 10, 'Ameanratio', 'M', 100, 0)
+wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 0)
+wayofMean(Ameanratio, 10, 'Ameanratio', 'L', 100, 0)
+wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 0)
+wayofMean(Ameanratio, 20, 'Ameanratio', 'S', 100, 0)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 0)
+wayofMean(Ameanratio, 20, 'Ameanratio', 'M', 100, 0)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 0)
+wayofMean(Ameanratio, 20, 'Ameanratio', 'L', 100, 0)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 0)
+wayofMean(Ameanratio, 30, 'Ameanratio', 'S', 100, 0)
+wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 0)
+wayofMean(Ameanratio, 30, 'Ameanratio', 'M', 100, 0)
+wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 0)
+wayofMean(Ameanratio, 30, 'Ameanratio', 'L', 100, 0)
+wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 0)
+wayofMean(Ameanratio, 40, 'Ameanratio', 'S', 100, 0)
+wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 0)
+wayofMean(Ameanratio, 40, 'Ameanratio', 'M', 100, 0)
+wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 0)
+wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 0)
+wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 0)
 
+#MST
 wayofMean(np.mean, 10, 'Amean', 'S', 100, 1)
 wayofMean(gmean, 10, 'Gmean', 'S', 100, 1)
 wayofMean(np.mean, 10, 'Amean', 'M', 100, 1)
@@ -446,3 +498,28 @@ wayofMean(np.mean, 40, 'Amean', 'M', 100, 1)
 wayofMean(gmean, 40, 'Gmean', 'M', 100, 1)
 wayofMean(np.mean, 40, 'Amean', 'L', 100, 1)
 wayofMean(gmean, 40, 'Gmean', 'L', 100, 1)
+#ratio
+wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 1)
+wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)
+wayofMean(Ameanratio, 10, 'Ameanratio', 'M', 100, 1)
+wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 1)
+wayofMean(Ameanratio, 10, 'Ameanratio', 'L', 100, 1)
+wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 1)
+wayofMean(Ameanratio, 20, 'Ameanratio', 'S', 100, 1)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1)
+wayofMean(Ameanratio, 20, 'Ameanratio', 'M', 100, 1)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 1)
+wayofMean(Ameanratio, 20, 'Ameanratio', 'L', 100, 1)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 1)
+wayofMean(Ameanratio, 30, 'Ameanratio', 'S', 100, 1)
+wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1)
+wayofMean(Ameanratio, 30, 'Ameanratio', 'M', 100, 1)
+wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 1)
+wayofMean(Ameanratio, 30, 'Ameanratio', 'L', 100, 1)
+wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 1)
+wayofMean(Ameanratio, 40, 'Ameanratio', 'S', 100, 1)
+wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1)
+wayofMean(Ameanratio, 40, 'Ameanratio', 'M', 100, 1)
+wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1)
+wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 1)
+wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1)
