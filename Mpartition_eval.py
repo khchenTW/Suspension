@@ -74,13 +74,13 @@ def main():
                 for filename in filenames:
                     file_B.write(filename+'\n')
                     file_Ex.write(filename+'\n')
+                    file_B.write('[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]\n')
                     tasksets = np.load(filename)
                     for taskset in tasksets:
                         if idx == 2 or idx == 3:
                             res = test(taskset, debug, 1)
                         else:
                             res = test(taskset, debug, 0)
-                        file_B.write('[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]\n')
                         file_B.write(str(res)+'\n')
                         for ind, j in enumerate(res):
                             if j == -1:
