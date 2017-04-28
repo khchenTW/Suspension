@@ -148,19 +148,20 @@ for i in utili[0]:
     x5.append(i)
     x6.append(i)
 #after this, 6 sets of methods are prepared
-
-for i in getResPerUtili(resTotal1,17): #when g = 6
-    y1.append(gmean(i))
-for i in getResPerUtili(resTotal2,17): #when g = 6
-    y2.append(gmean(i))
-for i in getResPerUtili(resTotal3,17): #when g = 6
-    y3.append(gmean(i))
-for i in getResPerUtili(resTotal4,17): #when g = 6
-    y4.append(gmean(i))
-for i in getResPerUtili(resTotal5,17): #when g = 6
-    y5.append(gmean(i))
-for i in getResPerUtili(resTotal6,17): #when g = 6
-    y6.append(gmean(i))
+def wayofMean(way):
+    for i in getResPerUtili(resTotal1,17): #when g = 6
+        y1.append(way(i))
+    for i in getResPerUtili(resTotal2,17): #when g = 6
+        y2.append(way(i))
+    for i in getResPerUtili(resTotal3,17): #when g = 6
+        y3.append(way(i))
+    for i in getResPerUtili(resTotal4,17): #when g = 6
+        y4.append(way(i))
+    for i in getResPerUtili(resTotal5,17): #when g = 6
+        y5.append(way(i))
+    for i in getResPerUtili(resTotal6,17): #when g = 6
+        y6.append(way(i))
+wayofMean(gmean)
 
 #print x1, y1
 
@@ -210,7 +211,7 @@ except ValueError:
 
 ax.legend(loc=0)
 figure = plt.gcf()
-figure.set_size_inches([10, 6])
+figure.set_size_inches([10, 5])
 
 pp.savefig()
 plt.clf()
