@@ -276,12 +276,11 @@ def Ameanratio(results, baseline):
         if i == 0:
             res.append(1)
         elif baseline >= i :
-            res.append(float(i/baseline))
+            res.append(float(i)/float(baseline))
         else:
             res.append(1)
-
-    if np.mean(res) == 0:
-        return 1
+        if len(results) == 0:
+            return 1
     return np.mean(res)
 
 
@@ -293,11 +292,14 @@ def Gmeanratio(results, baseline):
         if i == 0:
             res.append(1)
         elif baseline >= i :
-            if i/baseline > 1:
-                res.append(float(i/baseline))
-            res.append(1)
+            if i/baseline <= 1:
+                res.append(float(i)/float(baseline))
+            else:
+                res.append(1)
         else:
             res.append(1)
+        if len(results) == 0:
+            return 1
     return gmean(res)
 #wayofMean(np.mean, 10, 'Amean', 'S', 100, 0)
 def wayofMean(way, num, atitle, typ, s, MST):
@@ -335,18 +337,17 @@ def wayofMean(way, num, atitle, typ, s, MST):
     for i in getResPerUtili(resTotal4,s, num): #when g = 6 Inflation
         if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
             if MST == 0:
-                y4.append(way(i, 0))
+                y4.append(way(i, num))
             else:
                 y4.append(way(i, 0))
         else:
             y4.append(way(i))
+            Mbaseline = max(y4)
     tmpy4 = []
     if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
         for i in getResPerUtili(resTotal4,s, num):
             tmpy4.append(np.mean(i))
         Mbaseline = max(tmpy4)
-    else:
-        Mbaseline = max(y4)
 
 
     for i in getResPerUtili(resTotal1,s, num): #when g = 6
@@ -393,18 +394,17 @@ def wayofMean(way, num, atitle, typ, s, MST):
     for i in getResPerUtili(resTotal7,s, num): #when g = 6 TDAbaseline
         if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
             if MST == 0:
-                y7.append(way(i, 0))
+                y7.append(way(i, num))
             else:
                 y7.append(way(i, 0))
         else:
             y7.append(way(i))
+            Mbaseline = max(y7)
     tmpy7 = []
     if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
         for i in getResPerUtili(resTotal7,s, num):
             tmpy7.append(np.mean(i))
         Mbaseline = max(tmpy7)
-    else:
-        Mbaseline = max(y7)
     for i in getResPerUtili(resTotal8,s, num): #when g = 6
         if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
             if MST == 0:
@@ -448,21 +448,22 @@ def wayofMean(way, num, atitle, typ, s, MST):
     for i in getResPerUtili(resTotal13,s, num): #when g = 6 CTbaseline
         if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
             if MST == 0:
-                y13.append(way(i, 0))
+                y13.append(way(i, num))
             else:
                 y13.append(way(i, 0))
         else:
             y13.append(way(i))
+            Mbaseline = max(y13)
     tmpy13 = []
     if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
         for i in getResPerUtili(resTotal13,s, num):
             tmpy13.append(np.mean(i))
         Mbaseline = max(tmpy13)
-    else:
-        Mbaseline = max(y13)
     for i in getResPerUtili(resTotal14,s, num): #when g = 6
         if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
             if MST == 0:
+                print i, num
+                print way(i, num)
                 y14.append(way(i, num))
             else:
                 y14.append(way(i, Mbaseline ))
@@ -515,23 +516,26 @@ def wayofMean(way, num, atitle, typ, s, MST):
 
     marker = itertools.cycle(('D', 'd', 'o', 's', 'v'))
     try:
-        #ax.plot( x1, y1, '-', marker = marker.next(), label='ILP(Carry)', linewidth=2.0)
-        #ax.plot( x2, y2, '-', marker = marker.next(), label='ILP(Block)', linewidth=2.0)
-        #ax.plot( x3, y3, '-', marker = marker.next(), label='ILP(Jit)', linewidth=2.0)
-        #ax.plot( x4, y4, '-', marker = marker.next(), label='ILP(Inflaction)', linewidth=2.0)
-        #ax.plot( x5, y5, '-', marker = marker.next(), label='ILP(Baseline)', linewidth=2.0)
-        #ax.plot( x6, y6, '-', marker = marker.next(), label='ILP(Combo)', linewidth=2.0)
+        if num < 30:
+            ax.plot( x1, y1, '-', marker = marker.next(), label='ILP(Carry)', linewidth=2.0)
+            ax.plot( x2, y2, '-', marker = marker.next(), label='ILP(Block)', linewidth=2.0)
+            ax.plot( x3, y3, '-', marker = marker.next(), label='ILP(Jit)', linewidth=2.0)
+            ax.plot( x4, y4, '-', marker = marker.next(), label='ILP(Inflation)', linewidth=2.0)
+            ax.plot( x5, y5, '-', marker = marker.next(), label='ILP(Baseline)', linewidth=2.0)
+            ax.plot( x6, y6, '-', marker = marker.next(), label='ILP(Combo)', linewidth=2.0)
+            pass
+
         #ax.plot( x7, y7, '-', marker = marker.next(), label='ST+TDA(baseline)', linewidth=2.0)
         #ax.plot( x8, y8, '-', marker = marker.next(), label='ST+TDA(carry)', linewidth=2.0)
         #ax.plot( x9, y9, '-', marker = marker.next(), label='ST+TDA(block)', linewidth=2.0)
         #ax.plot( x10, y10, '-', marker = marker.next(), label='ST+TDA(jit)', linewidth=2.0)
         #ax.plot( x11, y11, '-', marker = marker.next(), label='ST+TDA(jitblock)', linewidth=2.0)
         #ax.plot( x12, y12, '-', marker = marker.next(), label='ST+TDA(mix)', linewidth=2.0)
-        ax.plot( x13, y13, '-', marker = marker.next(), label='ST+CT(baseline)', linewidth=2.0)
-        ax.plot( x14, y14, '-', marker = marker.next(), label='ST+CT(carry)', linewidth=2.0)
-        ax.plot( x15, y15, '-', marker = marker.next(), label='ST+CT(block)', linewidth=2.0)
-        ax.plot( x16, y16, '-', marker = marker.next(), label='ST+CT(jit)', linewidth=2.0)
-        ax.plot( x17, y17, '-', marker = marker.next(), label='ST+CT(mix)', linewidth=2.0)
+        #ax.plot( x13, y13, '-', marker = marker.next(), label='ST+CT(baseline)', linewidth=2.0)
+        #ax.plot( x14, y14, '-', marker = marker.next(), label='ST+CT(carry)', linewidth=2.0)
+        #ax.plot( x15, y15, '-', marker = marker.next(), label='ST+CT(block)', linewidth=2.0)
+        #ax.plot( x16, y16, '-', marker = marker.next(), label='ST+CT(jit)', linewidth=2.0)
+        #ax.plot( x17, y17, '-', marker = marker.next(), label='ST+CT(mix)', linewidth=2.0)
 
     except ValueError:
         print "ValueError"
@@ -553,6 +557,7 @@ def wayofMean(way, num, atitle, typ, s, MST):
 
 folder = 'plots/'
 g = 1
+'''
 #after this, 6 sets of methods are prepared
 wayofMean(np.mean, 10, 'Amean', 'S', 100, 0)
 wayofMean(gmean, 10, 'Gmean', 'S', 100, 0)
@@ -578,6 +583,8 @@ wayofMean(np.mean, 40, 'Amean', 'M', 100, 0)
 wayofMean(gmean, 40, 'Gmean', 'M', 100, 0)
 wayofMean(np.mean, 40, 'Amean', 'L', 100, 0)
 wayofMean(gmean, 40, 'Gmean', 'L', 100, 0)
+'''
+'''
 #ratio
 wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 0)
 wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 0)
@@ -603,7 +610,8 @@ wayofMean(Ameanratio, 40, 'Ameanratio', 'M', 100, 0)
 wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 0)
 wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 0)
 wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 0)
-
+'''
+'''
 #MST
 wayofMean(np.mean, 10, 'Amean', 'S', 100, 1)
 wayofMean(gmean, 10, 'Gmean', 'S', 100, 1)
@@ -629,6 +637,8 @@ wayofMean(np.mean, 40, 'Amean', 'M', 100, 1)
 wayofMean(gmean, 40, 'Gmean', 'M', 100, 1)
 wayofMean(np.mean, 40, 'Amean', 'L', 100, 1)
 wayofMean(gmean, 40, 'Gmean', 'L', 100, 1)
+'''
+
 #ratio
 wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 1)
 wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)

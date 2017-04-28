@@ -136,7 +136,7 @@ def main():
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
         taskset = generator.taskGeneration(10, 300, 'S', 1)
-        print test(taskset, debug)
+        #print test(taskset, debug)
 
 def test(taskset, debug, flag):
     # taskset, num of procs
