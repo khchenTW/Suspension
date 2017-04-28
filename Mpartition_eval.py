@@ -84,19 +84,19 @@ def main():
                         file_B.write(str(res)+'\n')
                         for ind, j in enumerate(res):
                             if j == -1:
-                                file_B.write('Infeasible in ILP \n')
+                                #file_B.write('Infeasible in ILP \n')
                                 file_Ex.write('Infeasible in ILP \n')
                                 file_Ex.write(str(taskset)+'\n')
                                 file_Ex.write(str(res)+'\n')
                                 gRes[ind].append(len(taskset))
                             elif j == -2:
-                                file_B.write('ILP pops out an uncatched status \n')
+                                #file_B.write('ILP pops out an uncatched status \n')
                                 file_Ex.write('ILP pops out an uncatched status \n')
                                 file_Ex.write(str(taskset)+'\n')
                                 file_Ex.write(str(res)+'\n')
                                 gRes[ind].append(len(taskset))
                             elif j == -3:
-                                file_B.write('Infeasible in the double checking \n')
+                                #file_B.write('Infeasible in the double checking \n')
                                 file_Ex.write('Infeasible in the double checking \n')
                                 file_Ex.write(str(taskset)+'\n')
                                 file_Ex.write(str(res)+'\n')
