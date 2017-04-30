@@ -18,7 +18,7 @@ def main():
             return -1 # no input
 
     debug = int (args[1])
-    if debug == 0:
+    if debug == 0 or debug == 2:
         tasksets_amount = int (args[2])
         mode = int(args[3]) # 0 = generate, 1 = directly use the inputs
         stype = args[4] # S, M, L
@@ -27,15 +27,14 @@ def main():
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
         dist_utilizations = OrderedDict()
-        dist_utilizations['10Tasks'] = 10
+        #dist_utilizations['10Tasks'] = 10
         dist_utilizations['20Tasks'] = 20
-        dist_utilizations['30Tasks'] = 30
-        dist_utilizations['40Tasks'] = 40
+        #dist_utilizations['30Tasks'] = 30
+        #dist_utilizations['40Tasks'] = 40
 
         idx = 0
         perAmount = [[] for i in range(len(dist_utilizations.items()))]
         for set_name, amount in dist_utilizations.items():
-            #for uti in range(int(100/10*amount), int(200/10*amount)+1, 5*amount):
             for uti in range(int(100/10*amount), int(450/10*amount)+1, 5*amount):
                 if idx == 2 and uti >= 1350: # 30 tasks
                     continue
@@ -64,8 +63,10 @@ def main():
         if mode == 1:
             gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
-                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
-                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                #fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                #fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileEx = 'Exceptions-tasks'+repr((1+idx)*20)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileB = 'Results-tasks'+repr((1+idx)*20)+'_stype'+repr(stype)+'_group'+repr(group)
 
                 #fileEx = 'Exceptions-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
                 #fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
@@ -111,6 +112,7 @@ def main():
                     file_B.write(str(result)+'\n')
                 file_B.close()
                 file_Ex.close()
+        '''
         if mode == 2:
             gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
@@ -131,24 +133,75 @@ def main():
                             file.write('total utili+exclusive:'+str(sumUs)+'\n')
                         file.write('\n')
                     file.close()
-
+        '''
     else:
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
         taskset = generator.taskGeneration(10, 300, 'S', 1)
-        #print test(taskset, debug)
+        print test(taskset, debug)
 
 def test(taskset, debug, flag):
     # taskset, num of procs
     obj = []
-    if debug == 1:
+    if debug == 2:
+        #print "SPECIAL CHEKCING MODE:"
+        # ILP Tests
+        #obj.append(multi.partition(taskset, 'carryin'))
+        #obj.append(multi.partition(taskset, 'blocking'))
+        #obj.append(multi.partition(taskset, 'k2q'))
+        obj.append(-5)
+        obj.append(-5)
+        obj.append(-5)
+        obj.append(multi.partition(taskset, 'inflation'))
+        #obj.append(multi.partition(taskset, 'ilpbaseline'))
+        obj.append(-5)
+        obj.append(combo.partition(taskset))
+        binpack = 'worst'
+        # Heuristic + TDA Tests
+        objMap = STP.STPartition(taskset, 'tda', binpack)
+        obj.append(objMap[0])
+        #objMap = STP.STPartition(taskset, 'carry', binpack)
+        #obj.append(objMap[0])
+        obj.append(-5)
+        #objMap = STP.STPartition(taskset, 'block', binpack)
+        #obj.append(objMap[0])
+        obj.append(-5)
+        #objMap = STP.STPartition(taskset, 'jit', binpack)
+        #obj.append(objMap[0])
+        obj.append(-5)
+        #objMap = STP.STPartition(taskset, 'jitblock', binpack)
+        #obj.append(objMap[0])
+        obj.append(-5)
+        objMap = STP.STPartition(taskset, 'tdamix', binpack)
+        obj.append(objMap[0])
+
+        # Heuristic + Constant Time Tests
+        objMap = STP.STPartition(taskset, 'CTbaseline', binpack)
+        obj.append(objMap[0])
+        #objMap = STP.STPartition(taskset, 'CTcarry', binpack)
+        #obj.append(objMap[0])
+        obj.append(-5)
+        #objMap = STP.STPartition(taskset, 'CTblock', binpack)
+        #obj.append(objMap[0])
+        obj.append(-5)
+        #objMap = STP.STPartition(taskset, 'CTjit', binpack)
+        #obj.append(objMap[0])
+        obj.append(-5)
+        objMap = STP.STPartition(taskset, 'CTmix', binpack)
+        obj.append(objMap[0])
+
+    elif debug == 1:
         print "DEBUG MODE:"
         # ILP Tests
-        obj.append(multi.partition(taskset, 'carryin'))
-        obj.append(multi.partition(taskset, 'blocking'))
-        obj.append(multi.partition(taskset, 'k2q'))
+        #obj.append(multi.partition(taskset, 'carryin'))
+        #obj.append(multi.partition(taskset, 'blocking'))
+        #obj.append(multi.partition(taskset, 'k2q'))
+        obj.append(len(taskset))
+        obj.append(len(taskset))
+        obj.append(len(taskset))
         obj.append(multi.partition(taskset, 'inflation'))
-        obj.append(multi.partition(taskset, 'ilpbaseline'))
+        #obj.append(multi.partition(taskset, 'ilpbaseline'))
+        obj.append(len(taskset))
         obj.append(combo.partition(taskset))
         binpack = 'first'
         # Heuristic + TDA Tests

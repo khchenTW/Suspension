@@ -333,7 +333,7 @@ def wayofMean(way, num, atitle, typ, s, MST):
     else:
         fileName = 'M'+atitle+'Results-tasks'+repr(num)+'_stype_'+repr(typ)
     print fileName
-
+    Mbaseline = 0
     for i in getResPerUtili(resTotal4,s, num): #when g = 6 Inflation
         if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
             if MST == 0:
@@ -404,7 +404,8 @@ def wayofMean(way, num, atitle, typ, s, MST):
     if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
         for i in getResPerUtili(resTotal7,s, num):
             tmpy7.append(np.mean(i))
-        Mbaseline = max(tmpy7)
+        if Mbaseline == 0:
+            Mbaseline = max(tmpy7)
     for i in getResPerUtili(resTotal8,s, num): #when g = 6
         if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
             if MST == 0:
@@ -458,12 +459,13 @@ def wayofMean(way, num, atitle, typ, s, MST):
     if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
         for i in getResPerUtili(resTotal13,s, num):
             tmpy13.append(np.mean(i))
-        Mbaseline = max(tmpy13)
+        if Mbaseline == 0:
+            Mbaseline = max(tmpy13)
     for i in getResPerUtili(resTotal14,s, num): #when g = 6
         if atitle == 'Ameanratio' or atitle == 'Gmeanratio':
             if MST == 0:
-                print i, num
-                print way(i, num)
+                #print i, num
+                #print way(i, num)
                 y14.append(way(i, num))
             else:
                 y14.append(way(i, Mbaseline ))
@@ -557,6 +559,7 @@ def wayofMean(way, num, atitle, typ, s, MST):
 
 folder = 'plots/'
 g = 1
+
 '''
 #after this, 6 sets of methods are prepared
 wayofMean(np.mean, 10, 'Amean', 'S', 100, 0)
@@ -583,8 +586,6 @@ wayofMean(np.mean, 40, 'Amean', 'M', 100, 0)
 wayofMean(gmean, 40, 'Gmean', 'M', 100, 0)
 wayofMean(np.mean, 40, 'Amean', 'L', 100, 0)
 wayofMean(gmean, 40, 'Gmean', 'L', 100, 0)
-'''
-'''
 #ratio
 wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 0)
 wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 0)
@@ -610,8 +611,6 @@ wayofMean(Ameanratio, 40, 'Ameanratio', 'M', 100, 0)
 wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 0)
 wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 0)
 wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 0)
-'''
-'''
 #MST
 wayofMean(np.mean, 10, 'Amean', 'S', 100, 1)
 wayofMean(gmean, 10, 'Gmean', 'S', 100, 1)
@@ -637,30 +636,30 @@ wayofMean(np.mean, 40, 'Amean', 'M', 100, 1)
 wayofMean(gmean, 40, 'Gmean', 'M', 100, 1)
 wayofMean(np.mean, 40, 'Amean', 'L', 100, 1)
 wayofMean(gmean, 40, 'Gmean', 'L', 100, 1)
-'''
 
+'''
 #ratio
-#wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 1)
-#wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)
-#wayofMean(Ameanratio, 10, 'Ameanratio', 'M', 100, 1)
-#wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 1)
-##wayofMean(Ameanratio, 10, 'Ameanratio', 'L', 100, 1)
-#wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 1)
-#wayofMean(Ameanratio, 20, 'Ameanratio', 'S', 100, 1)
-#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1)
-#wayofMean(Ameanratio, 20, 'Ameanratio', 'M', 100, 1)
-#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 1)
-#wayofMean(Ameanratio, 20, 'Ameanratio', 'L', 100, 1)
+wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 1)
+wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)
+wayofMean(Ameanratio, 10, 'Ameanratio', 'M', 100, 1)
+wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 1)
+wayofMean(Ameanratio, 10, 'Ameanratio', 'L', 100, 1)
+wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 1)
+wayofMean(Ameanratio, 20, 'Ameanratio', 'S', 100, 1)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1)
+wayofMean(Ameanratio, 20, 'Ameanratio', 'M', 100, 1)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 1)
+wayofMean(Ameanratio, 20, 'Ameanratio', 'L', 100, 1)
 wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 1)
-#wayofMean(Ameanratio, 30, 'Ameanratio', 'S', 100, 1)
-#wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1)
-#wayofMean(Ameanratio, 30, 'Ameanratio', 'M', 100, 1)
-#wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 1)
-#wayofMean(Ameanratio, 30, 'Ameanratio', 'L', 100, 1)
-#wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 1)
-#wayofMean(Ameanratio, 40, 'Ameanratio', 'S', 100, 1)
-#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1)
-#wayofMean(Ameanratio, 40, 'Ameanratio', 'M', 100, 1)
-#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1)
-#wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 1)
-#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1)
+wayofMean(Ameanratio, 30, 'Ameanratio', 'S', 100, 1)
+wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1)
+wayofMean(Ameanratio, 30, 'Ameanratio', 'M', 100, 1)
+wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 1)
+wayofMean(Ameanratio, 30, 'Ameanratio', 'L', 100, 1)
+wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 1)
+wayofMean(Ameanratio, 40, 'Ameanratio', 'S', 100, 1)
+wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1)
+wayofMean(Ameanratio, 40, 'Ameanratio', 'M', 100, 1)
+wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1)
+wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 1)
+wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1)
