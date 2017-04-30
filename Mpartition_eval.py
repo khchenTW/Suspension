@@ -82,6 +82,7 @@ def main():
                             res = test(taskset, debug, 1)
                         else:
                             res = test(taskset, debug, 0)
+                        file_B.write('[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]\n')
                         file_B.write(str(res)+'\n')
                         for ind, j in enumerate(res):
                             if j == -1:

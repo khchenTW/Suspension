@@ -305,7 +305,11 @@ def Gmeanratio(results, baseline):
 def wayofMean(way, num, atitle, typ, s, MST):
     init()
     typ.replace("'", '')
-    if MST == 1:
+    if MST == 3:
+        target = 'worst/Results-tasks'+repr(num)+'_stype'+typ+'_'
+    elif MST == 2:
+        target = 'best/Results-tasks'+repr(num)+'_stype'+typ+'_'
+    elif MST == 1:
         target = 'outputM_completed/Results-tasks'+repr(num)+'_stype'+typ+'_'
     else:
         target = 'output_completed/Results-tasks'+repr(num)+'_stype'+typ+'_'
@@ -328,10 +332,14 @@ def wayofMean(way, num, atitle, typ, s, MST):
         x15.append(i)
         x16.append(i)
         x17.append(i)
-    if MST == 0:
-        fileName = atitle+'Results-tasks'+repr(num)+'_stype_'+repr(typ)
+    if MST == 1:
+        fileName = 'First-M'+atitle+'Results-tasks'+repr(num)+'_stype_'+repr(typ)
+    elif MST == 2: #best
+        fileName = 'Best-M'+atitle+'Results-tasks'+repr(num)+'_stype_'+repr(typ)
+    elif MST == 3: #worst
+        fileName = 'Worst-M'+atitle+'Results-tasks'+repr(num)+'_stype_'+repr(typ)
     else:
-        fileName = 'M'+atitle+'Results-tasks'+repr(num)+'_stype_'+repr(typ)
+        fileName = atitle+'Results-tasks'+repr(num)+'_stype_'+repr(typ)
     print fileName
     Mbaseline = 0
     for i in getResPerUtili(resTotal4,s, num): #when g = 6 Inflation
@@ -518,26 +526,49 @@ def wayofMean(way, num, atitle, typ, s, MST):
 
     marker = itertools.cycle(('D', 'd', 'o', 's', 'v'))
     try:
-        if num < 30:
-            #ax.plot( x1, y1, '-', marker = marker.next(), label='ILP(Carry)', linewidth=2.0)
-            #ax.plot( x2, y2, '-', marker = marker.next(), label='ILP(Block)', linewidth=2.0)
-            #ax.plot( x3, y3, '-', marker = marker.next(), label='ILP(Jit)', linewidth=2.0)
-            ax.plot( x4, y4, '-', marker = marker.next(), label='ILP(Inflation)', linewidth=2.0)
-            #ax.plot( x5, y5, '-', marker = marker.next(), label='ILP(Baseline)', linewidth=2.0)
-            ax.plot( x6, y6, '-', marker = marker.next(), label='ILP(Combo)', linewidth=2.0)
-            pass
+        if MST == 0:
+            if num < 30:
+                #ax.plot( x1, y1, '-', marker = marker.next(), label='ILP(Carry)', linewidth=2.0)
+                #ax.plot( x2, y2, '-', marker = marker.next(), label='ILP(Block)', linewidth=2.0)
+                #ax.plot( x3, y3, '-', marker = marker.next(), label='ILP(Jit)', linewidth=2.0)
+                ax.plot( x4, y4, '-', marker = marker.next(), label='ILP(Inflation)', linewidth=2.0)
+                #ax.plot( x5, y5, '-', marker = marker.next(), label='ILP(Baseline)', linewidth=2.0)
+                ax.plot( x6, y6, '-', marker = marker.next(), label='ILP(Combo)', linewidth=2.0)
+                pass
 
-        ax.plot( x7, y7, '-', marker = marker.next(), label='ST+TDA(Baseline)', linewidth=2.0)
-        #ax.plot( x8, y8, '-', marker = marker.next(), label='ST+TDA(Carry)', linewidth=2.0)
-        #ax.plot( x9, y9, '-', marker = marker.next(), label='ST+TDA(Block)', linewidth=2.0)
-        #ax.plot( x10, y10, '-', marker = marker.next(), label='ST+TDA(Jit)', linewidth=2.0)
-        #ax.plot( x11, y11, '-', marker = marker.next(), label='ST+TDA(Jitblock)', linewidth=2.0)
-        ax.plot( x12, y12, '-', marker = marker.next(), label='ST+TDA(Mix)', linewidth=2.0)
-        ax.plot( x13, y13, '-', marker = marker.next(), label='ST+CT(Baseline)', linewidth=2.0)
-        #ax.plot( x14, y14, '-', marker = marker.next(), label='ST+CT(Carry)', linewidth=2.0)
-        #ax.plot( x15, y15, '-', marker = marker.next(), label='ST+CT(Block)', linewidth=2.0)
-        #ax.plot( x16, y16, '-', marker = marker.next(), label='ST+CT(Jit)', linewidth=2.0)
-        ax.plot( x17, y17, '-', marker = marker.next(), label='ST+CT(Mix)', linewidth=2.0)
+            ax.plot( x7, y7, '-', marker = marker.next(), label='ST+TDA(Baseline)', linewidth=2.0)
+            #ax.plot( x8, y8, '-', marker = marker.next(), label='ST+TDA(Carry)', linewidth=2.0)
+            #ax.plot( x9, y9, '-', marker = marker.next(), label='ST+TDA(Block)', linewidth=2.0)
+            #ax.plot( x10, y10, '-', marker = marker.next(), label='ST+TDA(Jit)', linewidth=2.0)
+            #ax.plot( x11, y11, '-', marker = marker.next(), label='ST+TDA(Jitblock)', linewidth=2.0)
+            ax.plot( x12, y12, '-', marker = marker.next(), label='ST+TDA(Mix)', linewidth=2.0)
+            ax.plot( x13, y13, '-', marker = marker.next(), label='ST+CT(Baseline)', linewidth=2.0)
+            #ax.plot( x14, y14, '-', marker = marker.next(), label='ST+CT(Carry)', linewidth=2.0)
+            #ax.plot( x15, y15, '-', marker = marker.next(), label='ST+CT(Block)', linewidth=2.0)
+            #ax.plot( x16, y16, '-', marker = marker.next(), label='ST+CT(Jit)', linewidth=2.0)
+            ax.plot( x17, y17, '-', marker = marker.next(), label='ST+CT(Mix)', linewidth=2.0)
+        else:
+            if num < 30:
+                #ax.plot( x1, y1, '-', marker = marker.next(), label='ILP(Carry)', linewidth=2.0)
+                #ax.plot( x2, y2, '-', marker = marker.next(), label='ILP(Block)', linewidth=2.0)
+                #ax.plot( x3, y3, '-', marker = marker.next(), label='ILP(Jit)', linewidth=2.0)
+                ax.plot( x4, y4, '-', marker = marker.next(), label='ILP(Inflation)', linewidth=2.0)
+                #ax.plot( x5, y5, '-', marker = marker.next(), label='ILP(Baseline)', linewidth=2.0)
+                ax.plot( x6, y6, '-', marker = marker.next(), label='ILP(Combo)', linewidth=2.0)
+                pass
+
+            ax.plot( x7, y7, '-', marker = marker.next(), label='PST+TDA(Baseline)', linewidth=2.0)
+            #ax.plot( x8, y8, '-', marker = marker.next(), label='PST+TDA(Carry)', linewidth=2.0)
+            #ax.plot( x9, y9, '-', marker = marker.next(), label='PST+TDA(Block)', linewidth=2.0)
+            #ax.plot( x10, y10, '-', marker = marker.next(), label='PST+TDA(Jit)', linewidth=2.0)
+            #ax.plot( x11, y11, '-', marker = marker.next(), label='PST+TDA(Jitblock)', linewidth=2.0)
+            ax.plot( x12, y12, '-', marker = marker.next(), label='PST+TDA(Mix)', linewidth=2.0)
+            ax.plot( x13, y13, '-', marker = marker.next(), label='PST+CT(Baseline)', linewidth=2.0)
+            #ax.plot( x14, y14, '-', marker = marker.next(), label='PST+CT(Carry)', linewidth=2.0)
+            #ax.plot( x15, y15, '-', marker = marker.next(), label='PST+CT(Block)', linewidth=2.0)
+            #ax.plot( x16, y16, '-', marker = marker.next(), label='PST+CT(Jit)', linewidth=2.0)
+            ax.plot( x17, y17, '-', marker = marker.next(), label='PST+CT(Mix)', linewidth=2.0)
+
 
     except ValueError:
         print "ValueError"
@@ -639,27 +670,29 @@ wayofMean(gmean, 40, 'Gmean', 'L', 100, 1)
 
 '''
 #ratio
-wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 1)
-wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)
-wayofMean(Ameanratio, 10, 'Ameanratio', 'M', 100, 1)
-wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 1)
-wayofMean(Ameanratio, 10, 'Ameanratio', 'L', 100, 1)
-wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 1)
-wayofMean(Ameanratio, 20, 'Ameanratio', 'S', 100, 1)
-wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1)
-wayofMean(Ameanratio, 20, 'Ameanratio', 'M', 100, 1)
-wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 1)
-wayofMean(Ameanratio, 20, 'Ameanratio', 'L', 100, 1)
+#wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Ameanratio, 10, 'Ameanratio', 'M', 100, 1)
+#wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 1)
+#wayofMean(Ameanratio, 10, 'Ameanratio', 'L', 100, 1)
+#wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 1)
+#wayofMean(Ameanratio, 20, 'Ameanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Ameanratio, 20, 'Ameanratio', 'M', 100, 1)
+#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 1)
+#wayofMean(Ameanratio, 20, 'Ameanratio', 'L', 100, 1)
 wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 1)
-wayofMean(Ameanratio, 30, 'Ameanratio', 'S', 100, 1)
-wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1)
-wayofMean(Ameanratio, 30, 'Ameanratio', 'M', 100, 1)
-wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 1)
-wayofMean(Ameanratio, 30, 'Ameanratio', 'L', 100, 1)
-wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 1)
-wayofMean(Ameanratio, 40, 'Ameanratio', 'S', 100, 1)
-wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1)
-wayofMean(Ameanratio, 40, 'Ameanratio', 'M', 100, 1)
-wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1)
-wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 1)
-wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 2)
+wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 3)
+#wayofMean(Ameanratio, 30, 'Ameanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Ameanratio, 30, 'Ameanratio', 'M', 100, 1)
+#wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 1)
+#wayofMean(Ameanratio, 30, 'Ameanratio', 'L', 100, 1)
+#wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 1)
+#wayofMean(Ameanratio, 40, 'Ameanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Ameanratio, 40, 'Ameanratio', 'M', 100, 1)
+#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1)
+#wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 1)
+#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1)
