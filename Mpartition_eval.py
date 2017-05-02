@@ -75,7 +75,6 @@ def main():
                 for filename in filenames:
                     file_B.write(filename+'\n')
                     file_Ex.write(filename+'\n')
-                    file_B.write('[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]\n')
                     tasksets = np.load(filename)
                     for taskset in tasksets:
                         if idx == 2 or idx == 3:
