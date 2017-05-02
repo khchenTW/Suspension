@@ -27,10 +27,10 @@ def main():
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
         dist_utilizations = OrderedDict()
-        #dist_utilizations['10Tasks'] = 10
+        dist_utilizations['10Tasks'] = 10
         dist_utilizations['20Tasks'] = 20
-        #dist_utilizations['30Tasks'] = 30
-        #dist_utilizations['40Tasks'] = 40
+        dist_utilizations['30Tasks'] = 30
+        dist_utilizations['40Tasks'] = 40
 
         idx = 0
         perAmount = [[] for i in range(len(dist_utilizations.items()))]
@@ -63,10 +63,10 @@ def main():
         if mode == 1:
             gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
-                #fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
-                #fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
-                fileEx = 'Exceptions-tasks'+repr((1+idx)*20)+'_stype'+repr(stype)+'_group'+repr(group)
-                fileB = 'Results-tasks'+repr((1+idx)*20)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                #fileEx = 'Exceptions-tasks'+repr((1+idx)*20)+'_stype'+repr(stype)+'_group'+repr(group)
+                #fileB = 'Results-tasks'+repr((1+idx)*20)+'_stype'+repr(stype)+'_group'+repr(group)
 
                 #fileEx = 'Exceptions-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
                 #fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
@@ -247,7 +247,7 @@ def test(taskset, debug, flag):
             obj.append(len(taskset))
             obj.append(len(taskset))
             obj.append(len(taskset))
-        binpack = 'first'
+        binpack = 'worst'
         # Heuristic + TDA Tests
         objMap = STP.STPartition(taskset, 'tda', binpack)
         obj.append(objMap[0])
