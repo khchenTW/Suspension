@@ -163,7 +163,7 @@ def test(taskset, debug, flag):
             obj.append(len(taskset))
 
 
-        binpack = 'first'
+        binpack = 'worst'
         # Heuristic + TDA Tests
         objMap = STP.STPartition(taskset, 'tda', binpack)
         obj.append(objMap[0])
