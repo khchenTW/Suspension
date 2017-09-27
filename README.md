@@ -4,8 +4,11 @@ partition_eval.py is for the assumption that one task requires only one resource
 "Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [group]"
 The details of each parameter are as follows:
 > debug, it is used to put some ad-hoc code for debugging.
-> \# of sets, it is the amount of tasksets you want to test in the simulation
+
+> \# of sets, it is the amount of tasksets you want to test in the simulation.
+
 > generate/load, 0 generates the npy file which contains the generated task sets; 1 directly read the generated task sets.
+
 > stype, the length of suspension: S, M, and L. Please refer to generator.py for more details.
 
 For example, if you want to test 100 task sets with "short resource access" for group 0:
