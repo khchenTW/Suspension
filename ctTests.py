@@ -16,6 +16,7 @@ def CTbaseline(k, rest):
         return False
 
 def k2uFirstCarryinhypo(k, rest):
+    #Lemma 9a
     tmpSum = 1.0
     for i in rest:
         tmpSum*=(utili(i)+1)
@@ -26,6 +27,7 @@ def k2uFirstCarryinhypo(k, rest):
     else:
         return False
 def k2uFirstCarryinUbound(k, rest):
+    #Lemma 9b
     tmpSum = 0.0
     for i in rest:
         tmpSum += utili(i)
@@ -37,6 +39,7 @@ def k2uFirstCarryinUbound(k, rest):
     else:
         return False
 def k2uSecondBlockinghypo(k, rest):
+    #Lemma 10a
     tmpSum = 0.0
     tmpSumP = 1.0
     for i in rest:
@@ -49,6 +52,7 @@ def k2uSecondBlockinghypo(k, rest):
         return False
 
 def k2uSecondBlockingUbound(k, rest):
+    #Lemma 10b
     tmpSum = 0.0
     tmpSumP = 0.0
     for i in rest:
@@ -63,6 +67,7 @@ def k2uSecondBlockingUbound(k, rest):
     else:
         return False
 def k2qJitterBound(k, rest):
+    #Lemma 11
     tmpSum = 0.0
     tmpSumP = 0.0
     for i in rest:
@@ -74,6 +79,7 @@ def k2qJitterBound(k, rest):
     else:
         return False
 def inflation(k, rest, alltasks):
+    #Lemma 12
     tmpSum = 0.0
     for i in rest:
         tmpSum += utili(i)

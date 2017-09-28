@@ -3,7 +3,8 @@ def utili(task):
     return float(task['shared-R']/task['period'])
 
 def utiliAddE(task):
-    return float((task['shared-R']+task['exclusive-R'])/task['period'])
+    return float((task['shared-R']+task['exclusive-R']+task['block'])/task['period'])
+
 
 def zfunc(task):
     return task['resource']

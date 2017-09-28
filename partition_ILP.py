@@ -4,14 +4,15 @@ from ctTests import *
 from miscs import *
 import re
 
-
 class task (dict):
-    def __init__(self, sharedR, period, deadline, execlusiveR, resource):
+    def __init__(self, sharedR, period, deadline, execlusiveR, resource, block):
         dict.__setitem__(self, "shared-R", float (sharedR))
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (execlusiveR))
-        dict.__setitem__(self, "resource", float (resource))
+        dict.__setitem__(self, "resource", int (resource))
+        dict.__setitem__(self, "block", int (block))
+
 
 def partition(taskset, algoopt='carryin'):
 
@@ -60,7 +61,7 @@ def partition(taskset, algoopt='carryin'):
         #ILP ilp-carryin-ubound
         if algoopt == 'carryin':
             m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "ilp-carryin-ubound")
-        #ILP ilp-blocking-ubound
+        #ILP ilp-blocking-ubound + only preemptive
         elif algoopt == 'blocking':
             F = 1
             for i in tmpTasks:

@@ -12,8 +12,8 @@ from miscs import *
 
 def main():
     args = sys.argv
-    if len(args) < 5:
-            print "Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [group]"
+    if len(args) < 6:
+            print "Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [group] [btype]"
             return -1 # no input
 
     debug = int (args[1])
@@ -22,6 +22,8 @@ def main():
         mode = int(args[3]) # 0 = generate, 1 = directly use the inputs
         stype = args[4] # S, M, L
         group = args[5] # this should be less than inputfiles_amount
+        btype = args[6] # {1, 2, 3} as {0.2, 0.5, 0.75} * minimum period
+        #if btype == 0, it is the preemptive test
         inputfiles_amount = 1 # n for distribution
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
@@ -44,28 +46,28 @@ def main():
                 for j in range(inputfiles_amount):
                     if mode == 0:
                         if stype == 'S':
-                            tasksets = [generator.taskGeneration(amount, uti, 'S', 0) for n in range(tasksets_amount)]
-                            np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_S', tasksets)
+                            tasksets = [generator.taskGeneration(amount, uti, 'S', 0, btype) for n in range(tasksets_amount)]
+                            np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_S_'+str(btype), tasksets)
 
                         elif stype == 'M':
-                            tasksets = [generator.taskGeneration(amount, uti, 'M', 0) for n in range(tasksets_amount)]
-                            np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_M', tasksets)
+                            tasksets = [generator.taskGeneration(amount, uti, 'M', 0, btype) for n in range(tasksets_amount)]
+                            np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_M_'+str(btype), tasksets)
 
                         elif stype == 'L':
-                            tasksets = [generator.taskGeneration(amount, uti, 'L', 0) for n in range(tasksets_amount)]
-                            np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_L', tasksets)
+                            tasksets = [generator.taskGeneration(amount, uti, 'L', 0, btype) for n in range(tasksets_amount)]
+                            np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_L_'+str(btype), tasksets)
                     else:
                         pass
                         #TODO check if the inputs are there.
-                perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+str(group)+'_'+str(stype)+'.npy')
+                perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+str(group)+'_'+str(stype)+'_'+str(btype)+'.npy')
             idx+=1
         print perAmount
 
         if mode == 1:
             gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
-                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
-                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)+'_btype'+repr(btype)
+                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)+'_btype'+repr(btype)
 
                 #fileEx = 'Exceptions-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
                 #fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
@@ -116,7 +118,7 @@ def main():
             gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
                 if idx == 2: #print for 30 tasks
-                    fileA = 'DEtasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)
+                    fileA = 'DEtasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)+'_btype'+repr(btype)
                     file = open('output/'+fileA + '.txt', "w")
                     for filename in filenames:
                         file.write(filename+'\n')
@@ -136,7 +138,7 @@ def main():
     else:
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
-        taskset = generator.taskGeneration(4, 300, 'S', 0)
+        taskset = generator.taskGeneration(4, 300, 'S', 0, 1)
         #test(taskset, debug, 1)
 
 def test(taskset, debug, flag):
@@ -149,7 +151,10 @@ def test(taskset, debug, flag):
         # ILP Tests
         if flag == 0:
             obj.append(multi.partition(taskset, 'carryin'))
-            obj.append(multi.partition(taskset, 'blocking'))
+            if btype != 0:
+                obj.append(len(taskset))
+            else:
+                obj.append(multi.partition(taskset, 'blocking'))
             obj.append(multi.partition(taskset, 'k2q'))
             obj.append(multi.partition(taskset, 'inflation'))
             obj.append(multi.partition(taskset, 'ilpbaseline'))
@@ -163,18 +168,24 @@ def test(taskset, debug, flag):
             obj.append(len(taskset))
 
 
-        binpack = 'worst'
+        #binpack = 'worst'
         # Heuristic + TDA Tests
         objMap = STP.STPartition(taskset, 'tda', binpack)
         obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'carry', binpack)
         obj.append(objMap[0])
-        objMap = STP.STPartition(taskset, 'block', binpack)
-        obj.append(objMap[0])
+        if btype != 0:
+            obj.append(len(taskset))
+        else:
+            objMap = STP.STPartition(taskset, 'block', binpack)
+            obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'jit', binpack)
         obj.append(objMap[0])
-        objMap = STP.STPartition(taskset, 'jitblock', binpack)
-        obj.append(objMap[0])
+        if btype != 0:
+            obj.append(len(taskset))
+        else:
+            objMap = STP.STPartition(taskset, 'jitblock', binpack)
+            obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'tdamix', binpack)
         obj.append(objMap[0])
 
@@ -183,8 +194,11 @@ def test(taskset, debug, flag):
         obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'CTcarry', binpack)
         obj.append(objMap[0])
-        objMap = STP.STPartition(taskset, 'CTblock', binpack)
-        obj.append(objMap[0])
+        if btype != 0:
+            obj.append(len(taskset))
+        else:
+            objMap = STP.STPartition(taskset, 'CTblock', binpack)
+            obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'CTjit', binpack)
         obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'CTmix', binpack)

@@ -3,12 +3,13 @@ from ctTests import *
 from miscs import *
 
 class task (dict):
-    def __init__(self, sharedR, period, deadline, execlusiveR, resource):
+    def __init__(self, sharedR, period, deadline, execlusiveR, resource, block):
         dict.__setitem__(self, "shared-R", float (sharedR))
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (execlusiveR))
-        dict.__setitem__(self, "resource", float (resource))
+        dict.__setitem__(self, "resource", int (resource))
+        dict.__setitem__(self, "block", int (block))
 
 def Workload_Contrained(T,C,t):
     return C*math.ceil((t)/T)
@@ -36,6 +37,7 @@ def TDAjit(task,HPTasks):
     C=task['shared-R']+task['exclusive-R']
     R=C
     D=task['deadline']
+    B=task['block']
 
     while True:
         I=0
@@ -43,8 +45,8 @@ def TDAjit(task,HPTasks):
             I=I+Workload_Jitter(itask['period'],itask['deadline'],itask['shared-R'],R)
         if R>D:
             return R
-        if R < I+C:
-            R=I+C
+        if R < I+C+B:
+            R=I+C+B
         else:
             return R
 
@@ -77,15 +79,16 @@ def TDAcarry(task,HPTasks):
     C=task['shared-R']+task['exclusive-R']
     R=C
     D=task['deadline']
+    B=task['block']
 
     while True:
         I=0
         for itask in HPTasks:
-            I=I+Workload_Carry(itask['period'],itask['shared-R'],R)
+            I=I+Workload_Carry(itask['period'],itask['shared-R'],R)+B
         if R>D:
             return R
-        if R < I+C:
-            R=I+C
+        if R < I+C+B:
+            R=I+C+B
         else:
             return R
 

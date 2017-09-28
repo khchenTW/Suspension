@@ -10,12 +10,13 @@ import json
 ofile = "taskset-p.txt"
 USet=[]
 class task (dict):
-    def __init__(self, sharedR, period, deadline, execlusiveR, resource):
+    def __init__(self, sharedR, period, deadline, execlusiveR, resource, block):
         dict.__setitem__(self, "shared-R", float (sharedR))
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (execlusiveR))
         dict.__setitem__(self, "resource", int (resource))
+        dict.__setitem__(self, "block", int (block))
 
 def UUniFast(n,U_avg):
     global USet
@@ -58,7 +59,7 @@ def UniDist(n,U_min,U_max):
 	    uBkt=random.uniform(U_min, U_max)
 	    USet.append(uBkt)
 
-def CSet_generate_sss_z(Pmin,numLog, sstype=0):
+def CSet_generate_sss_z(Pmin,numLog, sstype=0, btype=0):
 	global USet,PSet
 	j=0
         # the number of SSS
@@ -72,14 +73,23 @@ def CSet_generate_sss_z(Pmin,numLog, sstype=0):
                 suspension = random.uniform(0.1*(p-i*p), 0.3*(p-i*p))
             else: #L
                 suspension = random.uniform(0.3*(p-i*p), 0.45*(p-i*p))
-            #generated the number of required resources
+            #generate the blocking time for \sigma*B
+            if btype == 0:
+                block = 0
+            elif btype == 1: #S
+                block = 0.2*Pmin*math.pow(10, thN)
+            elif btype == 2: #M
+                block = 0.5*Pmin*math.pow(10, thN)
+            else: #L
+                block = 0.75*Pmin*math.pow(10, thN)
+            #generate the number of required resources
             requiredres = random.sample([1,2,4,6,8,10],1)
-            PSet.append(task(i*p, p, p, suspension, requiredres[0]))
+            PSet.append(task(i*p, p, p, suspension, requiredres[0], block))
             res.append((i*p+suspension)/p)
 	    j=j+1;
         return res
 
-def CSet_generate_sss(Pmin,numLog, sstype=0):
+def CSet_generate_sss(Pmin,numLog, sstype=0, btype=0):
 	global USet,PSet
 	j=0
         # the number of SSS
@@ -94,7 +104,16 @@ def CSet_generate_sss(Pmin,numLog, sstype=0):
             else: #L
                 suspension = random.uniform(0.3*(p-i*p), 0.45*(p-i*p))
 
-            PSet.append(task(i*p, p, p, suspension, 0))
+            #generate the blocking time for \sigma*B
+            if btype == 0:
+                block = 0
+            elif btype == 1: #S
+                block = 0.2*Pmin*math.pow(10, thN)
+            elif btype == 2: #M
+                block = 0.5*Pmin*math.pow(10, thN)
+            else: #L
+                block = 0.75*Pmin*math.pow(10, thN)
+            PSet.append(task(i*p, p, p, suspension, 0, block))
             res.append((i*p+suspension)/p)
 	    j=j+1;
         return res
@@ -104,15 +123,15 @@ def init():
 	USet=[]
 	PSet=[]
 
-def taskGeneration(numTasks, uTotal, sstype, resource):
+def taskGeneration(numTasks, uTotal, sstype, resource, btype):
     random.seed()
     while 1:
         init()
         UUniFast_Discard(numTasks,uTotal/100, sstype)
         if resource == 0:
-            res = CSet_generate_sss(1,2,sstype)
+            res = CSet_generate_sss(1,2,sstype, btype)
         else:
-            res = CSet_generate_sss_z(1,2,sstype)
+            res = CSet_generate_sss_z(1,2,sstype, btype)
         if max(res) <1:
             #print numTasks, uTotal
             break

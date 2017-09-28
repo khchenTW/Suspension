@@ -4,14 +4,14 @@ from ctTests import *
 from miscs import *
 import re
 
-
 class task (dict):
-    def __init__(self, sharedR, period, deadline, execlusiveR, resource):
+    def __init__(self, sharedR, period, deadline, execlusiveR, resource, block):
         dict.__setitem__(self, "shared-R", float (sharedR))
         dict.__setitem__(self, "period", float (period))
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (execlusiveR))
-        dict.__setitem__(self, "resource", float (resource))
+        dict.__setitem__(self, "resource", int (resource))
+        dict.__setitem__(self, "block", int (block))
 
 def partition(taskset):
 

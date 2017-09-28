@@ -3,7 +3,7 @@ from ctTests import *
 from miscs import *
 from TDA import *
 
-def STPartition(tasks, opt, fit = 'first'):
+def STPartition(tasks, opt, fit = 'first', btype=0):
     if len(tasks) == 0:
         return -1
     RMTasks = RMsort(tasks, 'period')
@@ -64,10 +64,17 @@ def STPartition(tasks, opt, fit = 'first'):
                     else:
                         feasible[kid+1][j] = 0
                 elif opt == 'tdamix':
-                    if TDAcarry(taskk, pi[j]) <= taskk['period'] or TDAblock(taskk, pi[j]) <= taskk['period'] or  TDAjit(taskk, pi[j]) <= taskk['period'] or TDAjitblock(taskk, pi[j]) <= taskk['period']:
-                        feasible[kid+1][j] = 1
+                    if btype == 0:
+                        if TDAcarry(taskk, pi[j]) <= taskk['period'] or TDAblock(taskk, pi[j]) <= taskk['period'] or  TDAjit(taskk, pi[j]) <= taskk['period'] or TDAjitblock(taskk, pi[j]) <= taskk['period']:
+                            feasible[kid+1][j] = 1
+                        else:
+                            feasible[kid+1][j] = 0
                     else:
-                        feasible[kid+1][j] = 0
+                        if TDAcarry(taskk, pi[j]) <= taskk['period'] or TDAjit(taskk, pi[j]) <= taskk['period']:
+                            feasible[kid+1][j] = 1
+                        else:
+                            feasible[kid+1][j] = 0
+
                 #constant time tests
                 elif opt == 'CTbaseline':
                     if CTbaseline(taskk, pi[j]):
@@ -91,10 +98,16 @@ def STPartition(tasks, opt, fit = 'first'):
                     else:
                         feasible[kid+1][j] = 0
                 elif opt == 'CTmix':
-                    if k2uFirstCarryinhypo(taskk, pi[j]) or k2uSecondBlockinghypo(taskk, pi[j]) or k2qJitterBound(taskk, pi[j]):
-                        feasible[kid+1][j] = 1
+                    if btype == 0:
+                        if k2uFirstCarryinhypo(taskk, pi[j]) or k2uSecondBlockinghypo(taskk, pi[j]) or k2qJitterBound(taskk, pi[j]):
+                            feasible[kid+1][j] = 1
+                        else:
+                            feasible[kid+1][j] = 0
                     else:
-                        feasible[kid+1][j] = 0
+                        if k2uFirstCarryinhypo(taskk, pi[j]) or k2qJitterBound(taskk, pi[j]):
+                            feasible[kid+1][j] = 1
+                        else:
+                            feasible[kid+1][j] = 0
 
         feasibleNum = sum( feasible[kid+1] )
 
