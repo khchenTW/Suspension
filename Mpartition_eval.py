@@ -79,9 +79,9 @@ def main():
                     tasksets = np.load(filename)
                     for taskset in tasksets:
                         if idx == 2 or idx == 3:
-                            res = test(taskset, debug, 1)
+                            res = test(taskset, debug, 1, btype)
                         else:
-                            res = test(taskset, debug, 0)
+                            res = test(taskset, debug, 0, btype)
                         file_B.write('[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]\n')
                         file_B.write(str(res)+'\n')
                         for ind, j in enumerate(res):
@@ -139,9 +139,9 @@ def main():
         # DEBUG
         # generate some taskset, third argument is for sstype setting as PASS {S, M, L}
         taskset = generator.taskGeneration(10, 300, 'S', 1, 1)
-        print test(taskset, debug)
+        print test(taskset, debug, btype)
 
-def test(taskset, debug, flag):
+def test(taskset, debug, flag, btype):
     # taskset, num of procs
     obj = []
     if debug == 2:
