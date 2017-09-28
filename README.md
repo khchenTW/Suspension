@@ -1,7 +1,7 @@
 # Suspension-base Partitioning Approaches
 
 partition_eval.py is for the assumption that one task requires only one resource:  
-"Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [group]"
+"Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [group] [btype]"
 The details of each parameter are as follows:
 > debug, it is used to put some ad-hoc code for debugging.
 
@@ -11,9 +11,15 @@ The details of each parameter are as follows:
 
 > stype, the length of suspension: S, M, and L. Please refer to generator.py for more details.
 
+> group, this should be 0 now.
+
+> btype, 0 for preemptive scehduling: 1-3 for limited preemptive scheduling
+
 For example, if you want to test 100 task sets with "short resource access" for group 0:
-> python partition_eval.py 0 100 0 S 0  
-> python partition_eval.py 0 100 1 S 0
+Step 1 - generate task sets:
+> python partition_eval.py 0 100 0 S 0 [0,1,2,3] 
+Step 2 - read task sets:
+> python partition_eval.py 0 100 1 S 0 [0,1,2,3]
 
 For different kind of tests, the implementations are modularized in different files separately:  
 >Trinty ILP test: trinity_ILP.py  
