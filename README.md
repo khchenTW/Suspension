@@ -18,6 +18,7 @@ The details of each parameter are as follows:
 For example, if you want to test 100 task sets with "short resource access" for group 0:
 Step 1 - generate task sets:
 > python partition_eval.py 0 100 0 S 0 [0,1,2,3] 
+
 Step 2 - read task sets:
 > python partition_eval.py 0 100 1 S 0 [0,1,2,3]
 
