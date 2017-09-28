@@ -74,14 +74,15 @@ def CSet_generate_sss_z(Pmin,numLog, sstype=0, btype=0):
             else: #L
                 suspension = random.uniform(0.3*(p-i*p), 0.45*(p-i*p))
             #generate the blocking time for \sigma*B
+            block = 0.0
             if btype == 0:
                 block = 0
             elif btype == 1: #S
-                block = 0.2*Pmin*math.pow(10, thN)
+                block = 0.2*Pmin
             elif btype == 2: #M
-                block = 0.5*Pmin*math.pow(10, thN)
+                block = 0.5*Pmin
             else: #L
-                block = 0.75*Pmin*math.pow(10, thN)
+                block = 0.75*Pmin
             #generate the number of required resources
             requiredres = random.sample([1,2,4,6,8,10],1)
             PSet.append(task(i*p, p, p, suspension, requiredres[0], block))
@@ -105,14 +106,15 @@ def CSet_generate_sss(Pmin,numLog, sstype=0, btype=0):
                 suspension = random.uniform(0.3*(p-i*p), 0.45*(p-i*p))
 
             #generate the blocking time for \sigma*B
+            block = 0.0
             if btype == 0:
                 block = 0
             elif btype == 1: #S
-                block = 0.2*Pmin*math.pow(10, thN)
+                block = 0.2*Pmin
             elif btype == 2: #M
-                block = 0.5*Pmin*math.pow(10, thN)
+                block = 0.5*Pmin
             else: #L
-                block = 0.75*Pmin*math.pow(10, thN)
+                block = 0.75*Pmin
             PSet.append(task(i*p, p, p, suspension, 0, block))
             res.append((i*p+suspension)/p)
 	    j=j+1;
