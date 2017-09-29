@@ -301,8 +301,10 @@ def Gmeanratio(results, baseline):
         if len(results) == 0:
             return 1
     return gmean(res)
-#wayofMean(np.mean, 10, 'Amean', 'S', 100, 0)
-def wayofMean(way, num, atitle, typ, s, MST):
+
+# wayofMean(np.mean, 10, 'Amean', 'S', 100, 0)
+# Now assume all the results are for Limited-preemptive scheduling so # of arguments is 6.
+def wayofMean(way, num, atitle, typ, s, MST, mode = 1):
     init()
     typ.replace("'", '')
     if MST == 3:
@@ -505,6 +507,9 @@ def wayofMean(way, num, atitle, typ, s, MST):
             y17.append(way(i))
     # plot in pdf
     pp = PdfPages(folder + fileName + '.pdf')
+    if mode == 1:
+        atitle = "Limited-"+atitle
+
     title = atitle+'-'+repr(num)+'Tasks-'+typ
     if MST == 1:
         title = atitle+'-'+repr(num)+'Tasks-'+typ+'-First-Fit'
@@ -705,3 +710,5 @@ wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 3)
 #wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1)
 #wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 1)
 #wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1)
+
+

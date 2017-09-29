@@ -11,7 +11,7 @@ class task (dict):
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (execlusiveR))
         dict.__setitem__(self, "resource", int (resource))
-        dict.__setitem__(self, "block", int (block))
+        dict.__setitem__(self, "block", float (block))
 
 
 def partition(taskset, algoopt='carryin'):

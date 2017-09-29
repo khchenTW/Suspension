@@ -11,7 +11,7 @@ class task (dict):
         dict.__setitem__(self, "deadline", float (deadline))
         dict.__setitem__(self, "exclusive-R", float (execlusiveR))
         dict.__setitem__(self, "resource", int (resource))
-        dict.__setitem__(self, "block", int (block))
+        dict.__setitem__(self, "block", float (block))
 
 def partition(taskset):
 
@@ -77,7 +77,7 @@ def partition(taskset):
     elif m.status == GRB.Status.INFEASIBLE:
         #print('Optimization was stopped with status %d' % m.status)
     # Model is infeasible - compute an Irreducible Inconsistent Subsystem (IIS)
-        print('ILP is infeasible')
+        print('Combo ILP is infeasible')
         m.computeIIS()
         m.write("model.ilp")
         print("IIS written to file 'model.ilp'")
