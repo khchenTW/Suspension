@@ -304,17 +304,17 @@ def Gmeanratio(results, baseline):
 
 # wayofMean(np.mean, 10, 'Amean', 'S', 100, 0)
 # Now assume all the results are for Limited-preemptive scheduling so # of arguments is 6.
-def wayofMean(way, num, atitle, typ, s, MST, mode = 1):
+def wayofMean(way, num, atitle, typ, s, MST, btype = 0):
     init()
     typ.replace("'", '')
     if MST == 3:
-        target = 'worst/Results-tasks'+repr(num)+'_stype'+typ+'_'
+        target = 'worst/Results-tasks'+repr(num)+'_stype'+typ+'_'+'_btype'+repr(btype)
     elif MST == 2:
-        target = 'best/Results-tasks'+repr(num)+'_stype'+typ+'_'
+        target = 'best/Results-tasks'+repr(num)+'_stype'+typ+'_'+'_btype'+repr(btype)
     elif MST == 1:
-        target = 'outputM_completed/Results-tasks'+repr(num)+'_stype'+typ+'_'
+        target = 'outputM_completed/Results-tasks'+repr(num)+'_stype'+typ+'_'+'_btype'+repr(btype)
     else:
-        target = 'output_completed/Results-tasks'+repr(num)+'_stype'+typ+'_'
+        target = 'output_completed/Results-tasks'+repr(num)+'_stype'+typ+'_'+'_btype'+repr(btype)
     utili = fileInput(target, g)
     for i in utili[0]:
         x1.append(i)
@@ -335,13 +335,13 @@ def wayofMean(way, num, atitle, typ, s, MST, mode = 1):
         x16.append(i)
         x17.append(i)
     if MST == 1:
-        fileName = 'First-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)
+        fileName = 'First-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+repr(btype)
     elif MST == 2: #best
-        fileName = 'Best-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)
+        fileName = 'Best-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+repr(btype)
     elif MST == 3: #worst
-        fileName = 'Worst-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)
+        fileName = 'Worst-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+repr(btype)
     else:
-        fileName = atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)
+        fileName = atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+repr(btype)
     print fileName
     Mbaseline = 0
     for i in getResPerUtili(resTotal4,s, num): #when g = 6 Inflation
@@ -507,7 +507,7 @@ def wayofMean(way, num, atitle, typ, s, MST, mode = 1):
             y17.append(way(i))
     # plot in pdf
     pp = PdfPages(folder + fileName + '.pdf')
-    if mode == 1:
+    if btype > 0:
         atitle = "Limited-"+atitle
 
     title = atitle+'-'+repr(num)+'Tasks-'+typ
@@ -682,7 +682,6 @@ wayofMean(gmean, 40, 'Gmean', 'M', 100, 1)
 wayofMean(np.mean, 40, 'Amean', 'L', 100, 1)
 wayofMean(gmean, 40, 'Gmean', 'L', 100, 1)
 
-'''
 #ratio
 #wayofMean(Ameanratio, 10, 'Ameanratio', 'S', 100, 1)
 #wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)
@@ -695,9 +694,9 @@ wayofMean(gmean, 40, 'Gmean', 'L', 100, 1)
 #wayofMean(Ameanratio, 20, 'Ameanratio', 'M', 100, 1)
 #wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 1)
 #wayofMean(Ameanratio, 20, 'Ameanratio', 'L', 100, 1)
-wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 1)
-wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 2)
-wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 3)
+#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 1)
+#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 2)
+#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 3)
 #wayofMean(Ameanratio, 30, 'Ameanratio', 'S', 100, 1)
 #wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1)
 #wayofMean(Ameanratio, 30, 'Ameanratio', 'M', 100, 1)
@@ -711,4 +710,18 @@ wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 3)
 #wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 1)
 #wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1)
 
+'''
 
+#Limited-preemptive
+#wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1)
+#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1)

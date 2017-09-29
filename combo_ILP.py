@@ -80,7 +80,7 @@ def partition(taskset):
     # Model is infeasible - compute an Irreducible Inconsistent Subsystem (IIS)
         print('Combo ILP is infeasible')
         m.computeIIS()
-        m.write("model.ilp")
+        #m.write("model.ilp")
         print("IIS written to file 'model.ilp'")
         return -1
     elif m.status == GRB.Status.TIME_LIMIT:

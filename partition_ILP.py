@@ -58,16 +58,16 @@ def partition(taskset, algoopt='carryin'):
     c = 0
     for kid, taskk in enumerate(tmpTasks): #i is the k task
         hpTasks = tmpTasks[:c]
-        #ILP ilp-carryin-ubound
+        #ILP ilp-carryin-ubound Eq18
         if algoopt == 'carryin':
             m.addConstrs((quicksum( x[tid, j] * utili( i ) for tid, i in enumerate(hpTasks)) <= ( 1 - x[kid,j] ) + x[kid,j] * np.log(3/(utiliAddE(taskk)+2)) for j in range (len(tmpTasks))) , "ilp-carryin-ubound")
-        #ILP ilp-blocking-ubound + only preemptive
+        #ILP ilp-blocking-ubound + only preemptive Eq21
         elif algoopt == 'blocking':
             F = 1
             for i in tmpTasks:
                 F+=(i['shared-R']+min(i['shared-R'], i['exclusive-R']))/i['period']
             m.addConstrs((utiliAddE( taskk )*x[kid, j]+quicksum((utili(i) + qfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= x[kid,j]*np.log(2)+(1-x[kid,j])*F for j in range(len(tmpTasks))), "ilp-blocking-ubound")
-        #ILP ilp-k2q
+        #ILP ilp-k2q Eq19
         elif algoopt == 'k2q':
             m.addConstrs(( utiliAddE( taskk )*x[kid, j]+quicksum((utili(i) + vfunc(i)/taskk['period'])*x[tid, j] for tid, i in enumerate(hpTasks) ) <= len(tmpTasks)*(1-x[kid, j])+x[kid,j] for j in range (len(tmpTasks))) , "ilp-k2q")
 

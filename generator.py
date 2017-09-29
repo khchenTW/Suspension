@@ -78,11 +78,11 @@ def CSet_generate_sss_z(Pmin,numLog, sstype=0, btype=0):
             if btype == 0:
                 block = 0
             elif btype == 1: #S
-                block = 0.2*Pmin
+                block = 0.1*Pmin
             elif btype == 2: #M
-                block = 0.5*Pmin
+                block = 0.1*Pmin
             else: #L
-                block = 0.75*Pmin
+                block = 0.1*Pmin
             #generate the number of required resources
             requiredres = random.sample([1,2,4,6,8,10],1)
             PSet.append(task(i*p, p, p, suspension, requiredres[0], block))

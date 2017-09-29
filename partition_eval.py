@@ -12,8 +12,8 @@ from miscs import *
 
 def main():
     args = sys.argv
-    if len(args) < 6:
-            print "Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [group] [btype]"
+    if len(args) < 5:
+            print "Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [btype]"
             return -1 # no input
 
     debug = int (args[1])
@@ -21,8 +21,7 @@ def main():
         tasksets_amount = int (args[2])
         mode = int(args[3]) # 0 = generate, 1 = directly use the inputs
         stype = args[4] # S, M, L
-        group = args[5] # this should be less than inputfiles_amount
-        btype = args[6] # {1, 2, 3} as {0.2, 0.5, 0.75} * minimum period
+        btype = args[5] # {1, 2, 3} as {0.2, 0.5, 0.75} * minimum period
         #if btype == 0, it is the preemptive test
         inputfiles_amount = 1 # n for distribution
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
@@ -59,15 +58,15 @@ def main():
                     else:
                         pass
                         #TODO check if the inputs are there.
-                perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+str(group)+'_'+str(stype)+'_'+str(btype)+'.npy')
+                perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+str(stype)+'_'+str(btype)+'.npy')
             idx+=1
         print perAmount
 
         if mode == 1:
             gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
-                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)+'_btype'+repr(btype)
-                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)+'_btype'+repr(btype)
+                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_btype'+repr(btype)
+                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_btype'+repr(btype)
 
                 #fileEx = 'Exceptions-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
                 #fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
@@ -118,7 +117,7 @@ def main():
             gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
                 if idx == 2: #print for 30 tasks
-                    fileA = 'DEtasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_group'+repr(group)+'_btype'+repr(btype)
+                    fileA = 'DEtasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_btype'+repr(btype)
                     file = open('output/'+fileA + '.txt', "w")
                     for filename in filenames:
                         file.write(filename+'\n')
