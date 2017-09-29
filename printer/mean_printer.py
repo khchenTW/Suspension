@@ -510,13 +510,13 @@ def wayofMean(way, num, atitle, typ, s, MST, btype = 'N'):
     if btype > 0:
         atitle = "Limited-"+atitle
 
-    title = atitle+'-'+repr(num)+'Tasks-'+typ
+    title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
     if MST == 1:
-        title = atitle+'-'+repr(num)+'Tasks-'+typ+'-First-Fit'
+        title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-First-Fit'
     elif MST == 2:
-        title = atitle+'-'+repr(num)+'Tasks-'+typ+'-Best-Fit'
+        title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-Best-Fit'
     elif MST == 3:
-        title = atitle+'-'+repr(num)+'Tasks-'+typ+'-Worst-Fit'
+        title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-Worst-Fit'
     plt.title(title, fontsize=20)
     plt.grid(True)
     #plt.ylabel('Geometric Mean', fontsize=20)
