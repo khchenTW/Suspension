@@ -122,7 +122,7 @@ def fileInput(var1, group):
     utililist = []
     while fileidx < group:
         tmpUtil = []
-        f1 = open(var1+str(fileidx)+".txt", 'r')
+        f1 = open(var1+".txt", 'r')
         count = -1
         flag = 0
         tmpRes1 = []
