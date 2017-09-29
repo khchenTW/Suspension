@@ -72,11 +72,14 @@ def CSet_generate_sss_z(Pmin,numLog, sstype="S", btype="N"):
             if btype == 'N':
                 block = 0
             elif btype == "S":
-                block = 0.01 * random.sample([1,2], 1)
+                nb = random.sample([1,2], 1)
+                block = 0.01 * nb[0]
             elif btype == "M": #M
-                block = 0.01 * random.sample([1,4], 1)
+                nb = random.sample([1,2,4], 1)
+                block = 0.01 * nb[0]
             elif btype == "L": #L
-                block = 0.01 * random.sample([1,8], 1)
+                nb = random.sample([1,2,4,6,8], 1)
+                block = 0.01 * nb[0]
             #generate the suspention time e_i
             if sstype == "S": #S
                 suspension = random.uniform(0.01*(p-i*p-block), 0.1*(p-i*p-block))
@@ -106,21 +109,14 @@ def CSet_generate_sss(Pmin,numLog, sstype="S", btype="N"):
             if btype == 'N':
                 block = 0
             elif btype == "S":
-                block = 0.01 * random.sample([1,2], 1)
+                nb = random.sample([1,2], 1)
+                block = 0.01 * nb[0]
             elif btype == "M": #M
-                block = 0.01 * random.sample([1,4], 1)
+                nb = random.sample([1,2,4], 1)
+                block = 0.01 * nb[0]
             elif btype == "L": #L
-                block = 0.01 * random.sample([1,8], 1)
-            '''
-            if btype == "N":
-                block = 0
-            elif btype == "S": #S
-                block = 0.01
-            elif btype == "M": #M
-                block = 0.05
-            else: #L
-                block = 0.1
-            '''
+                nb = random.sample([1,2,4,6,8], 1)
+                block = 0.01 * nb[0]
             #generate the suspention time e_i
             if sstype == "S": #S
                 suspension = random.uniform(0.01*(p-i*p-block), 0.1*(p-i*p-block))
