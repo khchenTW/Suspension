@@ -308,13 +308,13 @@ def wayofMean(way, num, atitle, typ, s, MST, btype = 0):
     init()
     typ.replace("'", '')
     if MST == 3:
-        target = 'worst/Results-tasks'+repr(num)+'_stype'+typ+'_'+'_btype'+repr(btype)
+        target = 'worst/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+repr(btype)
     elif MST == 2:
-        target = 'best/Results-tasks'+repr(num)+'_stype'+typ+'_'+'_btype'+repr(btype)
+        target = 'best/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+repr(btype)
     elif MST == 1:
-        target = 'outputM_completed/Results-tasks'+repr(num)+'_stype'+typ+'_'+'_btype'+repr(btype)
+        target = 'outputM_completed/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+repr(btype)
     else:
-        target = 'output_completed/Results-tasks'+repr(num)+'_stype'+typ+'_'+'_btype'+repr(btype)
+        target = 'output_completed/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+repr(btype)
     utili = fileInput(target, g)
     for i in utili[0]:
         x1.append(i)
