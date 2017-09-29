@@ -67,22 +67,24 @@ def CSet_generate_sss_z(Pmin,numLog, sstype=0, btype=0):
 	for i in USet:
 	    thN=j%numLog
 	    p=random.uniform(Pmin*math.pow(10, thN), Pmin*math.pow(10, thN+1))
-            if sstype == 0: #S
-                suspension = random.uniform(0.01*(p-i*p), 0.1*(p-i*p))
-            elif sstype == 1: #M
-                suspension = random.uniform(0.1*(p-i*p), 0.3*(p-i*p))
-            else: #L
-                suspension = random.uniform(0.3*(p-i*p), 0.45*(p-i*p))
             #generate the blocking time for \sigma*B
             block = 0.0
             if btype == 0:
                 block = 0
             elif btype == 1: #S
-                block = 0.1*Pmin
+                block = 0.2*Pmin
             elif btype == 2: #M
-                block = 0.1*Pmin
+                block = 0.5*Pmin
             else: #L
-                block = 0.1*Pmin
+                block = 0.75*Pmin
+            #generate the suspention time e_i
+            if sstype == 0: #S
+                suspension = random.uniform(0.01*(p-i*p-block), 0.1*(p-i*p-block))
+            elif sstype == 1: #M
+                suspension = random.uniform(0.1*(p-i*p-block), 0.3*(p-i*p-block))
+            else: #L
+                suspension = random.uniform(0.3*(p-i*p-block), 0.45*(p-i*p-block))
+
             #generate the number of required resources
             requiredres = random.sample([1,2,4,6,8,10],1)
             PSet.append(task(i*p, p, p, suspension, requiredres[0], block))
@@ -98,12 +100,6 @@ def CSet_generate_sss(Pmin,numLog, sstype=0, btype=0):
 	for i in USet:
 	    thN=j%numLog
 	    p=random.uniform(Pmin*math.pow(10, thN), Pmin*math.pow(10, thN+1))
-            if sstype == 0: #S
-                suspension = random.uniform(0.01*(p-i*p), 0.1*(p-i*p))
-            elif sstype == 1: #M
-                suspension = random.uniform(0.1*(p-i*p), 0.3*(p-i*p))
-            else: #L
-                suspension = random.uniform(0.3*(p-i*p), 0.45*(p-i*p))
 
             #generate the blocking time for \sigma*B
             block = 0.0
@@ -115,6 +111,15 @@ def CSet_generate_sss(Pmin,numLog, sstype=0, btype=0):
                 block = 0.5*Pmin
             else: #L
                 block = 0.75*Pmin
+            #generate the suspention time e_i
+            if sstype == 0: #S
+                suspension = random.uniform(0.01*(p-i*p-block), 0.1*(p-i*p-block))
+            elif sstype == 1: #M
+                suspension = random.uniform(0.1*(p-i*p-block), 0.3*(p-i*p-block))
+            else: #L
+                suspension = random.uniform(0.3*(p-i*p-block), 0.45*(p-i*p-block))
+
+
             PSet.append(task(i*p, p, p, suspension, 0, block))
             res.append((i*p+suspension)/p)
 	    j=j+1;

@@ -42,22 +42,21 @@ def main():
                 if idx == 3 and uti >= 1600: # 40 tasks
                     continue
 
-                for j in range(inputfiles_amount):
-                    if mode == 0:
-                        if stype == 'S':
-                            tasksets = [generator.taskGeneration(amount, uti, 'S', 0, btype) for n in range(tasksets_amount)]
-                            np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_S_'+str(btype), tasksets)
+                if mode == 0:
+                    if stype == 'S':
+                        tasksets = [generator.taskGeneration(amount, uti, 'S', 0, btype) for n in range(tasksets_amount)]
+                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_S_'+str(btype), tasksets)
 
-                        elif stype == 'M':
-                            tasksets = [generator.taskGeneration(amount, uti, 'M', 0, btype) for n in range(tasksets_amount)]
-                            np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_M_'+str(btype), tasksets)
+                    elif stype == 'M':
+                        tasksets = [generator.taskGeneration(amount, uti, 'M', 0, btype) for n in range(tasksets_amount)]
+                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_M_'+str(btype), tasksets)
 
-                        elif stype == 'L':
-                            tasksets = [generator.taskGeneration(amount, uti, 'L', 0, btype) for n in range(tasksets_amount)]
-                            np.save ('input/'+str(set_name)+'_'+str(uti)+'_'+str(j)+'_L_'+str(btype), tasksets)
-                    else:
-                        pass
-                        #TODO check if the inputs are there.
+                    elif stype == 'L':
+                        tasksets = [generator.taskGeneration(amount, uti, 'L', 0, btype) for n in range(tasksets_amount)]
+                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_L_'+str(btype), tasksets)
+                else:
+                    pass
+                    #TODO check if the inputs are there.
                 perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+str(stype)+'_'+str(btype)+'.npy')
             idx+=1
         print perAmount
