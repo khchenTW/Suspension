@@ -3,11 +3,12 @@ def utili(task):
     return float(task['shared-R']/task['period'])
 
 def utiliAddE(task):
-    if task['block'] == 0.5:
-        print task['block']
-    #print task['exclusive-R']
-    #print task['shared-R']
-    #print task['period']
+    '''
+    print task['block']
+    print task['exclusive-R']
+    print task['shared-R']
+    print task['period']
+    '''
     return float((task['shared-R']+task['exclusive-R']+task['block'])/task['period'])
 
 def zfunc(task):

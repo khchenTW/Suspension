@@ -59,7 +59,7 @@ def UniDist(n,U_min,U_max):
 	    uBkt=random.uniform(U_min, U_max)
 	    USet.append(uBkt)
 
-def CSet_generate_sss_z(Pmin,numLog, sstype=0, btype=0):
+def CSet_generate_sss_z(Pmin,numLog, sstype="S", btype="N"):
 	global USet,PSet
 	j=0
         # the number of SSS
@@ -69,18 +69,18 @@ def CSet_generate_sss_z(Pmin,numLog, sstype=0, btype=0):
 	    p=random.uniform(Pmin*math.pow(10, thN), Pmin*math.pow(10, thN+1))
             #generate the blocking time for \sigma*B
             block = 0.0
-            if btype == 0:
+            if btype == 'N':
                 block = 0
-            elif btype == 1: #S
-                block = 0.2*Pmin
-            elif btype == 2: #M
-                block = 0.5*Pmin
-            else: #L
-                block = 0.75*Pmin
+            elif btype == "S":
+                block = 0.01 * random.sample([1,2], 1)
+            elif btype == "M": #M
+                block = 0.01 * random.sample([1,4], 1)
+            elif btype == "L": #L
+                block = 0.01 * random.sample([1,8], 1)
             #generate the suspention time e_i
-            if sstype == 0: #S
+            if sstype == "S": #S
                 suspension = random.uniform(0.01*(p-i*p-block), 0.1*(p-i*p-block))
-            elif sstype == 1: #M
+            elif sstype == "M": #M
                 suspension = random.uniform(0.1*(p-i*p-block), 0.3*(p-i*p-block))
             else: #L
                 suspension = random.uniform(0.3*(p-i*p-block), 0.45*(p-i*p-block))
@@ -92,7 +92,7 @@ def CSet_generate_sss_z(Pmin,numLog, sstype=0, btype=0):
 	    j=j+1;
         return res
 
-def CSet_generate_sss(Pmin,numLog, sstype=0, btype=0):
+def CSet_generate_sss(Pmin,numLog, sstype="S", btype="N"):
 	global USet,PSet
 	j=0
         # the number of SSS
@@ -103,22 +103,31 @@ def CSet_generate_sss(Pmin,numLog, sstype=0, btype=0):
 
             #generate the blocking time for \sigma*B
             block = 0.0
-            if btype == 0:
+            if btype == 'N':
                 block = 0
-            elif btype == 1: #S
-                block = 0.2*Pmin
-            elif btype == 2: #M
-                block = 0.5*Pmin
+            elif btype == "S":
+                block = 0.01 * random.sample([1,2], 1)
+            elif btype == "M": #M
+                block = 0.01 * random.sample([1,4], 1)
+            elif btype == "L": #L
+                block = 0.01 * random.sample([1,8], 1)
+            '''
+            if btype == "N":
+                block = 0
+            elif btype == "S": #S
+                block = 0.01
+            elif btype == "M": #M
+                block = 0.05
             else: #L
-                block = 0.75*Pmin
+                block = 0.1
+            '''
             #generate the suspention time e_i
-            if sstype == 0: #S
+            if sstype == "S": #S
                 suspension = random.uniform(0.01*(p-i*p-block), 0.1*(p-i*p-block))
-            elif sstype == 1: #M
+            elif sstype == "M": #M
                 suspension = random.uniform(0.1*(p-i*p-block), 0.3*(p-i*p-block))
             else: #L
                 suspension = random.uniform(0.3*(p-i*p-block), 0.45*(p-i*p-block))
-
 
             PSet.append(task(i*p, p, p, suspension, 0, block))
             res.append((i*p+suspension)/p)

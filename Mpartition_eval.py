@@ -234,7 +234,7 @@ def test(taskset, debug, flag, btype):
         # ILP Tests
         if flag == 0:
             obj.append(multi.partition(taskset, 'carryin'))
-            if btype != 0:
+            if btype != 'N':
                 obj.append(len(taskset))
             else:
                 obj.append(multi.partition(taskset, 'blocking'))
@@ -255,14 +255,14 @@ def test(taskset, debug, flag, btype):
         obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'carry', binpack)
         obj.append(objMap[0])
-        if btype != 0:
+        if btype != 'N':
             obj.append(len(taskset))
         else:
             objMap = STP.STPartition(taskset, 'block', binpack)
             obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'jit', binpack)
         obj.append(objMap[0])
-        if btype != 0:
+        if btype != 'N':
             obj.append(len(taskset))
         else:
             objMap = STP.STPartition(taskset, 'jitblock', binpack)
@@ -276,7 +276,7 @@ def test(taskset, debug, flag, btype):
         obj.append(objMap[0])
         objMap = STP.STPartition(taskset, 'CTcarry', binpack)
         obj.append(objMap[0])
-        if btype != 0:
+        if btype != 'N':
             obj.append(len(taskset))
         else:
             objMap = STP.STPartition(taskset, 'CTblock', binpack)
