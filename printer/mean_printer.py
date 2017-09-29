@@ -304,17 +304,17 @@ def Gmeanratio(results, baseline):
 
 # wayofMean(np.mean, 10, 'Amean', 'S', 100, 0)
 # Now assume all the results are for Limited-preemptive scheduling so # of arguments is 6.
-def wayofMean(way, num, atitle, typ, s, MST, btype = 0):
+def wayofMean(way, num, atitle, typ, s, MST, btype = 'N'):
     init()
     typ.replace("'", '')
     if MST == 3:
-        target = 'worst/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+str(btype)
+        target = 'worst/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+btype
     elif MST == 2:
-        target = 'best/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+str(btype)
+        target = 'best/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+btype
     elif MST == 1:
-        target = 'outputM_completed/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+str(btype)
+        target = 'outputM_completed/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+btype
     else:
-        target = 'output_completed/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+str(btype)
+        target = 'output_completed/Results-tasks'+repr(num)+'_stype'+typ+'_btype'+btype
     utili = fileInput(target, g)
     for i in utili[0]:
         x1.append(i)
@@ -335,13 +335,13 @@ def wayofMean(way, num, atitle, typ, s, MST, btype = 0):
         x16.append(i)
         x17.append(i)
     if MST == 1:
-        fileName = 'First-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+str(btype)
+        fileName = 'First-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+btype
     elif MST == 2: #best
-        fileName = 'Best-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+str(btype)
+        fileName = 'Best-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+btype
     elif MST == 3: #worst
-        fileName = 'Worst-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+str(btype)
+        fileName = 'Worst-M'+atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+btype
     else:
-        fileName = atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+str(btype)
+        fileName = atitle+'-tasks'+repr(num)+'_stype_'+repr(typ)+'_btype'+btype
     print fileName
     Mbaseline = 0
     for i in getResPerUtili(resTotal4,s, num): #when g = 6 Inflation
