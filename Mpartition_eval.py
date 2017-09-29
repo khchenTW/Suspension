@@ -242,7 +242,7 @@ def test(taskset, debug, flag, btype):
             obj.append(multi.partition(taskset, 'inflation'))
             obj.append(multi.partition(taskset, 'ilpbaseline'))
             # TODO remove Eq21.
-            obj.append(combo.partition(taskset), btype)
+            obj.append(combo.partition(taskset, btype))
         else:
             obj.append(len(taskset))
             obj.append(len(taskset))
