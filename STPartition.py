@@ -3,7 +3,7 @@ from ctTests import *
 from miscs import *
 from TDA import *
 
-def STPartition(tasks, opt, fit = 'first', btype=0):
+def STPartition(tasks, opt, fit = 'first', btype='N'):
     if len(tasks) == 0:
         return -1
     RMTasks = RMsort(tasks, 'period')
@@ -57,7 +57,7 @@ def STPartition(tasks, opt, fit = 'first', btype=0):
                 else:
                     feasible[kid+1][j] = 0
             elif opt == 'tdamix':
-                if btype == 0:
+                if btype == 'N':
                     if TDAcarry(taskk, pi[j]) <= taskk['period'] or TDAblock(taskk, pi[j]) <= taskk['period'] or  TDAjit(taskk, pi[j]) <= taskk['period'] or TDAjitblock(taskk, pi[j]) <= taskk['period']:
                         feasible[kid+1][j] = 1
                     else:
@@ -90,7 +90,7 @@ def STPartition(tasks, opt, fit = 'first', btype=0):
                 else:
                     feasible[kid+1][j] = 0
             elif opt == 'CTmix':
-                if btype == 0:
+                if btype == 'N':
                     if k2uFirstCarryinhypo(taskk, pi[j]) or k2uSecondBlockinghypo(taskk, pi[j]) or k2qJitterBound(taskk, pi[j]):
                         feasible[kid+1][j] = 1
                     else:

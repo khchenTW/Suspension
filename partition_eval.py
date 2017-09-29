@@ -22,7 +22,7 @@ def main():
         mode = int(args[3]) # 0 = generate, 1 = directly use the inputs
         stype = args[4] # S, M, L
         btype = args[5] # {1, 2, 3} as {0.2, 0.5, 0.75} * minimum period
-        #if btype == 0, it is the preemptive test
+        #if btype == 'N', it is the preemptive test
         inputfiles_amount = 1 # n for distribution
         tasksets_amount = int(math.ceil(tasksets_amount / inputfiles_amount))
 
@@ -156,7 +156,8 @@ def test(taskset, debug, flag, btype):
             obj.append(multi.partition(taskset, 'k2q'))
             obj.append(multi.partition(taskset, 'inflation'))
             obj.append(multi.partition(taskset, 'ilpbaseline'))
-            obj.append(combo.partition(taskset))
+            # remove Eq.21
+            obj.append(combo.partition(taskset), btype)
         else:
             obj.append(len(taskset))
             obj.append(len(taskset))

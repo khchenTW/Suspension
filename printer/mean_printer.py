@@ -507,7 +507,7 @@ def wayofMean(way, num, atitle, typ, s, MST, btype = 'N'):
             y17.append(way(i))
     # plot in pdf
     pp = PdfPages(folder + fileName + '.pdf')
-    if btype > 0:
+    if btype != 'N':
         atitle = "Limited-"+atitle
 
     title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
