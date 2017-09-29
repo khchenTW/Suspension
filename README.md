@@ -15,10 +15,10 @@ The details of each parameter are as follows:
 
 For example, if you want to test 100 task sets with "short resource access" for group 0:
 Step 1 - generate task sets:
-> python partition_eval.py 0 100 0 S 0 [N,S,M,L] 
+> python partition_eval.py 0 100 0 S [N,S,M,L] 
 
 Step 2 - read task sets:
-> python partition_eval.py 0 100 1 S 0 [N,S,M,L]
+> python partition_eval.py 0 100 1 S [N,S,M,L]
 
 For different kind of tests, the implementations are modularized in different files separately:  
 >Trinty ILP test: trinity_ILP.py  
