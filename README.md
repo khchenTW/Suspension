@@ -13,7 +13,8 @@ The details of each parameter are as follows:
 
 > btype, N for preemptive scehduling: [S, M, L] for limited preemptive scheduling. 
 
-For example, if you want to test 100 task sets with "short resource access" for group 0:
+For example, if you want to test 100 task sets with "short resource access" for limited-preemptive [S,M,L] or preemptive scheudling [N]:
+
 Step 1 - generate task sets:
 > python partition_eval.py 0 100 0 S [N,S,M,L] 
 
