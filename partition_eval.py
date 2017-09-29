@@ -64,8 +64,8 @@ def main():
         if mode == 1:
             gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
-                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_btype'+repr(btype)
-                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_btype'+repr(btype)
+                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+str(stype)+'_btype'+str(btype)
+                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+str(stype)+'_btype'+str(btype)
 
                 #fileEx = 'Exceptions-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
                 #fileB = 'Results-tasks'+repr((1+idx)*30)+'_stype'+repr(stype)+'_group'+repr(group)
