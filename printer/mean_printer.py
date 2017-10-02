@@ -160,7 +160,7 @@ def fileInput(var1, group, s):
                     strline = strline.replace('\n','')
                     strline = strline.split(',')
                     #prechecking
-                
+
                     #strline[x] x = 0-16
                     #[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]
                     #ILPcarry
@@ -517,11 +517,20 @@ def wayofMean(way, num, atitle, typ, s, MST, btype = 'N', mode = 'REP'):
 
     title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
     if MST == 1:
-        title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-First-Fit'
+        if mode == 'ILP:'
+            title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
+        else:
+            title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-First-Fit'
     elif MST == 2:
-        title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-Best-Fit'
+        if mode == 'ILP:'
+            title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
+        else:
+            title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-Best-Fit'
     elif MST == 3:
-        title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-Worst-Fit'
+        if mode == 'ILP:'
+            title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
+        else:
+            title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-Worst-Fit'
     plt.title(title, fontsize=20)
     plt.grid(True)
     #plt.ylabel('Geometric Mean', fontsize=20)
@@ -645,7 +654,7 @@ def main():
 		print "Usage: python mean_printer.py [representative/ILP/TDA/CT]"
 		return -1
 	mode = args[1]
-	
+
 	#after this, 6 sets of methods are prepared
 	'''
 	wayofMean(np.mean, 10, 'Amean', 'S', 100, 0)
