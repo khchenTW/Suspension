@@ -43,27 +43,27 @@ def main():
                 if mode == 0:
                     if stype == 'S':
                         tasksets = [generator.taskGeneration(amount, uti, 'S', 1, btype) for n in range(tasksets_amount)]
-                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_S_'+str(btype), tasksets)
+                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_S_'+btype, tasksets)
 
                     elif stype == 'M':
                         tasksets = [generator.taskGeneration(amount, uti, 'M', 1, btype) for n in range(tasksets_amount)]
-                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_M_'+str(btype), tasksets)
+                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_M_'+btype, tasksets)
 
                     elif stype == 'L':
                         tasksets = [generator.taskGeneration(amount, uti, 'L', 1, btype) for n in range(tasksets_amount)]
-                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_L_'+str(btype), tasksets)
+                        np.save ('input/'+str(set_name)+'_'+str(uti)+'_L_'+btype, tasksets)
                 else:
                     pass
                     #TODO check if the inputs are there.
-                perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+str(stype)+'_'+str(btype)+'.npy')
+                perAmount[idx].append('input/'+str(set_name)+'_'+str(uti)+'_'+stype+'_'+btype+'.npy')
             idx+=1
         print perAmount
 
         if mode == 1:
             gRes=[[] for i in range(17)] # 17 methods
             for idx, filenames  in enumerate(perAmount):
-                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_btype'+repr(btype)
-                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+repr(stype)+'_btype'+repr(btype)
+                fileEx = 'Exceptions-tasks'+repr((1+idx)*10)+'_stype'+stype+'_btype'+btype
+                fileB = 'Results-tasks'+repr((1+idx)*10)+'_stype'+stype+'_btype'+btype
                 #fileEx = 'Exceptions-tasks'+repr((1+idx)*20)+'_stype'+repr(stype)+'_group'+repr(group)
                 #fileB = 'Results-tasks'+repr((1+idx)*20)+'_stype'+repr(stype)+'_group'+repr(group)
 

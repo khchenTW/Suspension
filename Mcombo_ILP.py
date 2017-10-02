@@ -92,7 +92,10 @@ def partition(taskset, btype='N'):
         m.computeIIS()
         m.write("model.ilp")
         print("IIS written to file 'model.ilp'")
-        return -1
+        sumRes = 0
+        for item in taskset:
+            sumRes += item['resource']
+        return sumRes
     elif m.status == GRB.Status.TIME_LIMIT:
         if m.objVal < len(taskset):
             pass #do nothing but use the intermediate results
