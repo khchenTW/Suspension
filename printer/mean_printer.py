@@ -120,6 +120,7 @@ def init():
 def fileInput(var1, group):
     fileidx = 0
     utililist = []
+    flag = 0
     while fileidx < group:
         tmpUtil = []
         f1 = open(var1+".txt", 'r')
@@ -152,48 +153,55 @@ def fileInput(var1, group):
 
             #Content to get Arithmetic mean and Gmean
             if 0 <count < 200:
+                flag = 0
                 if count%2==1:
                     strline = line.replace('[','')
                     strline = strline.replace(']','')
                     strline = strline.replace('\n','')
                     strline = strline.split(',')
-                    #strline[x] x = 0-16
-                    #[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]
-                    #ILPcarry
-                    tmpRes1.append(int(strline[0]))
-                    #ILPblock
-                    tmpRes2.append(int(strline[1]))
-                    #ILPjit
-                    tmpRes3.append(int(strline[2]))
-                    #Inflation
-                    tmpRes4.append(int(strline[3]))
-                    #ILPbaseline
-                    tmpRes5.append(int(strline[4]))
-                    #Combo
-                    tmpRes6.append(int(strline[5]))
-                    #TDAbaseline
-                    tmpRes7.append(int(strline[6]))
-                    #TDAcarry
-                    tmpRes8.append(int(strline[7]))
-                    #TDAblock
-                    tmpRes9.append(int(strline[8]))
-                    #TDAjit
-                    tmpRes10.append(int(strline[9]))
-                    #TDAjitblock
-                    tmpRes11.append(int(strline[10]))
-                    #TDAmix
-                    tmpRes12.append(int(strline[11]))
-                    #CTbaseline
-                    tmpRes13.append(int(strline[12]))
-                    #CTbarry
-                    tmpRes14.append(int(strline[13]))
-                    #CTblock
-                    tmpRes15.append(int(strline[14]))
-                    #CTjit
-                    tmpRes16.append(int(strline[15]))
-                    #CTmix
-                    tmpRes17.append(int(strline[16]))
+                    #prechecking
+                    for item in strline:
+                        if int(item) < 0:
+                            flag = 1
 
+                    if flag == 0:
+                        #strline[x] x = 0-16
+                        #[ILPcarry, ILPblock, ILPjit, Inflation, ILPbaseline, Combo, TDA, TDAcarry, TDAblock, TDAjit, TDAjitblock, TDAmix, CTbaseline, CTcarry, CTblock, CTjit, CTmix]
+                        #ILPcarry
+                        tmpRes1.append(int(strline[0]))
+                        #ILPblock
+                        tmpRes2.append(int(strline[1]))
+                        #ILPjit
+                        tmpRes3.append(int(strline[2]))
+                        #Inflation
+                        tmpRes4.append(int(strline[3]))
+                        #ILPbaseline
+                        tmpRes5.append(int(strline[4]))
+                        #Combo
+                        tmpRes6.append(int(strline[5]))
+                        #TDAbaseline
+                        tmpRes7.append(int(strline[6]))
+                        #TDAcarry
+                        tmpRes8.append(int(strline[7]))
+                        #TDAblock
+                        tmpRes9.append(int(strline[8]))
+                        #TDAjit
+                        tmpRes10.append(int(strline[9]))
+                        #TDAjitblock
+                        tmpRes11.append(int(strline[10]))
+                        #TDAmix
+                        tmpRes12.append(int(strline[11]))
+                        #CTbaseline
+                        tmpRes13.append(int(strline[12]))
+                        #CTbarry
+                        tmpRes14.append(int(strline[13]))
+                        #CTblock
+                        tmpRes15.append(int(strline[14]))
+                        #CTjit
+                        tmpRes16.append(int(strline[15]))
+                        #CTmix
+                        tmpRes17.append(int(strline[16]))
+                    flag = 0
             if count == 201:
                 '''
                 #print 'Gmean:'+line
