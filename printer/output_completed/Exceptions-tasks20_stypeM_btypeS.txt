@@ -1,0 +1,30 @@
+input/20Tasks_200_M_S.npy
+input/20Tasks_300_M_S.npy
+input/20Tasks_400_M_S.npy
+input/20Tasks_500_M_S.npy
+input/20Tasks_600_M_S.npy
+input/20Tasks_700_M_S.npy
+Infeasible in the double checking 
+[ {'resource': 0, 'exclusive-R': 1.3350491981846417, 'shared-R': 0.2777891101530916, 'period': 7.573558278685701, 'deadline': 7.573558278685701, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 7.453943852560513, 'shared-R': 42.15835441696577, 'period': 77.14148970895302, 'deadline': 77.14148970895302, 'block': 0.01}
+ {'resource': 0, 'exclusive-R': 0.1828388013750679, 'shared-R': 0.45288362882886213, 'period': 1.1436787437248013, 'deadline': 1.1436787437248013, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 9.914351260543874, 'shared-R': 14.693822351351075, 'period': 76.21418610425718, 'deadline': 76.21418610425718, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 0.4785700367789263, 'shared-R': 4.111778424795873, 'period': 7.675777023244635, 'deadline': 7.675777023244635, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 11.360892074821514, 'shared-R': 18.62441979367799, 'period': 91.47737751038393, 'deadline': 91.47737751038393, 'block': 0.01}
+ {'resource': 0, 'exclusive-R': 0.44392037298020953, 'shared-R': 1.220862787755946, 'period': 4.539594721010614, 'deadline': 4.539594721010614, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 8.726104852501694, 'shared-R': 3.1446026075172853, 'period': 47.629998234896284, 'deadline': 47.629998234896284, 'block': 0.01}
+ {'resource': 0, 'exclusive-R': 0.44151321316475967, 'shared-R': 0.10259931432261661, 'period': 2.37583109955717, 'deadline': 2.37583109955717, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 4.066680235012076, 'shared-R': 59.94302308222747, 'period': 75.06647457933803, 'deadline': 75.06647457933803, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 0.3258312880774875, 'shared-R': 2.3400314499325985, 'period': 5.476323320095731, 'deadline': 5.476323320095731, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 24.65467575336902, 'shared-R': 6.148659913923354, 'period': 93.04420844294015, 'deadline': 93.04420844294015, 'block': 0.01}
+ {'resource': 0, 'exclusive-R': 0.15648778828172977, 'shared-R': 1.3196322503367723, 'period': 2.343522812436913, 'deadline': 2.343522812436913, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 1.065661273899215, 'shared-R': 23.724350839363172, 'period': 33.31419353343028, 'deadline': 33.31419353343028, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 0.6659622356812867, 'shared-R': 0.18633192446636088, 'period': 3.1662071080903917, 'deadline': 3.1662071080903917, 'block': 0.02}
+ {'resource': 0, 'exclusive-R': 2.3869566105868474, 'shared-R': 11.67911036638532, 'period': 30.88141785440803, 'deadline': 30.88141785440803, 'block': 0.01}
+ {'resource': 0, 'exclusive-R': 0.1868274156775075, 'shared-R': 1.51201947348768, 'period': 2.505094715862196, 'deadline': 2.505094715862196, 'block': 0.01}
+ {'resource': 0, 'exclusive-R': 10.006669451804143, 'shared-R': 18.49228409389066, 'period': 58.612719809812084, 'deadline': 58.612719809812084, 'block': 0.01}
+ {'resource': 0, 'exclusive-R': 1.310223336446799, 'shared-R': 2.556912557516373, 'period': 7.211748283589046, 'deadline': 7.211748283589046, 'block': 0.01}
+ {'resource': 0, 'exclusive-R': 6.895643213905212, 'shared-R': 27.99250042704357, 'period': 64.67946346202568, 'deadline': 64.67946346202568, 'block': 0.02}]
+[15, 20, -3, 17, 16, 10, 12, 10, 20, 11, 20, 10, 16, 15, 20, 10, 11]
+input/20Tasks_800_M_S.npy
+input/20Tasks_900_M_S.npy

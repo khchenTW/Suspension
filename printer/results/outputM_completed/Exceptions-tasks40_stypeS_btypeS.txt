@@ -1,0 +1,6 @@
+input/40Tasks_400_S_S.npy
+input/40Tasks_600_S_S.npy
+input/40Tasks_800_S_S.npy
+input/40Tasks_1000_S_S.npy
+input/40Tasks_1200_S_S.npy
+input/40Tasks_1400_S_S.npy

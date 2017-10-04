@@ -517,17 +517,17 @@ def wayofMean(way, num, atitle, typ, s, MST, btype = 'N', mode = 'REP'):
 
     title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
     if MST == 1:
-        if mode == 'ILP:'
+        if mode == 'ILP':
             title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
         else:
             title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-First-Fit'
     elif MST == 2:
-        if mode == 'ILP:'
+        if mode == 'ILP':
             title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
         else:
             title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-Best-Fit'
     elif MST == 3:
-        if mode == 'ILP:'
+        if mode == 'ILP':
             title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')'
         else:
             title = atitle+'-'+repr(num)+'Tasks-e('+typ+')-b('+btype+')-Worst-Fit'
@@ -595,10 +595,10 @@ def wayofMean(way, num, atitle, typ, s, MST, btype = 'N', mode = 'REP'):
 			ax.plot( x6, y6, '-', marker = marker.next(), label='ILP-Combo', linewidth=2.0)
 			pass
 
-		    ax.plot( x7, y7, '-', marker = marker.next(), label='PST-FF-TDA(Baseline)', linewidth=2.0)
-		    ax.plot( x12, y12, '-', marker = marker.next(), label='PST-FF-TDA(Mixed)', linewidth=2.0)
-		    ax.plot( x13, y13, '-', marker = marker.next(), label='PST-FF-CT(Baseline)', linewidth=2.0)
-		    ax.plot( x17, y17, '-', marker = marker.next(), label='PST-FF-CT(Mixed)', linewidth=2.0)
+		    ax.plot( x7, y7, '-', marker = marker.next(), label='PST-BF-TDA(Baseline)', linewidth=2.0)
+		    ax.plot( x12, y12, '-', marker = marker.next(), label='PST-BF-TDA(Mixed)', linewidth=2.0)
+		    ax.plot( x13, y13, '-', marker = marker.next(), label='PST-BF-CT(Baseline)', linewidth=2.0)
+		    ax.plot( x17, y17, '-', marker = marker.next(), label='PST-BF-CT(Mixed)', linewidth=2.0)
 
 		elif mode == 'ILP':
 		    if num < 30:
@@ -612,19 +612,19 @@ def wayofMean(way, num, atitle, typ, s, MST, btype = 'N', mode = 'REP'):
 
 		elif mode == 'TDA':
 
-		    ax.plot( x7, y7, '-', marker = marker.next(), label='PST-FF-TDA(Baseline)', linewidth=2.0)
-		    ax.plot( x8, y8, '-', marker = marker.next(), label='PST-FF-TDA(Carry)', linewidth=2.0)
+		    ax.plot( x7, y7, '-', marker = marker.next(), label='PST-BF-TDA(Baseline)', linewidth=2.0)
+		    ax.plot( x8, y8, '-', marker = marker.next(), label='PST-BF-TDA(Carry)', linewidth=2.0)
 		    #ax.plot( x9, y9, '-', marker = marker.next(), label='PST-FF-TDA(Block)', linewidth=2.0)
-		    ax.plot( x10, y10, '-', marker = marker.next(), label='PST-FF-TDA(Jit)', linewidth=2.0)
+		    ax.plot( x10, y10, '-', marker = marker.next(), label='PST-BF-TDA(Jit)', linewidth=2.0)
 		    #ax.plot( x11, y11, '-', marker = marker.next(), label='PST-FF-TDA(Jitblock)', linewidth=2.0)
-		    ax.plot( x12, y12, '-', marker = marker.next(), label='PST-FF-TDA(Mixed)', linewidth=2.0)
+		    ax.plot( x12, y12, '-', marker = marker.next(), label='PST-BF-TDA(Mixed)', linewidth=2.0)
 
 		elif mode == 'CT':
-		    ax.plot( x13, y13, '-', marker = marker.next(), label='PST-FF-CT(Baseline)', linewidth=2.0)
-		    ax.plot( x14, y14, '-', marker = marker.next(), label='PST-FF-CT(Carry)', linewidth=2.0)
+		    ax.plot( x13, y13, '-', marker = marker.next(), label='PST-BF-CT(Baseline)', linewidth=2.0)
+		    ax.plot( x14, y14, '-', marker = marker.next(), label='PST-BF-CT(Carry)', linewidth=2.0)
 		    #ax.plot( x15, y15, '-', marker = marker.next(), label='PST-FF-CT(Block)', linewidth=2.0)
-		    ax.plot( x16, y16, '-', marker = marker.next(), label='PST-FF-CT(Jit)', linewidth=2.0)
-		    ax.plot( x17, y17, '-', marker = marker.next(), label='PST-FF-CT(Mixed)', linewidth=2.0)
+		    ax.plot( x16, y16, '-', marker = marker.next(), label='PST-BF-CT(Jit)', linewidth=2.0)
+		    ax.plot( x17, y17, '-', marker = marker.next(), label='PST-BF-CT(Mixed)', linewidth=2.0)
 
     except ValueError:
         print "ValueError"
@@ -761,50 +761,51 @@ def main():
 	#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1)
 	#wayofMean(Ameanratio, 40, 'Ameanratio', 'L', 100, 1)
 	#wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1)
-
+	
 	'''
-
+	#wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 2, 'L', mode)
+	
 	#Limited-preemptive
-	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 1, 'L', mode)
-	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 1, 'L', mode)
-	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 1, 'L', mode)
+	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 100, 2, 'L', mode)
+	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'M', 100, 2, 'L', mode)
+	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'L', 100, 2, 'L', mode)
 	#
-	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 1, 'L', mode)
-	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 1, 'L', mode)
-	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 1, 'L', mode)
+	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'S', 100, 2, 'L', mode)
+	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'M', 100, 2, 'L', mode)
+	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 20, 'Gmeanratio', 'L', 100, 2, 'L', mode)
 	#
-	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 1, 'L', mode)
-	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 1, 'L', mode)
-	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 1, 'L', mode)
+	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'S', 100, 2, 'L', mode)
+	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'M', 100, 2, 'L', mode)
+	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 30, 'Gmeanratio', 'L', 100, 2, 'L', mode)
 	#
-	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 1, 'L', mode)
-	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 1, 'L', mode)
-	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1, 'S', mode)
-	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1, 'M', mode)
-	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 1, 'L', mode)
-
+	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'S', 100, 2, 'L', mode)
+	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'M', 100, 2, 'L', mode)
+	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 2, 'S', mode)
+	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 2, 'M', mode)
+	wayofMean(Gmeanratio, 40, 'Gmeanratio', 'L', 100, 2, 'L', mode)
+	
 	'''
 	#Limited-preemptive
 	wayofMean(Gmeanratio, 10, 'Gmeanratio', 'S', 10, 1, 'S')
