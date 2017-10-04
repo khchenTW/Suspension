@@ -35,6 +35,11 @@ All the used modules for this simulation are with prefix "M"
 In printer folder, mean_printer.py has the completed toolbox to generate the readable figures.  
 The core in the toolbox is "wayofMean()": 
 > It uses the given way of mean, e.g., np.mean or gmean to generate the results with all the other parameters.
+Now the default is the geometric mean.
 
-However, at this current version, the presented plots are decided manually.  
-The targeted test results should be unmarked! (Starts from Line 537.)
+"Usage: python mean_printer.py [representative/ILP/TDA/CT]"
+> The input should be given as the string: "REP", "ILP", "TDA", "CT"
+
+The file inputs should be placed in the corresponding folder, which can be found in the source code.
+
+
