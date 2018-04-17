@@ -1,5 +1,21 @@
 # Suspension-base Partitioning Approaches
 
+This is the related source code for the RTAS'18 paper:
+http://www.utdallas.edu/~zheng/paper/RTAS2018.pdf.
+
+"Shared-Resource-Centric Limited Preemptive Scheduling: A Comprehensive Study of Suspension-base Partitioning Approaches"
+
+Zheng Dong, Cong Liu, Soroush Bateni, Kuan-Hsun Chen, Jian-Jia Chen, Georg von der Brüggen and Junjie Shi.
+
+# Environment
+
+We used the Gurobi library, https://www.gurobi.com/index, to implement the proposed ILPs. 
+
+You may need a license to use the library.
+
+Python version is 2.7
+
+
 partition_eval.py is for the assumption that one task requires only one resource:  
 "Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [btype]"
 The details of each parameter are as follows:

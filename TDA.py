@@ -96,8 +96,6 @@ def Workload_JitBlock(T, C, t, Q, y):
     # y is y_i and Q is calcualed beforehand
     return max(0,C*math.ceil((t+Q+(1-y)*(T-C))/T))
 
-#def Workload_Jitter(T,D,C,t):
-#    return max(0,C*math.ceil((t+(T-C))/T))
 
 def TDAjitblock(task,HPTasks):
     vecY = [0 for i in range(len(HPTasks)+1)]
