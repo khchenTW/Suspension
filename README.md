@@ -3,9 +3,7 @@
 This is the related source code for the RTAS'18 paper:
 http://www.utdallas.edu/~zheng/paper/RTAS2018.pdf.
 
-"Shared-Resource-Centric Limited Preemptive Scheduling: A Comprehensive Study of Suspension-base Partitioning Approaches"
-
-Zheng Dong, Cong Liu, Soroush Bateni, Kuan-Hsun Chen, Jian-Jia Chen, Georg von der Brüggen and Junjie Shi.
+"Shared-Resource-Centric Limited Preemptive Scheduling: A Comprehensive Study of Suspension-base Partitioning Approaches", Zheng Dong, Cong Liu, Soroush Bateni, Kuan-Hsun Chen, Jian-Jia Chen, Georg von der Brüggen and Junjie Shi.
 
 # Environment
 
@@ -15,6 +13,7 @@ You may need a license to use the library.
 
 Python version is 2.7
 
+# The way to use (Follow the paper)
 
 partition_eval.py is for the assumption that one task requires only one resource:  
 "Usage: python partition_eval.py [debug] [# of sets] [generate/load] [stype] [btype]"
