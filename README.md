@@ -1,7 +1,7 @@
 # Suspension-base Partitioning Approaches
 
 This is the related source code for the RTAS'18 paper:
-http://www.utdallas.edu/~zheng/paper/RTAS2018.pdf.
+http://zheng.eng.wayne.edu/_resources/pdfs/RTAS2018.pdf.
 
 "Shared-Resource-Centric Limited Preemptive Scheduling: A Comprehensive Study of Suspension-base Partitioning Approaches", Zheng Dong, Cong Liu, Soroush Bateni, Kuan-Hsun Chen, Jian-Jia Chen, Georg von der Brüggen and Junjie Shi.
 
